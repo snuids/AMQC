@@ -1,3 +1,9 @@
+/*
+   AMQ Angular Monitoring Tool
+
+   Copyright (C) 2015 [Arnaud Marchand]
+ */
+
 var app=angular.module('AMQApp', []);
 
 app.directive('dragMe', function() {
