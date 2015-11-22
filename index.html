@@ -20,30 +20,27 @@
 
 </head>
 <body>
-
-	
-<div ng-app="AMQApp">	
-    <div id="tabs" ng-controller="TabsCtrl">	
-			<div class="filterField" ng-show="currentTab.hasFilter">
-			Filter:&nbsp;<input type="text" ng-model="filterField"  autofocus/>
-			</div>
-	    
-				 <div class="container-fluid">
-					<div>
-	         <ul class="nav nav-tabs ">
-	            <li ng-repeat="tab in tabs" 
-	                ng-class="{active:isActiveTab(tab.url)}" 
-	                ng-click="onClickTab(tab)"><a href="#">{{tab.title}}</a></li>
-	         </ul>
-					</div>
-				</div>
-			
-        <div id="mainView">
-            <div ng-include="currentTab.url"></div>
+    <div>
+        <div id="tabs">
+            <div class="filterField">
+                Filter:&nbsp;<input type="text">
+            </div>
+            <div class="container-fluid">
+                <div>
+                    <ul class="nav nav-tabs">
+                        <li>
+                            <a href="#">{{tab.title}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div id="mainView">
+                <div></div>
+            </div>
+            <div id="footerView">
+                <button class="btn btn-primary btn-sm">Refresh</button>
+            </div>
         </div>
-				<div id="footerView">
-					<button class="btn btn-primary btn-sm" ng-click="refreshAll()">Refresh</button>
-				</div>
     </div>
 </body>
 </html>
