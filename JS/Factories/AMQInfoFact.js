@@ -1,21 +1,24 @@
 app.factory('amqInfoFactory', function($http,$location){			
     var factory = {}; 
-	factory.infoUrl='http://REPLACE:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost';
-	factory.queuesUrl='http://REPLACE:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=*';
-	factory.topicsUrl='http://REPLACE:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Topic,destinationName=*';
-	factory.connectionsUrl='http://REPLACE:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,connector=clientConnectors,connectorName=CONNECTORNAME,connectionViewType=clientId,connectionName=*';
-	
-	factory.execUrl='http://REPLACE:8161/api/jolokia/exec/org.apache.activemq:type=Broker,brokerName=localhost,destinationType=QUEUETYPE,destinationName=QUEUENAME/QUEUEACTION';
-	factory.postUrl='http://REPLACE:8161/api/jolokia';
+
 	
 	factory.hideAdvisoryQueues=true;
+
+	factory.login="";
+	factory.password="";
+	factory.brokername="localhost";
+	factory.brokerip="127.0.0.1";
+	factory.brokerport=8161;
+	factory.connected=false;
+	factory.connecting=false;
 	
 	factory.refreshInfo=function()
 	{
+		factory.connecting=true;		
 		$http({
 		  method: 'GET',
-		  url: factory.infoUrl
-		  
+		  url: factory.infoUrl,
+		  timeout:5000
 		}).then(function successCallback(response) {
 		    factory.info=response.data.value;
 			
@@ -30,18 +33,20 @@ app.factory('amqInfoFactory', function($http,$location){
 					factory.filteredInfo.push(nobj);
 				}
 			}
-//			console.log(factory.info);
-
 			factory.filteredInfo.sort(function(a, b){return a.key.localeCompare(b.key)});
-			//console.log(factory.info.TransportConnectors);
+			factory.connected=true;
+			factory.connecting=false;		
 
 		  }, function errorCallback(response) {
-		    alert('ko');
+		    alert('Unable to connect to ActiveMQ. Status:'+response.status);
+			factory.connecting=false;		
 		  });
 	}
 	
 	factory.refreshQueues=function()
 	{
+		if(!factory.connected)
+			return;
 		$http({
 		  method: 'GET',
 		  url: factory.queuesUrl
@@ -62,6 +67,9 @@ app.factory('amqInfoFactory', function($http,$location){
 	
 	factory.refreshTopics=function()
 	{
+		if(!factory.connected)
+			return;
+		
 		$http({
 		  method: 'GET',
 		  url: factory.topicsUrl
@@ -73,9 +81,6 @@ app.factory('amqInfoFactory', function($http,$location){
 
 			for ( property in factory.topics ) 
 			{
-//				console.log(property);
-//				if(factory.hideAdvisoryQueues && (factory.topics[property].Name.indexOf("ActiveMQ.Advisory")==0))
-//					continue;
 				factory.filteredTopics.push(factory.topics[property]);
 			}
 
@@ -86,6 +91,9 @@ app.factory('amqInfoFactory', function($http,$location){
 	
 	factory.refreshConnections=function()
 	{
+		if(!factory.connected)
+			return;
+		
 		var curl=factory.connectionsUrl.replace(/CONNECTORNAME/g,this.selectedConnector);
 
 		
@@ -168,9 +176,23 @@ app.factory('amqInfoFactory', function($http,$location){
 		return str;
 		
 	}
-//	factory.infoUrl='http://localhost/~snuids/AMQ/index.html';
 	
-//	alert(factory.extractProperty('str','str'));
+	factory.prepareURLs=function()
+	{
+		factory.infoUrl='http://REPLACEIP:REPLACEPORT/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME';
+		factory.queuesUrl='http://REPLACEIP:REPLACEPORT/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,destinationType=Queue,destinationName=*';
+		factory.topicsUrl='http://REPLACEIP:REPLACEPORT/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,destinationType=Topic,destinationName=*';
+		factory.connectionsUrl='http://REPLACEIP:REPLACEPORT/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,connector=clientConnectors,connectorName=CONNECTORNAME,connectionViewType=clientId,connectionName=*';	
+		factory.execUrl='http://REPLACEIP:REPLACEPORT/api/jolokia/exec/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,destinationType=QUEUETYPE,destinationName=QUEUENAME/QUEUEACTION';
+		factory.postUrl='http://REPLACEIP:REPLACEPORT/api/jolokia';		
+		
+		factory.infoUrl=factory.infoUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
+		factory.queuesUrl=factory.queuesUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
+		factory.topicsUrl=factory.topicsUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
+		factory.connectionsUrl=factory.connectionsUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
+		factory.execUrl=factory.execUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
+		factory.postUrl=factory.postUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);			
+	}
 	
 	factory.info={};
 	factory.filteredInfo=[];
@@ -178,26 +200,15 @@ app.factory('amqInfoFactory', function($http,$location){
 	factory.filteredTopics=[];		
 	factory.filteredConnections=[];		
 
-	var rep=$location.search().ip;
 
+/*	var rep=$location.search().ip;
 
 	if($location.search().ip == undefined)
 	{
 		rep=window.location.hostname;
-	}
-
-	factory.infoUrl=factory.infoUrl.replace(/REPLACE/g,rep);
-	factory.queuesUrl=factory.queuesUrl.replace(/REPLACE/g,rep);
-	factory.topicsUrl=factory.topicsUrl.replace(/REPLACE/g,rep);
-	factory.connectionsUrl=factory.connectionsUrl.replace(/REPLACE/g,rep);
-	factory.execUrl=factory.execUrl.replace(/REPLACE/g,rep);
-	factory.postUrl=factory.postUrl.replace(/REPLACE/g,rep);
-	    
+	}*/
 	
 	factory.selectedConnector='openwire';
-		
-	factory.refreshAll();
-
 	
     return factory;
 });

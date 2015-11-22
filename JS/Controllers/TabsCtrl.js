@@ -44,6 +44,12 @@ app.controller('TabsCtrl',['$scope','amqInfoFactory', function($scope,amqInfoFac
 	{
 		amqInfoFactory.refreshAll();
 	}
+	
+	$scope.disconnectAMQ =function()
+	{
+		amqInfoFactory.connected=false
+	}
+	
 
     $scope.onClickTab = function (tab) {
         $scope.currentTab = tab;

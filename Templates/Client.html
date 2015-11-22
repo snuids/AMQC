@@ -1,11 +1,11 @@
 <div ng-controller="ClientCtrl">
 	<H2 class="nomargin">Client<span ng-show="amqClient.client"> Messages({{amqClient.messages.length}})</span></H2>
 	
-	Url: <input type="text" ng-disabled="amqClient.client" ng-model="amqClient.url">
-	Topics: <input type="text" ng-disabled="amqClient.client"  ng-model="amqClient.topics">
-	Queues: <input type="text" ng-disabled="amqClient.client"  ng-model="amqClient.queues">
+	Port: <input type="number" min="1" max="65556" ng-disabled="amqClient.client" ng-model="amqClient.port">
 	Login: <input type="text" ng-disabled="amqClient.client"  ng-model="amqClient.login">
 	Password: <input type="text" ng-disabled="amqClient.client"  ng-model="amqClient.password">
+	Topics: <input type="text" ng-disabled="amqClient.client"  ng-model="amqClient.topics">
+	Queues: <input type="text" ng-disabled="amqClient.client"  ng-model="amqClient.queues">
 	
 	<br/><br/>
 	
@@ -15,7 +15,6 @@
 	<button type="button" ng-show="amqClient.messages.length>0" ng-click="clearTable()" class="btn btn-primary btn-sm btn-xs">Clear Table</button>
 	<span ng-show="amqClient.messages.length>0">
 	Filter:&nbsp;<input type="text" ng-model="filterFieldMessage"  autofocus/>
-	{{filterFieldMessage}}
 	</span>
 	
 	<br/><br/>

@@ -1,7 +1,7 @@
-app.factory('amqClientFactory', function($rootScope){			
+app.factory('amqClientFactory', function($rootScope,amqInfoFactory){			
     var factory = {}; 
 
-	factory.url="ws://localhost:61614";
+	factory.port=61614;
 	factory.topics="BSM,BPM";
 	factory.queues="foo";
 	factory.login="";
@@ -59,7 +59,8 @@ app.factory('amqClientFactory', function($rootScope){
 	factory.connect=function()
 	{
 		console.log("CONNECT");
-		this.client = Stomp.client(this.url);
+		var url="ws://"+amqInfoFactory.brokerip+":61614";
+		this.client = Stomp.client(url);
 		this.messages=[];
 		this.client.connect(this.login, this.password, this.callBackFunc);
 		

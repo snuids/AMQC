@@ -5,13 +5,14 @@
 	<script src="JQuery/jquery-ui.js"></script>
   <script src="AngularJS/angular-1.4.7/angular.js"></script>
 	<script src="JS/AMQApp.js"></script>
-	<script src="JS/Factories/AMQClientFact.js"></script>
 	<script src="JS/Factories/AMQInfoFact.js"></script>
+	<script src="JS/Factories/AMQClientFact.js"></script>
 	<script src="JS/Controllers/TabsCtrl.js"></script>
 	<script src="JS/Controllers/QueuesCtrl.js"></script>
 	<script src="JS/Controllers/TopicsCtrl.js"></script>
 	<script src="JS/Controllers/ConnectionsCtrl.js"></script>
 	<script src="JS/Controllers/ClientCtrl.js"></script>
+	<script src="JS/Controllers/LoginCtrl.js"></script>
 	<script src="CSS/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
 	<script src="lib/stomp.js"></script>
 	
@@ -20,27 +21,65 @@
 
 </head>
 <body>
-    <div>
-        <div id="tabs">
-            <div class="filterField">
-                Filter:&nbsp;<input type="text">
-            </div>
-            <div class="container-fluid">
-                <div>
-                    <ul class="nav nav-tabs">
-                        <li>
-                            <a href="#">{{tab.title}}</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div id="mainView">
-                <div></div>
-            </div>
-            <div id="footerView">
-                <button class="btn btn-primary btn-sm">Refresh</button>
-            </div>
+ 
+	
+<div ng-app="AMQApp">	
+	
+	<div id="login" ng-controller="LoginCtrl" ng-show="!amqInfo.connected">
+	   <h3 class="nomargin">ActiveMQ Login</h3>
+			<table width="100%">
+				<tr>
+					<td>IP (Name)</td>
+					<td><input type="text" ng-model="amqInfo.brokerip" ></td>
+				</tr>
+				<tr>
+					<td>Port</td>
+					<td><input type="number" min="1" max="65556" ng-model="amqInfo.brokerport" ></td>
+				</tr>
+				<tr>
+					<td>Broker</td>
+					<td><input type="text" ng-model="amqInfo.brokername" ></td>
+				</tr>
+				<tr>
+						<td>&nbsp;</td>
+						<td></td>
+				</tr>
+				<tr>
+					<td>Login</td>
+					<td><input type="text" value="" placeholder="Username"></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td><input type="text" value="" placeholder="Password"></td>
+				</tr>
+			</table>
+			<div class="login_footer" ng-show="!amqInfo.connecting">
+	     <button class="btn btn-primary btn-sm" ng-click="logAMQ()">Connect</button>
+			</div>
+	 </div>
+	
+    <div id="tabs" ng-controller="TabsCtrl" ng-show="amqInfo.connected">	
+			<div class="filterField" ng-show="currentTab.hasFilter">
+			Filter:&nbsp;<input type="text" ng-model="filterField"  autofocus/>
+			</div>
+	    
+				 <div class="container-fluid">
+					<div>
+	         <ul class="nav nav-tabs ">
+	            <li ng-repeat="tab in tabs" 
+	                ng-class="{active:isActiveTab(tab.url)}" 
+	                ng-click="onClickTab(tab)"><a href="#">{{tab.title}}</a></li>
+	         </ul>
+					</div>
+				</div>
+			
+        <div id="mainView">
+            <div ng-include="currentTab.url"></div>
         </div>
+				<div id="footerView">
+					<button class="btn btn-primary btn-sm" ng-click="refreshAll()">Refresh</button>
+					<button class="btn btn-primary btn-sm" ng-click="disconnectAMQ()">Disconnect</button>
+				</div>
     </div>
 </body>
 </html>

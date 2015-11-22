@@ -1,5 +1,5 @@
 app.controller('ClientCtrl',['$scope','amqInfoFactory','amqClientFactory', function($scope,amqInfoFactory,amqClientFactory) 
-{
+{	
 	amqClientFactory.subscribe($scope, function somethingChanged() 
 	{
 	        $scope.$apply();

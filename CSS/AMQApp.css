@@ -1,4 +1,7 @@
-
+.text_with_crlf
+{
+	white-space:pre-wrap;
+}
 
 .dragClass
 {
@@ -23,41 +26,33 @@
 	top:0px;
 }
 
-/*ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-li {
-	cursor:grab;
-    float: left;
-    border: 1px solid #000;
-    border-bottom-width: 0;
-    margin: 3px 3px 0px 3px;
-    padding: 5px 5px 0px 5px;
-    background-color: #CCC;
-	font-weight:bolder;
-    color: #696969;
-	border-radius: 8px 8px 0px 0px;
-}
+/* LOGIN */
 
-.active {
-    background-color: #337ab7;
-    color: #fff;
-}*/
-
-.filterField
+#login
 {
+	top:30%;
+	border:solid 1px black;
+	padding:10px;
 	position:absolute;
-	top:5px;
-	right:5px;
-    border: 0px solid black;
-	clear:both;
-	padding: 0 1em;
-	overflow:none;
-	background-color:White;
-	z-index:100;
+	background-color:white;
+	left:50%;
+	width:300px;
+	margin-left:-150px;
+	z-index:200;
+	text-align:left;
 }
+
+.login_footer
+{
+	width:100%;
+	text-align:center;
+	padding-top:10px;
+}
+
+
+
+
+/* MAIN VIEW */
 
 #mainView {
 	padding-top:5px !important;
@@ -81,6 +76,18 @@ li {
 	text-align:center;
 }
 
+.filterField
+{
+	position:absolute;
+	top:5px;
+	right:5px;
+    border: 0px solid black;
+	clear:both;
+	padding: 0 1em;
+	overflow:none;
+	background-color:White;
+	z-index:100;
+}
 
 .sort-true {
 	background-color:#337ab7;
@@ -287,7 +294,3 @@ li {
 	background-color:White;
 }
 
-.text_with_crlf
-{
-	white-space:pre-wrap;
-}
