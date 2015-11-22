@@ -2,7 +2,7 @@ app.controller('ClientCtrl',['$scope','amqInfoFactory','amqClientFactory', funct
 {	
 	amqClientFactory.subscribe($scope, function somethingChanged() 
 	{
-	        $scope.$apply();
+		$scope.$apply();
 	});
 	$scope.amqClient=amqClientFactory;
 			

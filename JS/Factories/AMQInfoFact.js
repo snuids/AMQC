@@ -161,6 +161,60 @@ app.factory('amqInfoFactory', function($http,$location){
 		  });
 	}
 
+	factory.createNewQueue=function(queueName,queueAction)
+	{
+		var postUrl=factory.getPostUrl();
+						
+		var data={
+		    "type":"exec",
+		    "mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername,
+			"operation":"addQueue",
+			"arguments":[queueName]
+		};
+		
+		console.log(data);
+		
+		$http.post(postUrl, data, {})
+		.then(function successCallback(response) {
+			alert('done');
+					console.log(response);
+			factory.refreshAll();
+
+		  }, function errorCallback(response) {
+		    alert('Unable to create new queue.');
+			console.log(response);
+		  });
+		
+//		this.execQueue(queueName,'purge','Queue');
+	}
+
+	factory.deleteQueue=function(queueName,queueAction)
+	{
+		var postUrl=factory.getPostUrl();
+						
+		var data={
+		    "type":"exec",
+		    "mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername,
+			"operation":"removeQueue",
+			"arguments":[queueName]
+		};
+		
+		console.log(data);
+		
+		$http.post(postUrl, data, {})
+		.then(function successCallback(response) {
+			alert('done');
+					console.log(response);
+			factory.refreshAll();
+
+		  }, function errorCallback(response) {
+		    alert('Unable to delete queue.');
+			console.log(response);
+		  });
+		
+//		this.execQueue(queueName,'purge','Queue');
+	}
+
 	factory.resetStatsTopic=function(topicName)
 	{
 		this.execQueue(topicName,'resetStatistics','Topic');
@@ -169,8 +223,7 @@ app.factory('amqInfoFactory', function($http,$location){
 	factory.purgeQueue=function(queueName,queueAction)
 	{
 		this.execQueue(queueName,'purge','Queue');
-	}
-
+	}		
 	
 	factory.resetStatsQueue=function(queueName)
 	{
@@ -190,6 +243,7 @@ app.factory('amqInfoFactory', function($http,$location){
 		  
 		}).then(function successCallback(response) {
 			console.log(response);
+			this.refreshAll();
 		  }, function errorCallback(response) {
 		    alert('ko');
 		  });

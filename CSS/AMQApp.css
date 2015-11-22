@@ -54,8 +54,16 @@
 	padding-top:10px;
 }
 
+/* Version */
 
-
+#version
+{
+	position:absolute;
+	bottom:5px;
+	left:5px;
+	font-weight:9px;
+	color:#888;
+}
 
 /* MAIN VIEW */
 

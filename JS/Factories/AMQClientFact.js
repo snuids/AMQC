@@ -7,6 +7,7 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 	factory.login="";
 	factory.password="";
 	factory.messages=[];
+	factory.messagesCount=0;
 
 	factory.subscribe= function(scope, callback) {
         var handler = $rootScope.$on('notifying-service-event', callback);
@@ -33,6 +34,7 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 				mes.destination=message.headers.destination;
 				mes.headers=message.headers;
 				factory.messages.unshift(mes);
+				factory.messagesCount++;
 				factory.notify('mes');
 	    	});
 		}
@@ -49,6 +51,7 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 				mes.destination=message.headers.destination;
 				mes.headers=message.headers;
 				factory.messages.unshift(mes);
+				factory.messagesCount++;
 				factory.notify('mes');				
 	    	});
 		}
@@ -62,6 +65,7 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 		var url="ws://"+amqInfoFactory.brokerip+":61614";
 		this.client = Stomp.client(url);
 		this.messages=[];
+		this.messagesCount=0;
 		this.client.connect(this.login, this.password, this.callBackFunc);
 		
 	}

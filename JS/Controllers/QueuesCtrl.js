@@ -14,6 +14,7 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	$scope.amqInfo=amqInfoFactory;
 	$scope.queues=amqInfoFactory.filteredQueues;
 	$scope.currentQueue=null;
+	$scope.newQueueName='';
 	
 	$scope.subscribers=[];
 	
@@ -64,13 +65,25 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	$scope.purgeQueue=function()
 	{
 		$scope.amqInfo.purgeQueue($scope.currentQueue.Name);
-		$scope.amqInfo.refreshAll();
+	}
+	
+	$scope.deleteQueue=function()
+	{
+		if(confirm("Are you sure you want to delete the queue "+$scope.currentQueue.Name))
+		{
+			$scope.amqInfo.deleteQueue($scope.currentQueue.Name);
+			$scope.showDetails(null);
+		}
+	}
+	
+	$scope.createNewQueue=function()
+	{
+		$scope.amqInfo.createNewQueue($scope.newQueueName);
 	}
 	
 	$scope.resetStatsQueue=function()
 	{
 		$scope.amqInfo.resetStatsQueue($scope.currentQueue.Name);
-		$scope.amqInfo.refreshAll();
 	}
 	
 	$scope.showDetails = function(ent)
@@ -78,10 +91,6 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 		$scope.currentQueue=ent;
 		if(ent!=null)
 		{
-//			console.log(ent.ConsumerCount);
-//			console.log(ent);
-//			alert(ent.ConsumerCount);
-//			alert(ent.ConsumerCount>=0);
 			$scope.detailsTabs[1].visible=(ent.ConsumerCount>0);
 			$scope.currentDetailsTab = $scope.detailsTabs[0];
 		}
