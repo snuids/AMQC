@@ -10,6 +10,7 @@
 	<script src="JS/Controllers/TabsCtrl.js"></script>
 	<script src="JS/Controllers/QueuesCtrl.js"></script>
 	<script src="JS/Controllers/TopicsCtrl.js"></script>
+	<script src="JS/Controllers/SubscribersCtrl.js"></script>
 	<script src="JS/Controllers/ConnectionsCtrl.js"></script>
 	<script src="JS/Controllers/ClientCtrl.js"></script>
 	<script src="JS/Controllers/LoginCtrl.js"></script>
@@ -23,7 +24,7 @@
 <body>
  
 	
-<div ng-app="AMQApp">	
+<div ng-app="AMQApp" class="AMQApp">	
 	
 	<div id="login" ng-controller="LoginCtrl" ng-show="!amqInfo.connected">
 	   <h3 class="nomargin">ActiveMQ Login</h3>

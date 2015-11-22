@@ -1,0 +1,17 @@
+<div ng-controller="SubscribersCtrl">
+<table class="table table-striped table-bordered table-hover table-condensed small">
+<tr>
+	<th class="text-center" ng:repeat="(i,th) in head" ng:class="selectedCls(i)" ng:click="changeSorting(i)">{{th}}<span table-header></span></th>
+</tr>
+<tr ng-repeat="ent in amqInfo.topicSubscribers | filter:filterField | orderBy:sort.column:sort.descending | filter: filterFunction">
+    <td>{{ent.DestinationName}}</td>
+		<td class="text-left">{{ent.ClientID}}</td>
+		<td class="text-left">{{ent.ConsumerID}}</td>
+		<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Durable]" 
+		         class="glyphicon glyphicon-ok queue-box-padding"></span></td>
+		<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Connected]" 
+						         class="glyphicon glyphicon-ok queue-box-padding"></span></td>
+		<td><button type="button" ng-click="showDetails(ent)" class="btn btn-primary btn-sm btn-xs">Details</button></td>		
+</tr>
+</table>
+</div>

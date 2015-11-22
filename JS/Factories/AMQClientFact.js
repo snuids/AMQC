@@ -69,7 +69,8 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 	factory.disconnect=function()
 	{
 		console.log("DISCONNECT");
-		this.client.disconnect();
+		if(this.client!=null)
+			this.client.disconnect();
 		this.client=null;
 		this.messages=[];
 	}

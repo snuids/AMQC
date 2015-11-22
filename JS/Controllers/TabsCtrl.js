@@ -1,4 +1,4 @@
-app.controller('TabsCtrl',['$scope','amqInfoFactory', function($scope,amqInfoFactory) 
+app.controller('TabsCtrl',['$scope','amqInfoFactory','amqClientFactory', function($scope,amqInfoFactory,amqClientFactory) 
 {
     $scope.tabs = [{
             title: 'Info',
@@ -20,6 +20,11 @@ app.controller('TabsCtrl',['$scope','amqInfoFactory', function($scope,amqInfoFac
 			hasFilter:true
     	}
 		, {
+            title: 'Subscribers',
+            url: 'Templates/Subscribers.html',
+			hasFilter:true
+    	}
+		, {
             title: 'Connections',
             url: 'Templates/Connections.html',
 			hasFilter:true
@@ -37,7 +42,9 @@ app.controller('TabsCtrl',['$scope','amqInfoFactory', function($scope,amqInfoFac
 	];
 
 	$scope.filterField='';
+
 	$scope.amqInfo=amqInfoFactory;
+	$scope.amqClient=amqClientFactory;
     $scope.currentTab = $scope.tabs[0];
 
 	$scope.refreshAll =function()
@@ -47,6 +54,7 @@ app.controller('TabsCtrl',['$scope','amqInfoFactory', function($scope,amqInfoFac
 	
 	$scope.disconnectAMQ =function()
 	{
+		amqClientFactory.disconnect();
 		amqInfoFactory.connected=false
 	}
 	

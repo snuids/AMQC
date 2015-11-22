@@ -45,8 +45,6 @@ app.factory('amqInfoFactory', function($http,$location){
 	
 	factory.refreshQueues=function()
 	{
-		if(!factory.connected)
-			return;
 		$http({
 		  method: 'GET',
 		  url: factory.queuesUrl
@@ -61,14 +59,12 @@ app.factory('amqInfoFactory', function($http,$location){
 			}
 			//console.log(factory.filteredQueues);
 		  }, function errorCallback(response) {
-		    alert('ko');
+		    alert('Cannot read queues');
 		  });
 	}
 	
 	factory.refreshTopics=function()
 	{
-		if(!factory.connected)
-			return;
 		
 		$http({
 		  method: 'GET',
@@ -82,17 +78,36 @@ app.factory('amqInfoFactory', function($http,$location){
 			for ( property in factory.topics ) 
 			{
 				factory.filteredTopics.push(factory.topics[property]);
+				var subs=factory.topics[property].Subscriptions;
+				for ( var i=0 ; i<subs.length;i++ ) 
+				{
+					var obj={};
+
+					obj.DestinationName=factory.extractProperty('destinationName',subs[i].objectName);;
+					obj.DestinationType=factory.extractProperty('destinationType',subs[i].objectName);;
+					obj.ClientID=factory.extractProperty('clientId',subs[i].objectName);
+					var consuid=factory.extractProperty('consumerId',subs[i].objectName);
+					if(consuid.indexOf('Durable(')==0)
+					{
+						consuid=consuid.replace(/Durable\(/,'').replace(/\)/,'');
+						obj.Durable=true;
+					}
+					else
+						obj.Durable=false;
+
+					obj.ConsumerID=consuid;
+					obj.Connected=factory.activeConnections[obj.ClientID]!=undefined;
+					factory.topicSubscribers.push(obj);
+				}
 			}
 
 		  }, function errorCallback(response) {
-		    alert('ko');
+		    alert('Cannot read topics');
 		  });
 	}
 	
 	factory.refreshConnections=function()
 	{
-		if(!factory.connected)
-			return;
 		
 		var curl=factory.connectionsUrl.replace(/CONNECTORNAME/g,this.selectedConnector);
 
@@ -105,13 +120,16 @@ app.factory('amqInfoFactory', function($http,$location){
 		    factory.connections=response.data.value;
 
 			factory.filteredConnections=[];
+			factory.activeConnections={};
 
 			for ( property in factory.connections ) {
 					factory.filteredConnections.push(factory.connections[property]);
+//					alert('push'+factory.connections[property].ClientId);
+					factory.activeConnections[factory.connections[property].ClientId.replace(/:/g,'_')]=true;
 			}
-			console.log(factory.filteredConnections);
+//			console.log(factory.activeConnections);
 		  }, function errorCallback(response) {
-		    alert('ko');
+		    alert('Cannot read connections');
 		  });
 	}
 
@@ -160,8 +178,8 @@ app.factory('amqInfoFactory', function($http,$location){
 	{
 		factory.refreshInfo();
 		factory.refreshQueues();
-		factory.refreshTopics();	
 		factory.refreshConnections();	
+		factory.refreshTopics();	
 	}
 	
 	factory.extractProperty=function(prop,str)
@@ -195,11 +213,12 @@ app.factory('amqInfoFactory', function($http,$location){
 	}
 	
 	factory.info={};
+	factory.activeConnections={};
 	factory.filteredInfo=[];
 	factory.filteredQueues=[];
 	factory.filteredTopics=[];		
 	factory.filteredConnections=[];		
-
+	factory.topicSubscribers=[];	
 
 /*	var rep=$location.search().ip;
 
