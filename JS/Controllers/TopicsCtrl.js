@@ -66,6 +66,7 @@ app.controller('TopicsCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	$scope.showDetails = function(ent)
 	{
 		$scope.currentTopic=ent;
+		$scope.currentDetailsTab = $scope.detailsTabs[0];
 	}
 	
 	$scope.filterFunction = function(element) {
