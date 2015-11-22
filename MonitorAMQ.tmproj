@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>README.md</string>
+	<string>JS/Controllers/TopicsCtrl.js</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -21,6 +21,62 @@
 	<integer>273</integer>
 	<key>metaData</key>
 	<dict>
+		<key>JQuery/jquery-ui.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>62</integer>
+				<key>line</key>
+				<integer>1323</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>1304</integer>
+		</dict>
+		<key>JQuery/soundmanager2-jsmin.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>JQuery/soundmanager2.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>758</integer>
+		</dict>
+		<key>JS/AMQApp.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>12</integer>
+				<key>line</key>
+				<integer>19</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>JS/Controllers/ClientCtrl.js</key>
 		<dict>
 			<key>caret</key>
@@ -47,7 +103,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>19</integer>
+			<integer>0</integer>
 		</dict>
 		<key>JS/Controllers/LoginCtrl.js</key>
 		<dict>
@@ -75,7 +131,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>79</integer>
 		</dict>
 		<key>JS/Controllers/SubscribersCtrl.js</key>
 		<dict>
@@ -126,28 +182,28 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>3</integer>
 				<key>line</key>
-				<integer>49</integer>
+				<integer>74</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>30</integer>
+			<integer>0</integer>
 		</dict>
 		<key>JS/Factories/AMQClientFact.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>11</integer>
+				<integer>19</integer>
 				<key>line</key>
-				<integer>36</integer>
+				<integer>66</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>32</integer>
+			<integer>44</integer>
 		</dict>
 		<key>JS/Factories/AMQInfoFact.js</key>
 		<dict>
@@ -182,9 +238,37 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>51</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>29</integer>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>Templates/Connections.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>40</integer>
+				<key>line</key>
+				<integer>18</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>1</integer>
+		</dict>
+		<key>Templates/Connectors.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>8</integer>
+				<key>line</key>
+				<integer>9</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -196,30 +280,28 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>178</integer>
+				<integer>71</integer>
 				<key>line</key>
-				<integer>1</integer>
+				<integer>69</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>25</integer>
+		</dict>
+		<key>Templates/Subscribers.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>131</integer>
+				<key>line</key>
+				<integer>14</integer>
+			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>192</integer>
-				<key>line</key>
-				<integer>1</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>178</integer>
-				<key>line</key>
-				<integer>1</integer>
-			</dict>
 		</dict>
 		<key>index.html</key>
 		<dict>
@@ -257,6 +339,9 @@
 		<string>JS/Controllers/ClientCtrl.js</string>
 		<string>Templates/Client.html</string>
 		<string>JS/Controllers/ConnectionsCtrl.js</string>
+		<string>Templates/Subscribers.html</string>
+		<string>Templates/Connectors.html</string>
+		<string>Templates/Connections.html</string>
 		<string>JS/Controllers/LoginCtrl.js</string>
 		<string>JS/Controllers/SubscribersCtrl.js</string>
 		<string>lib/stomp.js</string>
@@ -265,11 +350,15 @@
 		<string>JS/Factories/AMQInfoFact.js</string>
 		<string>JS/Factories/AMQClientFact.js</string>
 		<string>index.html</string>
+		<string>JQuery/jquery-ui.js</string>
+		<string>JQuery/soundmanager2-jsmin.js</string>
+		<string>JQuery/soundmanager2.js</string>
+		<string>JS/AMQApp.js</string>
 		<string>README.md</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{439, 64}, {985, 713}}</string>
+	<string>{{415, 27}, {985, 713}}</string>
 </dict>
 </plist>
