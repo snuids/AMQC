@@ -73,7 +73,7 @@ app.controller('ConnectionsCtrl',['$scope','$http','amqInfoFactory', function($s
 		
 		var data={
 		    "type":"read",
-		    "mbean":"org.apache.activemq:type=Broker,brokerName=localhost,destinationType=*,destinationName=*,endpoint=Consumer,clientId="+ent.ClientId.replace(/:/g,'_')+",consumerId=*"
+		    "mbean":"org.apache.activemq:type=Broker,brokerName="+$scope.amqInfo.brokername+",destinationType=*,destinationName=*,endpoint=Consumer,clientId="+ent.ClientId.replace(/:/g,'_')+",consumerId=*"
 		};
 		//alert(data.mbean);
 		//alert(JSON.stringify(data));

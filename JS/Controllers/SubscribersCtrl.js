@@ -12,6 +12,8 @@ app.controller('SubscribersCtrl',['$scope','amqInfoFactory', function($scope,amq
 	
 	$scope.amqInfo=amqInfoFactory;
 	$scope.currentSubscriber=null;
+	$scope.durableOnly=true;
+	$scope.notConnectedOnly=false;
 	
 	$scope.sort = {
 	        column: 'Name',
@@ -23,6 +25,15 @@ app.controller('SubscribersCtrl',['$scope','amqInfoFactory', function($scope,amq
 	
 	
 	$scope.filterFunction = function(element) {
+		if($scope.durableOnly)
+			if(!element.Durable)
+				return false;
+
+		if($scope.notConnectedOnly)
+			if(element.Connected)
+				return false;
+
+		
 		if($scope.amqInfo.hideAdvisoryQueues)
 			return element.DestinationName.match(/Advisory/) ? false : true;
 		return true;
@@ -43,5 +54,12 @@ app.controller('SubscribersCtrl',['$scope','amqInfoFactory', function($scope,amq
 		
 	    };
 	
+	$scope.deleteDurable = function(sub) {
+			if(confirm("Are you sure you want to delete the durable subscriber "+sub.ConsumerID))
+			{
+				$scope.amqInfo.deleteDurableSubscriber(sub);
+			}
+			return true;
+		};
 }]
 );

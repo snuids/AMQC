@@ -11,7 +11,8 @@ app.factory('amqInfoFactory', function($http,$location){
 	factory.brokerport=8161;
 	factory.connected=false;
 	factory.connecting=false;
-	
+	factory.refreshing=false;
+		
 	factory.refreshInfo=function()
 	{
 		factory.connecting=true;		
@@ -74,6 +75,7 @@ app.factory('amqInfoFactory', function($http,$location){
 		    factory.topics=response.data.value;
 
 			factory.filteredTopics=[];
+			factory.topicSubscribers=[];
 
 			for ( property in factory.topics ) 
 			{
@@ -87,6 +89,8 @@ app.factory('amqInfoFactory', function($http,$location){
 					obj.DestinationType=factory.extractProperty('destinationType',subs[i].objectName);;
 					obj.ClientID=factory.extractProperty('clientId',subs[i].objectName);
 					var consuid=factory.extractProperty('consumerId',subs[i].objectName);
+					obj.OriginalConsumerID=consuid;
+					
 					if(consuid.indexOf('Durable(')==0)
 					{
 						consuid=consuid.replace(/Durable\(/,'').replace(/\)/,'');
@@ -96,10 +100,12 @@ app.factory('amqInfoFactory', function($http,$location){
 						obj.Durable=false;
 
 					obj.ConsumerID=consuid;
+
 					obj.Connected=factory.activeConnections[obj.ClientID]!=undefined;
 					factory.topicSubscribers.push(obj);
 				}
 			}
+			factory.refreshing=false;
 
 		  }, function errorCallback(response) {
 		    alert('Cannot read topics');
@@ -130,6 +136,28 @@ app.factory('amqInfoFactory', function($http,$location){
 //			console.log(factory.activeConnections);
 		  }, function errorCallback(response) {
 		    alert('Cannot read connections');
+		  });
+	}
+
+	factory.deleteDurableSubscriber=function(durablesub)
+	{
+		var postUrl=factory.getPostUrl();
+						
+		var data={
+		    "type":"exec",
+		    "mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername+",destinationType=Topic,destinationName="+durablesub.DestinationName+",endpoint=Consumer,clientId="
+				+durablesub.ClientID+",consumerId="+durablesub.OriginalConsumerID,
+			"operation":"destroy"
+		};
+		
+		$http.post(postUrl, data, {})
+		.then(function successCallback(response) {
+			alert('done');
+			factory.refreshAll();
+
+		  }, function errorCallback(response) {
+		    alert('Unable to destroy durable consumer.');
+			console.log(response);
 		  });
 	}
 
@@ -176,6 +204,7 @@ app.factory('amqInfoFactory', function($http,$location){
 	
 	factory.refreshAll =function()
 	{
+		factory.refreshing=true;
 		factory.refreshInfo();
 		factory.refreshQueues();
 		factory.refreshConnections();	

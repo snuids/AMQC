@@ -78,7 +78,7 @@
             <div ng-include="currentTab.url"></div>
         </div>
 				<div id="footerView">
-					<button class="btn btn-primary btn-sm" ng-click="refreshAll()">Refresh</button>
+					<button class="btn btn-primary btn-sm" ng-show="!amqInfo.refreshing" ng-click="refreshAll()">Refresh</button>
 					<button class="btn btn-primary btn-sm" ng-click="disconnectAMQ()">Disconnect</button>
 				</div>
     </div>
