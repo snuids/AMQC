@@ -1,0 +1,293 @@
+
+
+.dragClass
+{
+	cursor:grab;
+}
+
+.nodrag
+{
+	cursor:default;
+}
+
+.nomargin
+{
+	margin-top: 0px;
+	margin-bottom: 10px;
+}
+
+.topright
+{
+	position:absolute;
+	right:10px;
+	top:0px;
+}
+
+/*ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+li {
+	cursor:grab;
+    float: left;
+    border: 1px solid #000;
+    border-bottom-width: 0;
+    margin: 3px 3px 0px 3px;
+    padding: 5px 5px 0px 5px;
+    background-color: #CCC;
+	font-weight:bolder;
+    color: #696969;
+	border-radius: 8px 8px 0px 0px;
+}
+
+.active {
+    background-color: #337ab7;
+    color: #fff;
+}*/
+
+.filterField
+{
+	position:absolute;
+	top:5px;
+	right:5px;
+    border: 0px solid black;
+	clear:both;
+	padding: 0 1em;
+	overflow:none;
+	background-color:White;
+	z-index:100;
+}
+
+#mainView {
+	padding-top:5px !important;
+	position:absolute;
+	top:40px;
+	left:3px;
+    border-top: 0px solid #008;
+	clear:both;
+	padding: 0 1em;
+	bottom:40px;
+	overflow:auto;
+	right:3px;
+
+}
+
+#footerView
+{
+	position:absolute;
+	bottom:3px;
+	width:100%;
+	text-align:center;
+}
+
+
+.sort-true {
+	background-color:#337ab7;
+	color:white;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+	cursor:pointer;
+    
+}
+
+.sort-false {
+	background-color:#337ab7;
+	color:white;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+	cursor:pointer;    
+}
+
+.connection_details
+{
+	padding-bottom:3px !important;
+	position:fixed;
+	top:50px;
+	right:5px;
+    border: 1px solid black;
+	clear:both;
+	padding: 0 1em;
+	overflow:auto;
+	width:800px;	
+	background-color:White;	
+}
+
+.connection_details_table
+{
+	overflow:auto;
+	max-height:300px;
+}
+
+.queue_details
+{
+	padding-bottom:3px !important;
+	position:fixed;
+	top:50px;
+	right:5px;
+    border: 1px solid black;
+	clear:both;
+	padding: 0 1em;
+	overflow:hidden;
+	width:800px;
+	height:410px;	
+	background-color:White;	
+}
+
+.queue_details_tabs_header
+{
+	position:absolute;
+	top:10px;
+	left:3px;
+}
+
+.queue_details_tabs
+{
+	padding-top:3px !important;
+	position:absolute;
+	top:48px;
+	left:0px;
+    border: 0px solid black;
+	clear:both;
+	bottom:40px;
+	overflow:auto;
+	right:0px;
+}
+
+.queue_details_table
+{
+	overflow:auto;
+	top:110px;	
+	height:300px;	
+}
+
+.queue_details_tabs_footer
+{
+	position:absolute;
+	bottom:10px;
+	left:3px;
+}
+
+.topic_details
+{
+	padding-bottom:3px !important;
+	position:fixed;
+	top:50px;
+	right:5px;
+    border: 1px solid black;
+	clear:both;
+	padding: 0 1em;
+	overflow:auto;
+	width:600px;
+	height:430px;	
+	background-color:White;	
+}
+
+.topic_details_tabs_header
+{
+	position:absolute;
+	top:10px;
+	left:3px;
+}
+
+.topic_details_tabs
+{
+	padding-top:3px !important;
+	position:absolute;
+	top:48px;
+	left:0px;
+    border: 0px solid black;
+	clear:both;
+	bottom:40px;
+	overflow:auto;
+	right:0px;
+}
+
+.topic_details_table
+{
+	top:110px;
+	overflow:auto;	
+	height:300px;	
+}
+
+.topic_details_tabs_footer
+{
+	position:absolute;
+	bottom:10px;
+	left:3px;
+}
+
+.clientTable
+{
+	position:absolute;
+	top:130px;
+	bottom:10px;
+	left:0px;
+	right:0px;	
+	overflow:auto;
+}
+
+.message_details
+{
+	padding-bottom:3px !important;
+	position:absolute;
+	top:50px;
+	right:5px;
+    border: 1px solid black;
+	clear:both;
+	padding: 0 1em;
+	overflow:auto;
+	width:800px;	
+	height:400px;
+	background-color:White;	
+}
+
+.message_text
+{
+    border: 1px solid black;
+	text-align:left;
+	position:absolute;
+	top:40px;
+	bottom:205px;
+	left:5px;
+	right:5px;
+	overflow:auto;
+	background-color:White;	
+}
+
+.message_headers
+{
+    border: 1px solid black;
+	text-align:left;
+	position:absolute;
+	top:200px;
+	bottom:40px;
+	left:5px;
+	right:5px;
+	overflow:auto;
+	background-color:White;	
+}
+
+.message_footer
+{
+	text-align:center;
+	position:absolute;
+	bottom:10px;
+	left:0px;
+	right:0px;
+	overflow:none;
+	background-color:White;
+}
+
+.text_with_crlf
+{
+	white-space:pre-wrap;
+}

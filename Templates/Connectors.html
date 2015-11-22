@@ -1,0 +1,10 @@
+<table class="table table-striped table-bordered table-hover table-condensed">
+<tr>
+	<th>Value</th>
+	<th>Property</th>
+</tr>
+<tr ng-repeat="(key, value) in amqInfo.info.TransportConnectors">
+    <td>{{key}}</td><td>{{amqInfo.info.TransportConnectors[key]}}</td>
+</tr>
+
+</table>

@@ -1,0 +1,13 @@
+<h3 class="nomargin">Version: <span class='label label-primary'>{{amqInfo.info['BrokerVersion']}}</span> Memory: <span class='label label-primary'>{{amqInfo.info['MemoryPercentUsage'] | percentage}}</span>
+ Store: <span class='label label-primary'>{{amqInfo.info['StorePercentUsage'] | percentage}}</span> Temp: <span class='label label-primary'>{{amqInfo.info['TempPercentUsage'] | percentage}}</span></span> Up Time: <span class='label label-primary'>{{amqInfo.info['Uptime']}}</span>
+</h3>
+
+<table class="table table-striped table-bordered table-hover table-condensed">
+<tr>
+	<th>Value</th>
+	<th>Property</th>
+</tr>
+<tr ng-repeat="ent in amqInfo.filteredInfo | filter:filterField">
+    <td>{{ent.key}}</td><td>{{ent.value}}</td>
+</tr>
+</table>

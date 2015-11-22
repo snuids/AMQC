@@ -1,0 +1,68 @@
+<div ng-controller="TopicsCtrl">
+<table class="table table-striped table-bordered table-hover table-condensed">
+<tr>
+	<th class="text-center" ng:repeat="(i,th) in head" ng:class="selectedCls(i)" ng:click="changeSorting(i)">{{th}}<span table-header></span></th>
+</tr>
+<tr ng-repeat="ent in amqInfo.filteredTopics | filter:filterField | orderBy:sort.column:sort.descending | filter: filterFunction">
+    <td>{{ent.Name}}</td>
+		<td class="text-center">{{ent.ConsumerCount}}</td>
+		<td class="text-center">{{ent.BlockedSends}}</td>
+		<td class="text-center">{{ent.EnqueueCount}}</td>
+		<td class="text-center">{{ent.DequeueCount}}</td>
+		<td class="text-center">{{ent.DispatchCount}}</td>
+		<td class="text-center">{{ent.ExpiredCount}}</td>
+		<td><button type="button" ng-click="showDetails(ent)" class="btn btn-primary btn-sm btn-xs">Details</button></td>		
+</tr>
+</table>
+<div drag-me class="topic_details" ng-show="currentTopic!=null">
+		<div class="topright">
+		<H4>
+				Topic:{{currentTopic.Name}}
+		</H4>
+		</div>
+		
+		
+		<div class="topic_details_tabs_header">
+			 <div class="container-fluid">
+				<div>
+			
+					<ul class="nav nav-tabs ">
+			        <li ng-repeat="tab in detailsTabs" 
+			            ng-class="{active:isActiveTabDetails(tab.url)}"
+			 						ng-show="tab.visible"
+			            ng-click="onClickTabDetails(tab)"><a href="#">{{tab.title}}</a></li>
+			    </ul>
+			   </div>
+	     </div>
+	 </div>
+		
+		<div ng-show="currentDetailsTab.title=='Info'" class="topic_details_tabs nodrag">
+			<table class="table table-striped table-bordered table-hover table-condensed">
+				<tr>
+					<th>Key</th><th>Value</th>
+				</tr>
+				<tr ng-repeat="(key, value) in currentTopic">			
+					<td>{{key}}</td><td>{{currentTopic[key]}}</td>
+				</tr>
+			</table>					
+		</div>		
+		
+		<div ng-show="currentDetailsTab.title=='Subscribers'" class="topic_details_tabs">
+				<div class="topic_details_table nodrag">
+					<table class="table table-striped table-bordered table-hover table-condensed">
+						<tr>
+							<th>Client ID</th><th>Consumer ID</th>
+						</tr>
+						<tr ng-repeat="sub in subscribers">			
+							<td>{{sub.ClientID}}</td><td>{{sub.ConsumerID}}</td>
+						</tr>
+					</table>					
+				</div>
+		</div>	
+		
+		<div class="nodrag topic_details_tabs_footer" style="width:100%;text-align:center;">				
+			<button type="button" ng-click="showDetails(null)" class="btn btn-primary btn-sm btn-xs">Close</button>
+			<button type="button" ng-click="resetStatsTopic()" class="btn btn-warning btn-sm btn-xs">Reset Stats</button>
+		</div>
+	</div>
+</div>

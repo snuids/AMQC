@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="JQuery/jquery-1.8.3.js"></script>
+	<script src="JQuery/jquery-ui.js"></script>
+  <script src="AngularJS/angular-1.4.7/angular.js"></script>
+	<script src="JS/AMQApp.js"></script>
+	<script src="JS/Factories/AMQClientFact.js"></script>
+	<script src="JS/Factories/AMQInfoFact.js"></script>
+	<script src="JS/Controllers/TabsCtrl.js"></script>
+	<script src="JS/Controllers/QueuesCtrl.js"></script>
+	<script src="JS/Controllers/TopicsCtrl.js"></script>
+	<script src="JS/Controllers/ConnectionsCtrl.js"></script>
+	<script src="JS/Controllers/ClientCtrl.js"></script>
+	<script src="CSS/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+	<script src="lib/stomp.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="CSS/AMQApp.css"></link>
+	<link rel="stylesheet" type="text/css" href="CSS/bootstrap-3.3.5-dist/css/bootstrap.css"></link>
+
+</head>
+<body>
+
+	
+<div ng-app="AMQApp">	
+    <div id="tabs" ng-controller="TabsCtrl">	
+			<div class="filterField" ng-show="currentTab.hasFilter">
+			Filter:&nbsp;<input type="text" ng-model="filterField"  autofocus/>
+			</div>
+	    
+				 <div class="container-fluid">
+					<div>
+	         <ul class="nav nav-tabs ">
+	            <li ng-repeat="tab in tabs" 
+	                ng-class="{active:isActiveTab(tab.url)}" 
+	                ng-click="onClickTab(tab)"><a href="#">{{tab.title}}</a></li>
+	         </ul>
+					</div>
+				</div>
+			
+        <div id="mainView">
+            <div ng-include="currentTab.url"></div>
+        </div>
+				<div id="footerView">
+					<button class="btn btn-primary btn-sm" ng-click="refreshAll()">Refresh</button>
+				</div>
+    </div>
+</body>
+</html>
