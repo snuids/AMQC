@@ -76,7 +76,6 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 		if(this.client!=null)
 			this.client.disconnect();
 		this.client=null;
-	//	this.messages=[];
 	}
 
 	
