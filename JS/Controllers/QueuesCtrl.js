@@ -8,7 +8,7 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	        DequeueCount: "Dequeue",
 	        DispatchCount: "Dispatch",
 		    ExpiredCount: "Expired",
-			QueueSize: "Queue Size",
+			QueueSize: "Queue Size 1",
 			Actions: "Action"
 	    };
 	
