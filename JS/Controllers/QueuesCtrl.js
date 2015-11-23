@@ -2,13 +2,13 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 {
 	$scope.head = {
 	        Name: "Name",
+			QueueSize: "Queue Size",
 	        ConsumerCount: "Consumers",
 	        BlockedSends: "Blocked",
 	        EnqueueCount: "Enqueue",
 	        DequeueCount: "Dequeue",
 	        DispatchCount: "Dispatch",
 		    ExpiredCount: "Expired",
-			QueueSize: "Queue Size 1",
 			Actions: "Action"
 	    };
 	

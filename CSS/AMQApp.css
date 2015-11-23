@@ -24,6 +24,12 @@
 	margin-bottom: 10px;
 }
 
+.smallmargin
+{
+	margin-top: 3px;
+	margin-bottom: 10px;
+}
+
 .topright
 {
 	position:absolute;
@@ -305,5 +311,43 @@
 	right:0px;
 	overflow:none;
 	background-color:White;
+}
+
+/* Send Message */
+
+.send_message_details
+{
+	padding-bottom:3px !important;
+	position:absolute;
+	top:50px;
+	right:5px;
+    border: 1px  solid black;
+	clear:both;
+	padding: 0 1em;
+	overflow:auto;
+	width:800px;	
+	height:400px;
+	background-color:White;
+}
+
+
+#send_message_details_headers
+{
+	position:absolute;
+	border:0px solid  black;
+	left:0px;
+	right:0px;
+	top:190px;
+	bottom:40px;
+	overflow:auto;
+}
+
+#send_message_details_footer
+{
+	position:absolute;
+	bottom:5px;
+	left:0px;
+	right:0px;
+	text-align:center;
 }
 

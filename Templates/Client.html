@@ -1,6 +1,6 @@
 <div ng-controller="ClientCtrl">
 	<H2 class="nomargin">Client<span ng-show="amqClient.client"> Messages({{amqClient.messagesCount}})</span></H2>
-	
+		
 	Port: <input type="number" min="1" max="65556" ng-disabled="amqClient.client" ng-model="amqClient.port">
 	Login: <input type="text" ng-disabled="amqClient.client"  ng-model="amqClient.login">
 	Password: <input type="text" ng-disabled="amqClient.client"  ng-model="amqClient.password">
@@ -16,6 +16,8 @@
 	<span ng-show="amqClient.messages.length>0">
 	Filter:&nbsp;<input type="text" ng-model="filterFieldMessage"  autofocus/>
 	</span>
+	
+	<button type="button" ng-show="amqClient.client &amp;&amp; !sendMessageVisible"  ng-click="showSendMessage()" class="btn btn-primary btn-sm btn-xs">Send Message</button>
 	
 	<br/><br/>
 	<div ng-show="amqClient.messages.length>0" class="clientTable">
@@ -35,8 +37,14 @@
 	</table>
 	</div>
 	
+	<div id="sendMessageView" >			
+      <div ng-include="'Templates/SendMessage.html'"></div>
+  </div>
+	
 	<div id="clientMessageView" >
       <div ng-include="'Templates/Message.html'"></div>
   </div>
+	
+	
 	
 </div>
