@@ -3,13 +3,13 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	$scope.head = {
 	        Name: "Name",
 	        ConsumerCount: "Consumers",
+			QueueSize: "Queue Size",
 	        BlockedSends: "Blocked",
-	        EnqueueCount: "Enqueue",
-	        DequeueCount: "Dequeue",
-	        DispatchCount: "Dispatch",
+	        EnqueueCount: "Enqueued",
+	        DequeueCount: "Dequeued",
+	        DispatchCount: "Dispatched",
 		    ExpiredCount: "Expired",
-			QueueSize: "Queue Size 1",
-			Actions: "Action"
+//			Actions: "Action"
 	    };
 	
 	$scope.amqInfo=amqInfoFactory;
@@ -20,9 +20,9 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	$scope.subscribers=[];
 	
 	$scope.sort = {
-	        column: 'Name',
-	        descending: false
-	    };
+		column: 'Name',
+		descending: false
+	};
 	
 	$scope.detailsTabs = [{
 	            title: 'Info',
@@ -36,9 +36,7 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	        }];
 	
 	$scope.currentDetailsTab = $scope.detailsTabs[0];
-	
-	
-	
+
 	$scope.onClickTabDetails = function (tab) {
         $scope.currentDetailsTab = tab;
 		if($scope.currentDetailsTab.title=='Subscribers')
@@ -70,7 +68,7 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	
 	$scope.deleteQueue=function()
 	{
-		if(confirm("Are you sure you want to delete the queue "+$scope.currentQueue.Name))
+		if(confirm("Are you sure you want to delete the queue " + $scope.currentQueue.Name))
 		{
 			$scope.amqInfo.deleteQueue($scope.currentQueue.Name);
 			$scope.showDetails(null);
@@ -90,7 +88,7 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	$scope.showDetails = function(ent)
 	{
 		$scope.currentQueue=ent;
-		if(ent!=null)
+		if(ent !== null)
 		{
 			$scope.detailsTabs[1].visible=(ent.ConsumerCount>0);
 			$scope.currentDetailsTab = $scope.detailsTabs[0];
@@ -98,20 +96,18 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	}
 	
 	$scope.selectedCls = function(column) {
-	        return column == $scope.sort.column && 'sort-' + $scope.sort.descending;
-	    };
-	
+		return column == $scope.sort.column ? 'sort-' + $scope.sort.descending : '';
+	};	
 
 	$scope.changeSorting = function(column) {
-	        var sort = $scope.sort;
-	        if (sort.column == column) {
-	            sort.descending = !sort.descending;
-	        } else {
-	            sort.column = column;
-	            sort.descending = false;
-	        }
-		
-	    };
+		var sort = $scope.sort;
+		if (sort.column == column) {
+			sort.descending = !sort.descending;
+		} else {
+			sort.column = column;
+			sort.descending = true;
+		}	
+	};
 	
 }]
 );

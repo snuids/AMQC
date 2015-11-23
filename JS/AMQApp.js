@@ -21,7 +21,7 @@ app.directive("tableHeader", function() {
         restrict: 'A', // only for attributes
 		transclude: true,
         compile: function(element) {
-            element.after("<span ng-show='(sort.column==i && !sort.descending)' class='glyphicon glyphicon-arrow-down'></span><span ng-show='sort.column==i && sort.descending' class='glyphicon glyphicon-arrow-up'></span>");
+            element.after("<span ng-show='(sort.column==i && !sort.descending)' class='glyphicon glyphicon-arrow-up'></span><span ng-show='sort.column==i && sort.descending' class='glyphicon glyphicon-arrow-down'></span>");
         }
     };
 });

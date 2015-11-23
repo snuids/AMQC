@@ -1,59 +1,60 @@
 <div ng-controller="ConnectionsCtrl">
 
-<h3 class="nomargin">Connector: <select name="repeatSelect" id="repeatSelect" ng-model="amqInfo.selectedConnector" ng-change="updateSelectedConnector()">
-	      <option ng-repeat="(key, value) in amqInfo.info.TransportConnectors" value="{{key}}">{{key}}</option>
-	    </select>
+	<h3 class="nomargin">Connector: <select name="repeatSelect" id="repeatSelect" ng-model="amqInfo.selectedConnector" ng-change="updateSelectedConnector()">
+			<option value="all">all</option>
+			<option ng-repeat="(key, value) in amqInfo.info.TransportConnectors" value="{{key}}">{{key}}</option>
+		</select>
 	</h3>
-	
-			
-	
-<table class="table table-striped table-bordered table-hover table-condensed small">
-<tr>
-	<th class="text-center" ng:repeat="(i,th) in head" ng:class="selectedCls(i)" ng:click="changeSorting(i)">{{i}}<span table-header></span></th>
-</tr>
+		
+	<table class="table table-striped table-bordered table-hover table-condensed small">
+		<tr>
+			<th class="text-center" ng:repeat="(i,th) in head" ng:class="selectedCls(i)" ng:click="changeSorting(i)">{{i}}<span table-header></span></th>
+		</tr>
 
-<tr ng-repeat="ent in amqInfo.filteredConnections | filter:filterField | orderBy:sort.column:sort.descending">
-    <td>{{ent.ClientId}}</td>
-		<td class="text-center">{{ent.Producers.length}}</td>
-		<td class="text-center">{{ent.Consumers.length}}</td>
-		<td class="text-center">{{ent.RemoteAddress}}</td>
-		<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Slow]" 
-		         class="glyphicon glyphicon-ok queue-box-padding"></span></td>
-		<td><button type="button" ng-click="showDetails(ent)" class="btn btn-primary btn-sm btn-xs">Details</button></td>
-</tr>
-</table>
+		<tr ng-repeat="ent in amqInfo.filteredConnections | filter:filterField | orderBy:sort.column:sort.descending">
+			<td>{{ent.ClientId}}</td>
+			<td class="text-center">{{ent.Producers.length}}</td>
+			<td class="text-center">{{ent.Consumers.length}}</td>
+			<td class="text-center">{{ent.RemoteAddress}}</td>
+			<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Slow]" 
+				class="glyphicon glyphicon-ok queue-box-padding"></span></td>
+			<td><button type="button" ng-click="showDetails(ent)" class="btn btn-primary btn-sm btn-xs">Details</button></td>
+		</tr>
+	</table>
+
 	<div drag-me class="connection_details" ng-show="currentConnection!=null">
-			<H2>
-					{{currentConnection.ClientId}}
-			</H2>
-			<div>
-				<!--span ng-repeat="(key, value) in currentConnection.Consumers" 
-						ng-class="getDestinationType(currentConnection.Consumers[key])=='Topic'?'bg-success':'bg-warning'">{{getDestinationName(currentConnection.Consumers[key])}} </span-->
-				<div class="connection_details_table">
-					<table class="table table-striped table-bordered table-hover table-condensed small">
-						<tr>
-							<th class="text-center" ng:repeat="(i,th) in headDetails" ng:class="selectedDetailsCls(i)" ng:click="changeDetailsSorting(i)">{{th}}</th>
-						</tr>
-						<tr ng-repeat="ent in detailsObject  | orderBy:sortDetails.column:sortDetails.descending">
-						    <td>{{ent.DestinationName | limitTo: 30}}</td>
-								<td class="text-center">{{ent.EnqueueCounter}}</td>
-								<td class="text-center">{{ent.DequeueCounter}}</td>
-								<td class="text-center">{{ent.DispatchedCounter}}</td>
-								<td class="text-center">{{ent.DiscardedCount}}</td>
-								<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Durable]" 
-								         class="glyphicon glyphicon-ok queue-box-padding"></span></td>
-								<td class="text-center">
-									<span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.DestinationQueue]" 
-									         class="glyphicon glyphicon-ok queue-box-padding"></span>
-									</td>		
+		<h2>
+			{{currentConnection.ClientId}}
+		</h2>
+		
+		<div>
+			<!--span ng-repeat="(key, value) in currentConnection.Consumers" 
+					ng-class="getDestinationType(currentConnection.Consumers[key])=='Topic'?'bg-success':'bg-warning'">{{getDestinationName(currentConnection.Consumers[key])}} </span-->
+			<div class="connection_details_table">
+				<table class="table table-striped table-bordered table-hover table-condensed small">
+					<tr>
+						<th class="text-center" ng:repeat="(i,th) in headDetails" ng:class="selectedDetailsCls(i)" ng:click="changeDetailsSorting(i)">{{th}}</th>
+					</tr>
+					<tr ng-repeat="ent in detailsObject  | orderBy:sortDetails.column:sortDetails.descending">
+						<td>{{ent.DestinationName | limitTo: 30}}</td>
+							<td class="text-center">{{ent.EnqueueCounter}}</td>
+							<td class="text-center">{{ent.DequeueCounter}}</td>
+							<td class="text-center">{{ent.DispatchedCounter}}</td>
+							<td class="text-center">{{ent.DiscardedCount}}</td>
+							<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Durable]" 
+									 class="glyphicon glyphicon-ok queue-box-padding"></span></td>
+							<td class="text-center">
+								<span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.DestinationQueue]" 
+										 class="glyphicon glyphicon-ok queue-box-padding"></span>
+								</td>		
 
-						</tr>
-						</table>
-					</div>
-			</div>			
-			<br/>
-			<div class="nodrag" style="width:100%;text-align:center;">				
-				<button type="button" ng-click="showDetails(null)" class="btn btn-primary btn-sm btn-xs">Close</button>
-			</div>
+					</tr>
+					</table>
+				</div>
+		</div>			
+		<br/>
+		<div class="nodrag" style="width:100%;text-align:center;">				
+			<button type="button" ng-click="showDetails(null)" class="btn btn-primary btn-sm btn-xs">Close</button>
 		</div>
+	</div>
 </div>

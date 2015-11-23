@@ -114,9 +114,12 @@ app.factory('amqInfoFactory', function($http,$location){
 	
 	factory.refreshConnections=function()
 	{
+		var connectorName = this.selectedConnector;
 		
-		var curl=factory.connectionsUrl.replace(/CONNECTORNAME/g,this.selectedConnector);
-
+		if (this.selectedConnector === 'all')
+			connectorName = '*';
+		
+		var curl=factory.connectionsUrl.replace(/CONNECTORNAME/g, connectorName);
 		
 		$http({
 		  method: 'GET',
@@ -310,7 +313,7 @@ app.factory('amqInfoFactory', function($http,$location){
 		rep=window.location.hostname;
 	}*/
 	
-	factory.selectedConnector='openwire';
+	factory.selectedConnector='all';
 	
     return factory;
 });
