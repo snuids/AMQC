@@ -3,7 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
+<<<<<<< HEAD
 	<string>Templates/Connectors.html</string>
+=======
+	<string>Templates/Client.html</string>
+>>>>>>> origin/master
 	<key>documents</key>
 	<array>
 		<dict>
@@ -22,6 +26,23 @@
 	<key>metaData</key>
 	<dict>
 		<key>JS/AMQApp.js</key>
+<<<<<<< HEAD
+=======
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>12</integer>
+				<key>line</key>
+				<integer>19</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>JS/Controllers/ClientCtrl.js</key>
+>>>>>>> origin/master
 		<dict>
 			<key>caret</key>
 			<dict>
@@ -182,6 +203,66 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
+<<<<<<< HEAD
+				<integer>71</integer>
+				<key>line</key>
+				<integer>69</integer>
+=======
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+>>>>>>> origin/master
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>25</integer>
+		</dict>
+<<<<<<< HEAD
+		<key>Templates/Subscribers.html</key>
+=======
+		<key>Templates/Connections.html</key>
+>>>>>>> origin/master
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+<<<<<<< HEAD
+				<integer>131</integer>
+				<key>line</key>
+				<integer>14</integer>
+=======
+				<integer>40</integer>
+				<key>line</key>
+				<integer>18</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>1</integer>
+		</dict>
+		<key>Templates/Connectors.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>8</integer>
+				<key>line</key>
+				<integer>9</integer>
+>>>>>>> origin/master
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+<<<<<<< HEAD
+=======
+		</dict>
+		<key>Templates/Queues.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
 				<integer>71</integer>
 				<key>line</key>
 				<integer>69</integer>
@@ -204,15 +285,22 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+>>>>>>> origin/master
 		</dict>
 		<key>index.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
+<<<<<<< HEAD
 				<integer>14</integer>
 				<key>line</key>
 				<integer>78</integer>
+=======
+				<integer>0</integer>
+				<key>line</key>
+				<integer>84</integer>
+>>>>>>> origin/master
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -236,6 +324,7 @@
 	</dict>
 	<key>openDocuments</key>
 	<array>
+<<<<<<< HEAD
 		<string>JS/Factories/AMQClientFact.js</string>
 		<string>index.html</string>
 		<string>Templates/Connectors.html</string>
@@ -246,10 +335,34 @@
 		<string>Templates/Connections.html</string>
 		<string>JS/Factories/AMQInfoFact.js</string>
 		<string>JS/AMQApp.js</string>
+=======
+		<string>Templates/Queues.html</string>
+		<string>JS/Controllers/QueuesCtrl.js</string>
+		<string>JS/Controllers/ClientCtrl.js</string>
+		<string>Templates/Client.html</string>
+		<string>JS/Controllers/ConnectionsCtrl.js</string>
+		<string>Templates/Subscribers.html</string>
+		<string>Templates/Connectors.html</string>
+		<string>Templates/Connections.html</string>
+		<string>JS/Controllers/LoginCtrl.js</string>
+		<string>JS/Controllers/SubscribersCtrl.js</string>
+		<string>lib/stomp.js</string>
+		<string>JS/Controllers/TabsCtrl.js</string>
+		<string>JS/Controllers/TopicsCtrl.js</string>
+		<string>JS/Factories/AMQInfoFact.js</string>
+		<string>JS/Factories/AMQClientFact.js</string>
+		<string>index.html</string>
+		<string>JS/AMQApp.js</string>
+		<string>README.md</string>
+>>>>>>> origin/master
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
+<<<<<<< HEAD
 	<string>{{416, 64}, {985, 713}}</string>
+=======
+	<string>{{455, 12}, {985, 713}}</string>
+>>>>>>> origin/master
 </dict>
 </plist>
