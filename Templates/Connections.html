@@ -8,7 +8,7 @@
 		
 	<table class="table table-striped table-bordered table-hover table-condensed small">
 		<tr>
-			<th class="text-center" ng:repeat="(i,th) in head" ng:class="selectedCls(i)" ng:click="changeSorting(i)">{{i}}<span table-header></span></th>
+			<th class="text-center" ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">{{i}}</th>
 		</tr>
 
 		<tr ng-repeat="ent in amqInfo.filteredConnections | filter:filterField | orderBy:sort.column:sort.descending">
@@ -33,7 +33,7 @@
 			<div class="connection_details_table">
 				<table class="table table-striped table-bordered table-hover table-condensed small">
 					<tr>
-						<th class="text-center" ng:repeat="(i,th) in headDetails" ng:class="selectedDetailsCls(i)" ng:click="changeDetailsSorting(i)">{{th}}</th>
+						<th class="text-center" ng-repeat="(i,th) in headDetails" ng-class="selectedDetailsCls(i)" ng-click="changeDetailsSorting(i)">{{th}}</th>
 					</tr>
 					<tr ng-repeat="ent in detailsObject  | orderBy:sortDetails.column:sortDetails.descending">
 						<td>{{ent.DestinationName | limitTo: 30}}</td>

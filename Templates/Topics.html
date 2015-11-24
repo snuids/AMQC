@@ -1,7 +1,7 @@
 <div ng-controller="TopicsCtrl">
 <table class="table table-striped table-bordered table-hover table-condensed small">
 <tr>
-	<th class="text-center" ng:repeat="(i,th) in head" ng:class="selectedCls(i)" ng:click="changeSorting(i)">{{th}}<span table-header></span></th>
+	<th class="text-center" ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">{{th}}</th>
 </tr>
 <tr ng-repeat="ent in amqInfo.filteredTopics | filter:filterField | orderBy:sort.column:sort.descending | filter: filterFunction">
     <td>{{ent.Name}}</td>

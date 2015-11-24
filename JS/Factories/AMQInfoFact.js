@@ -246,7 +246,7 @@ app.factory('amqInfoFactory', function($http,$location){
 		  
 		}).then(function successCallback(response) {
 			console.log(response);
-			this.refreshAll();
+			factory.refreshAll();
 		  }, function errorCallback(response) {
 		    alert('ko');
 		  });
