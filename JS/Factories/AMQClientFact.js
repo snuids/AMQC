@@ -2,12 +2,18 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
     var factory = {}; 
 
 	factory.port=61614;
-	factory.topics="BSM,BPM";
-	factory.queues="foo";
+	factory.topics="foo,bar";
+	factory.queues="queue1";
 	factory.login="";
 	factory.password="";
 	factory.messages=[];
 	factory.messagesCount=0;
+	
+	factory.selectedSendDestination="Topic";	// Used by the queue/topic selector
+	factory.sendMessageHeaders=[{"name":"Origin","value":"AMQClient"},{"name":"ID","value":9999}];
+	factory.selectedSendDestination="Topic";
+	factory.selectedSendDestinationName="foo";
+	factory.textToSend="Enter your text message...";
 
 	factory.subscribe= function(scope, callback) {
         var handler = $rootScope.$on('notifying-service-event', callback);
@@ -78,6 +84,26 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 		this.client=null;
 	}
 
+	factory.sendMessage=function()
+	{
+		console.log("Send");
+		var dest="";
+		
+		var obj={};
+		for(var i=0;i<this.sendMessageHeaders.length;i++)
+		{
+			obj[this.sendMessageHeaders[i].name]=this.sendMessageHeaders[i].value;
+		}
+		
+		if(this.selectedSendDestination=="Topic")
+			dest="/topic/"+this.selectedSendDestinationName;
+		else
+			dest="/queue/"+this.selectedSendDestinationName;
+			
+//		alert(JSON.stringify(obj));
+		this.client.send(dest,obj,this.textToSend);
+		
+	}
 	
     return factory;
 });
