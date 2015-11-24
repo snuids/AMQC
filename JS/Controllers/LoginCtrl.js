@@ -3,6 +3,7 @@ app.controller('LoginCtrl',['$scope','amqInfoFactory', function($scope,amqInfoFa
 	$scope.amqInfo=amqInfoFactory;
 		
  	$scope.logAMQ = function() {
+		amqInfoFactory.saveConnectionParameters();
 		amqInfoFactory.prepareURLs();
 		amqInfoFactory.refreshAll();
     }

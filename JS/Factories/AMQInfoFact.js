@@ -12,6 +12,41 @@ app.factory('amqInfoFactory', function($http,$location){
 	factory.connected=false;
 	factory.connecting=false;
 	factory.refreshing=false;
+	
+	
+	
+	factory.loadConnectionParameters=function()
+	{
+		if((typeof(Storage) !== "undefined")&&(localStorage.getItem("amqc.rememberme"))) {
+		    if(localStorage.getItem("amqc.brokerip")!=undefined)
+				factory.brokerip=localStorage.getItem("amqc.brokerip");
+			
+			if(localStorage.getItem("amqc.brokerport")!=undefined)
+				factory.brokerport=parseInt(localStorage.getItem("amqc.brokerport"));
+			
+			if(localStorage.getItem("amqc.brokername")!=undefined)
+				factory.brokername=localStorage.getItem("amqc.brokername");
+			
+			if(localStorage.getItem("amqc.login")!=undefined)
+				factory.login=localStorage.getItem("amqc.login");
+			
+			if(localStorage.getItem("amqc.rememberme"))
+				factory.rememberMe=true;
+		}				
+	}
+		
+	factory.saveConnectionParameters=function()
+	{
+		if((factory.rememberMe)&&(typeof(Storage) !== "undefined")) {
+		    localStorage.setItem("amqc.brokerip", factory.brokerip);
+		    localStorage.setItem("amqc.brokerport", factory.brokerport);
+		    localStorage.setItem("amqc.brokername", factory.brokername);
+		    localStorage.setItem("amqc.login", factory.login);
+			localStorage.setItem("amqc.rememberme", factory.rememberMe);
+		} else {
+		    // Sorry! No Web Storage support..
+		}
+	}
 		
 	factory.refreshInfo=function()
 	{
@@ -188,7 +223,32 @@ app.factory('amqInfoFactory', function($http,$location){
 			console.log(response);
 		  });
 		
-//		this.execQueue(queueName,'purge','Queue');
+	}
+
+	factory.createNewTopic=function(topicName,queueAction)
+	{
+		var postUrl=factory.getPostUrl();
+						
+		var data={
+		    "type":"exec",
+		    "mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername,
+			"operation":"addTopic",
+			"arguments":[topicName]
+		};
+		
+		console.log(data);
+		
+		$http.post(postUrl, data, {})
+		.then(function successCallback(response) {
+			alert('done');
+					console.log(response);
+			factory.refreshAll();
+
+		  }, function errorCallback(response) {
+		    alert('Unable to create new topic.');
+			console.log(response);
+		  });
+		
 	}
 
 	factory.deleteQueue=function(queueName,queueAction)
@@ -212,6 +272,33 @@ app.factory('amqInfoFactory', function($http,$location){
 
 		  }, function errorCallback(response) {
 		    alert('Unable to delete queue.');
+			console.log(response);
+		  });
+		
+//		this.execQueue(queueName,'purge','Queue');
+	}
+	
+	factory.deleteTopic=function(topicName,queueAction)
+	{
+		var postUrl=factory.getPostUrl();
+						
+		var data={
+		    "type":"exec",
+		    "mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername,
+			"operation":"removeTopic",
+			"arguments":[topicName]
+		};
+		
+		console.log(data);
+		
+		$http.post(postUrl, data, {})
+		.then(function successCallback(response) {
+			alert('done');
+					console.log(response);
+			factory.refreshAll();
+
+		  }, function errorCallback(response) {
+		    alert('Unable to delete topic.');
 			console.log(response);
 		  });
 		
@@ -297,6 +384,8 @@ app.factory('amqInfoFactory', function($http,$location){
 		factory.execUrl=factory.execUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
 		factory.postUrl=factory.postUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);			
 	}
+
+	factory.loadConnectionParameters();
 	
 	factory.info={};
 	factory.activeConnections={};
