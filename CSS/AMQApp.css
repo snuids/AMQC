@@ -18,6 +18,13 @@
 	cursor:default;
 }
 
+.windowtitle
+{
+	padding:2px;
+	text-align:center;
+	background-color:#337ab7;
+	color:white;
+}
 .nomargin
 {
 	margin-top: 0px;
@@ -156,7 +163,7 @@
 .queue_details
 {
 	padding-bottom:3px !important;
-	position:fixed;
+	position:absolute !important;
 	top:50px;
 	right:5px;
     border: 1px solid black;

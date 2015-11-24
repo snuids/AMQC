@@ -14,6 +14,7 @@ app.controller('TopicsCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	
 	$scope.amqInfo=amqInfoFactory;
 	$scope.currentTopic=null;
+	$scope.newTopicName='';
 	
 	$scope.sort = {
 	        column: 'Name',
@@ -80,15 +81,28 @@ app.controller('TopicsCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	    };
 
 	$scope.changeSorting = function(column) {
-	        var sort = $scope.sort;
-	        if (sort.column == column) {
-	            sort.descending = !sort.descending;
-	        } else {
-	            sort.column = column;
-	            sort.descending = false;
-	        }
-		
-	    };
+	       var sort = $scope.sort;
+        if (sort.column == column) {
+            sort.descending = !sort.descending;
+        } else {
+            sort.column = column;
+            sort.descending = false;
+        }
 	
+    };
+
+	$scope.createNewTopic=function(){
+			$scope.amqInfo.createNewTopic($scope.newTopicName);
+	}
+	
+	$scope.deleteTopic=function()
+	{
+		
+		if(confirm("Are you sure you want to delete this topic " + $scope.currentTopic.Name))
+		{
+			$scope.amqInfo.deleteTopic($scope.currentTopic.Name);
+			$scope.showDetails(null);
+		}
+	}
 }]
 );
