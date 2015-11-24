@@ -1,7 +1,6 @@
-app.factory('amqInfoFactory', function($http, $location, toasty){
-    var factory = {}; 
+app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', function($http, $location, $interval, toasty) {
+	var factory = {}; 
 
-	
 	factory.hideAdvisoryQueues=true;
 
 	factory.login="";
@@ -12,37 +11,77 @@ app.factory('amqInfoFactory', function($http, $location, toasty){
 	factory.connected=false;
 	factory.connecting=false;
 	factory.refreshing=false;
+	factory.rememberMe = false;
 	
+	factory.autoRefresh = 0;		// in seconds, 0 == no refresh
+	factory.timeRefresh = undefined;
 	
+	factory.changeRefresh = function() {
+		if (angular.isDefined(factory.timeRefresh)) {
+			console.log('Time refresh already running. Resetting.');
+			$interval.cancel(factory.timeRefresh);
+			factory.timeRefresh = undefined;
+		}
+		console.log('new autorefresh:' + factory.autoRefresh * 1000);
+		if (factory.autoRefresh > 0)
+			factory.timeRefresh = $interval(function() { factory.refreshAll(); }, factory.autoRefresh * 1000);
+	}
 	
-	factory.loadConnectionParameters=function()
+	factory.loadPreferences = function() {
+		if(typeof(Storage) === undefined || factory.rememberMe === false)
+			return;
+		
+		if (localStorage.getItem("amqc.hideAdvisoryQueues") !== undefined)
+			factory.hideAdvisoryQueues = localStorage.getItem("amqc.hideAdvisoryQueues");
+		
+		if (localStorage.getItem("amqc.autoRefresh") !== undefined)
+			factory.autoRefresh = localStorage.getItem("amqc.autoRefresh");
+
+		toasty.success({msg:'Loaded user saved preferences'});
+	}
+	
+	factory.savePreferences = function() {
+		if(typeof(Storage) === undefined || factory.rememberMe === false)
+			return;
+		
+		localStorage.setItem('amqc.hideAdvisoryQueues', factory.hideAdvisoryQueues);
+		localStorage.setItem('amqc.autoRefresh', factory.autoRefresh);
+		
+		toasty.success({msg:'Preferences updated'});
+	}
+	
+	factory.loadConnectionParameters = function()
 	{
-		if((typeof(Storage) !== "undefined")&&(localStorage.getItem("amqc.rememberme"))) {
-		    if(localStorage.getItem("amqc.brokerip")!=undefined)
+		if((typeof(Storage) !== undefined) && localStorage.getItem("amqc.rememberme") !== undefined && localStorage.getItem("amqc.rememberme") === true) {
+			console.log('loading conn params');
+		    if(localStorage.getItem("amqc.brokerip") !== undefined)
 				factory.brokerip=localStorage.getItem("amqc.brokerip");
 			
-			if(localStorage.getItem("amqc.brokerport")!=undefined)
+			if(localStorage.getItem("amqc.brokerport") !== undefined)
 				factory.brokerport=parseInt(localStorage.getItem("amqc.brokerport"));
 			
-			if(localStorage.getItem("amqc.brokername")!=undefined)
+			if(localStorage.getItem("amqc.brokername") !== undefined)
 				factory.brokername=localStorage.getItem("amqc.brokername");
 			
-			if(localStorage.getItem("amqc.login")!=undefined)
+			if(localStorage.getItem("amqc.login") !== undefined)
 				factory.login=localStorage.getItem("amqc.login");
 			
-			if(localStorage.getItem("amqc.rememberme"))
-				factory.rememberMe=true;
-		}				
+			if(localStorage.getItem("amqc.rememberme") !== undefined)
+				factory.rememberMe = localStorage.getItem("amqc.rememberme");
+		}
+		console.log('rememberme:' + JSON.stringify(factory.rememberMe));
 	}
-		
+
 	factory.saveConnectionParameters=function()
 	{
-		if((factory.rememberMe)&&(typeof(Storage) !== "undefined")) {
+		if((factory.rememberMe)&&(typeof(Storage) !== undefined)) {
+			console.log('saving conn params');
 		    localStorage.setItem("amqc.brokerip", factory.brokerip);
 		    localStorage.setItem("amqc.brokerport", factory.brokerport);
 		    localStorage.setItem("amqc.brokername", factory.brokername);
 		    localStorage.setItem("amqc.login", factory.login);
 			localStorage.setItem("amqc.rememberme", factory.rememberMe);
+			console.log('rememberme:'+factory.rememberMe);
 		} else {
 		    // Sorry! No Web Storage support..
 		}
@@ -389,6 +428,7 @@ app.factory('amqInfoFactory', function($http, $location, toasty){
 	}
 
 	factory.loadConnectionParameters();
+	factory.loadPreferences();
 	
 	factory.info={};
 	factory.activeConnections={};
@@ -408,4 +448,4 @@ app.factory('amqInfoFactory', function($http, $location, toasty){
 	factory.selectedConnector='all';
 	
     return factory;
-});
+}]);
