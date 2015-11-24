@@ -1,4 +1,4 @@
-app.controller('LoginCtrl',['$scope','amqInfoFactory', function($scope,amqInfoFactory) 
+app.controller('LoginCtrl',['$scope','amqInfoFactory', function($scope, amqInfoFactory) 
 {
 	$scope.amqInfo=amqInfoFactory;
 		
@@ -6,6 +6,5 @@ app.controller('LoginCtrl',['$scope','amqInfoFactory', function($scope,amqInfoFa
 		amqInfoFactory.prepareURLs();
 		amqInfoFactory.refreshAll();
     }
-
 }]
 );

@@ -1,4 +1,4 @@
-app.factory('amqInfoFactory', function($http,$location){			
+app.factory('amqInfoFactory', function($http, $location, toasty){
     var factory = {}; 
 
 	
@@ -13,8 +13,7 @@ app.factory('amqInfoFactory', function($http,$location){
 	factory.connecting=false;
 	factory.refreshing=false;
 		
-	factory.refreshInfo=function()
-	{
+	factory.refreshInfo=function() {
 		factory.connecting=true;		
 		$http({
 		  method: 'GET',
@@ -37,11 +36,11 @@ app.factory('amqInfoFactory', function($http,$location){
 			factory.filteredInfo.sort(function(a, b){return a.key.localeCompare(b.key)});
 			factory.connected=true;
 			factory.connecting=false;		
-
-		  }, function errorCallback(response) {
-		    alert('Unable to connect to ActiveMQ. Status:'+response.status);
+		}, function errorCallback(response) {
+			toasty.error({msg:'Unable to connect to ActiveMQ. Status:' + response.status});
+			//alert('Unable to connect to ActiveMQ. Status:'+response.status);
 			factory.connecting=false;		
-		  });
+		});
 	}
 	
 	factory.refreshQueues=function()
@@ -60,7 +59,8 @@ app.factory('amqInfoFactory', function($http,$location){
 			}
 			//console.log(factory.filteredQueues);
 		  }, function errorCallback(response) {
-		    alert('Cannot read queues');
+			  toasty.error({msg:'Cannot read queues'});
+			///alert('Cannot read queues');
 		  });
 	}
 	
@@ -108,7 +108,8 @@ app.factory('amqInfoFactory', function($http,$location){
 			factory.refreshing=false;
 
 		  }, function errorCallback(response) {
-		    alert('Cannot read topics');
+			  toasty.error({msg:'Cannot read topics'});
+		    //alert('Cannot read topics');
 		  });
 	}
 	
@@ -138,7 +139,8 @@ app.factory('amqInfoFactory', function($http,$location){
 			}
 //			console.log(factory.activeConnections);
 		  }, function errorCallback(response) {
-		    alert('Cannot read connections');
+			  toasty.error({msg:'Cannot read connections'});
+		    //alert('Cannot read connections');
 		  });
 	}
 
@@ -155,11 +157,12 @@ app.factory('amqInfoFactory', function($http,$location){
 		
 		$http.post(postUrl, data, {})
 		.then(function successCallback(response) {
-			alert('done');
+			toasty.success({msg:'Durable subscriber ' + durablesub + ' deleted'});
 			factory.refreshAll();
 
 		  }, function errorCallback(response) {
-		    alert('Unable to destroy durable consumer.');
+			  toasty.error({msg:'Unable to delete durable subscriber ' + durablesub});
+		    //alert('Unable to destroy durable consumer.');
 			console.log(response);
 		  });
 	}
@@ -179,12 +182,13 @@ app.factory('amqInfoFactory', function($http,$location){
 		
 		$http.post(postUrl, data, {})
 		.then(function successCallback(response) {
-			alert('done');
+			toasty.success({msg:'Queue ' + queueName + ' created'});
 					console.log(response);
 			factory.refreshAll();
 
 		  }, function errorCallback(response) {
-		    alert('Unable to create new queue.');
+			  toasty.error({msg:'Unable to create queue ' + queueName});
+		    //alert('Unable to create new queue.');
 			console.log(response);
 		  });
 		
@@ -206,12 +210,11 @@ app.factory('amqInfoFactory', function($http,$location){
 		
 		$http.post(postUrl, data, {})
 		.then(function successCallback(response) {
-			alert('done');
-					console.log(response);
+			toasty.success({msg:'Deleted queue ' + queueName});
+			console.log(response);
 			factory.refreshAll();
-
-		  }, function errorCallback(response) {
-		    alert('Unable to delete queue.');
+		}, function errorCallback(response) {
+			toasty.error({msg:'Unable to delete queue ' + queueName});
 			console.log(response);
 		  });
 		
