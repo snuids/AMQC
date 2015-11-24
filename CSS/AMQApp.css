@@ -358,3 +358,40 @@
 	text-align:center;
 }
 
+/* Queue message list */
+
+.browsemessagesview
+{
+	padding-bottom:3px !important;
+	position:fixed;
+	top:70px;
+	right:25px;
+    border: 1px solid black;
+	clear:both;
+	padding: 0 1em;
+	overflow:auto;
+	width:800px;
+	height:400px;	
+	background-color:White;
+	z-index:200;
+}
+
+.browsemessagetable
+{
+	position:absolute;
+	left:0px;
+	right:0px;
+	bottom:30px;
+	top:40px;
+	overflow:auto;
+}
+
+.browsemessagefooter
+{
+	position:absolute;
+	left:0px;
+	right:0px;
+	bottom:5px;
+	text-align:center;
+}
+
