@@ -18,13 +18,19 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 	factory.autoRefresh = 0;		// in seconds, 0 == no refresh
 	factory.timeRefresh = undefined;
 	
-	factory.changeRefresh = function() {
+	factory.stopRefresh = function() {
 		if (angular.isDefined(factory.timeRefresh)) {
-			console.log('Time refresh already running. Resetting.');
+			console.log('Removing time refresh.');
 			$interval.cancel(factory.timeRefresh);
 			factory.timeRefresh = undefined;
-		}
+		}		
+	}
+	
+	factory.setRefresh = function() {
+		factory.stopRefresh();
+		
 		console.log('new autorefresh:' + factory.autoRefresh * 1000);
+		
 		if (factory.autoRefresh > 0)
 			factory.timeRefresh = $interval(function() { factory.refreshAll(); }, factory.autoRefresh * 1000);
 	}
@@ -34,7 +40,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 			return;
 		
 		if (localStorage.getItem("amqc.hideAdvisoryQueues") !== undefined)
-			factory.hideAdvisoryQueues = localStorage.getItem("amqc.hideAdvisoryQueues");
+			factory.hideAdvisoryQueues = localStorage.getItem("amqc.hideAdvisoryQueues") === "true";
 		
 		if (localStorage.getItem("amqc.autoRefresh") !== undefined)
 			factory.autoRefresh = localStorage.getItem("amqc.autoRefresh");
@@ -54,38 +60,42 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 	
 	factory.loadConnectionParameters = function()
 	{
-		if((typeof(Storage) !== undefined) && localStorage.getItem("amqc.rememberme") !== undefined && localStorage.getItem("amqc.rememberme") === true) {
-			console.log('loading conn params');
+		if((typeof(Storage) !== undefined) && localStorage.getItem("amqc.rememberme") !== undefined && localStorage.getItem("amqc.rememberme") === "true") {
+
 		    if(localStorage.getItem("amqc.brokerip") !== undefined)
-				factory.brokerip=localStorage.getItem("amqc.brokerip");
+				factory.brokerip = localStorage.getItem("amqc.brokerip");
 			
 			if(localStorage.getItem("amqc.brokerport") !== undefined)
-				factory.brokerport=parseInt(localStorage.getItem("amqc.brokerport"));
+				factory.brokerport = parseInt(localStorage.getItem("amqc.brokerport"));
 			
 			if(localStorage.getItem("amqc.brokername") !== undefined)
-				factory.brokername=localStorage.getItem("amqc.brokername");
+				factory.brokername = localStorage.getItem("amqc.brokername");
 			
 			if(localStorage.getItem("amqc.login") !== undefined)
-				factory.login=localStorage.getItem("amqc.login");
+				factory.login = localStorage.getItem("amqc.login");
+			
+			if(localStorage.getItem("amqc.password") !== undefined)
+				factory.password = localStorage.getItem("amqc.password");
 			
 			if(localStorage.getItem("amqc.rememberme") !== undefined)
-				factory.rememberMe = localStorage.getItem("amqc.rememberme");
+				factory.rememberMe = localStorage.getItem("amqc.rememberme") === "true";
 		}
-		console.log('rememberme:' + JSON.stringify(factory.rememberMe));
 	}
 
 	factory.saveConnectionParameters=function()
 	{
-		if((factory.rememberMe)&&(typeof(Storage) !== undefined)) {
-			console.log('saving conn params');
+		if (typeof(Storage) === undefined)
+			return;							// Sorry! No Web Storage support..
+		
+		if(factory.rememberMe) {
 		    localStorage.setItem("amqc.brokerip", factory.brokerip);
 		    localStorage.setItem("amqc.brokerport", factory.brokerport);
 		    localStorage.setItem("amqc.brokername", factory.brokername);
 		    localStorage.setItem("amqc.login", factory.login);
-			localStorage.setItem("amqc.rememberme", factory.rememberMe);
-			console.log('rememberme:'+factory.rememberMe);
+			localStorage.setItem("amqc.password", factory.password); // TODO: encrypt
+			localStorage.setItem("amqc.rememberme", 'true');
 		} else {
-		    // Sorry! No Web Storage support..
+			localStorage.setItem("amqc.rememberme", 'false');
 		}
 	}
 		
@@ -429,7 +439,12 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 	
 	factory.refreshAll =function()
 	{
-		factory.refreshing=true;
+		if (factory.refreshing) {
+			toasty.warning({msg:'Already in a refresh cycle'});
+			return;
+		}			
+
+		factory.refreshing = true;
 		factory.refreshInfo();
 		factory.refreshQueues();
 		factory.refreshConnections();	

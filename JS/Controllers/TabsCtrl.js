@@ -43,21 +43,22 @@ app.controller('TabsCtrl',['$scope','amqInfoFactory','amqClientFactory', functio
 
 	$scope.filterField='';
 
-	$scope.amqInfo=amqInfoFactory;
-	$scope.amqClient=amqClientFactory;
+	$scope.amqInfo = amqInfoFactory;
+	$scope.amqClient = amqClientFactory;
     $scope.currentTab = $scope.tabs[0];
 	
 	$scope.autoRefreshChanged = false;
 
 	$scope.refreshAll =function()
 	{
-		amqInfoFactory.refreshAll();
+		$scope.amqInfo.refreshAll();
 	}
 	
 	$scope.disconnectAMQ =function()
 	{
-		amqClientFactory.disconnect();
-		amqInfoFactory.connected=false
+		$scope.amqClient.disconnect();
+		$scope.amqInfo.connected=false;
+		$scope.amqInfo.stopRefresh();
 	}
 	
 
@@ -77,8 +78,9 @@ app.controller('TabsCtrl',['$scope','amqInfoFactory','amqClientFactory', functio
 	}
 	
 	$scope.updateAutoRefresh = function() {
-		$scope.amqInfo.changeRefresh();
+		$scope.amqInfo.setRefresh();
 		$scope.autoRefreshChanged = false;
+		$scope.savePrefs();
 	}
 	
 	$scope.autoRefreshTinkered = function() {

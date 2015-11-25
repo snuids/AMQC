@@ -4,9 +4,9 @@ app.controller('LoginCtrl',['$scope','amqInfoFactory', function($scope, amqInfoF
 		
  	$scope.logAMQ = function() {
 		$scope.amqInfo.saveConnectionParameters();
-		console.log('rememberme after login:' + JSON.stringify($scope.amqInfo.rememberMe));
 		$scope.amqInfo.prepareURLs();
 		$scope.amqInfo.refreshAll();
+		$scope.amqInfo.setRefresh();
     }
 }]
 );
