@@ -16,6 +16,8 @@
         <script src="JS/Factories/AMQInfoFact.js"></script>
         <script src="JS/Factories/AMQClientFact.js"></script>
         <script src="JS/Factories/Base64Fact.js"></script>
+        <script src="JS/Factories/httpRequestInterceptorFact.js"></script>
+
         <script src="JS/Controllers/TabsCtrl.js"></script>
         <script src="JS/Controllers/QueuesCtrl.js"></script>
         <script src="JS/Controllers/TopicsCtrl.js"></script>
@@ -72,30 +74,32 @@
             </div>
 
             <div id="tabs" ng-controller="TabsCtrl" ng-show="amqInfo.connected">	
-                <div class="filterField" ng-show="currentTab.hasFilter">
-                    Filter:&nbsp;<input type="text" ng-model="filterField"  autofocus/>
-                </div>
+								<div>
+                	<div class="filterField" ng-show="currentTab.hasFilter">
+	                    Filter:&nbsp;<input type="text" ng-model="filterField"  autofocus/>
+	                </div>
 
-                <div class="container-fluid">
-                    <div>
-                        <ul class="nav nav-tabs ">
-                            <li ng-repeat="tab in tabs" 
-                                ng-class="{active:isActiveTab(tab.url)}" 
-                                ng-click="onClickTab(tab)"><a href="#">{{tab.title}}</a></li>
-                        </ul>
-                    </div>
-                </div>
+	                <div class="container-fluid">
+	                    <div>
+	                        <ul class="nav nav-tabs ">
+	                            <li ng-repeat="tab in tabs" 
+	                                ng-class="{active:isActiveTab(tab.url)}" 
+	                                ng-click="onClickTab(tab)"><a href="#">{{tab.title}}</a></li>
+	                        </ul>
+	                    </div>
+	                </div>
 
-                <div id="mainView">
-                    <div ng-include="currentTab.url"></div>
+	                <div id="mainView">
+	                    <div ng-include="currentTab.url"></div>
 
-                </div>
-                <div id="footerView">
-                    <button class="btn btn-primary btn-sm" ng-click="refreshAll()">Refresh</button>
-                    <button class="btn btn-danger btn-sm" ng-click="disconnectAMQ()">Disconnect</button>
-                </div>
-                <div id="version">v0.70 November 2015<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
-            </div>
+	                </div>
+	                <div id="footerView">
+	                    <button class="btn btn-primary btn-sm" ng-click="refreshAll()">Refresh</button>
+	                    <button class="btn btn-danger btn-sm" ng-click="disconnectAMQ()">Disconnect</button>
+	                </div>
+	            </div>
+            	<div id="version">v0.70 November 2015 <img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
+          	</div>
 
             <toasty></toasty>
             <div id="github"><a href="https://github.com/snuids/AMQC">Git Hub Repo</a></div>

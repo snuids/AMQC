@@ -38,8 +38,8 @@ app.config(['toastyConfigProvider', function(toastyConfigProvider) {
 	});
 }]);
 
-
-
-//TabsCtrl.$inject = ['$scope', 'amqInfoFactory'];
+app.config(function ($httpProvider) {
+    $httpProvider.interceptors.push('httpRequestInterceptor');
+});
 
 
