@@ -42,6 +42,11 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', 'amqInfoFactor
 		}
 	};
 	
+	$scope.options.chart.xAxis.tickFormat=function(d) {
+//	        var dx = $scope.data[0].values[d] && $scope.data[0].values[d][0] || 0;
+	        return d3.time.format('%X')(new Date(d));
+	      };
+	
 	$scope.data = [
 		{
 			key: "Queue Size",

@@ -180,7 +180,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 				if (factory.queueStats[factory.queues[property].Name].length > 100)
 					factory.queueStats[factory.queues[property].Name].shift();
 				
-				factory.queueStats[factory.queues[property].Name].push({x:Math.floor(Date.now() / 1000), y:factory.queues[property].QueueSize});
+				factory.queueStats[factory.queues[property].Name].push({x:Math.floor(Date.now()), y:factory.queues[property].QueueSize});
 			} //    
 			factory.currentlyRefreshing[1] = false;
 			//console.log(factory.filteredQueues);
