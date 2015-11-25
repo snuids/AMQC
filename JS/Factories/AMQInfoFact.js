@@ -43,6 +43,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 	}
 	
 	factory.loadPreferences = function() {
+
+
 		if(typeof(Storage) === undefined || factory.rememberMe === false)
 			return;
 		
@@ -61,7 +63,6 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 		
 		localStorage.setItem('amqc.hideAdvisoryQueues', factory.hideAdvisoryQueues);
 		localStorage.setItem('amqc.autoRefreshInterval', factory.autoRefreshInterval);
-		
 		toasty.success({msg:'Preferences updated'});
 	}
 	
