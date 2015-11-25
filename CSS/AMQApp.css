@@ -291,6 +291,7 @@
 	width:800px;	
 	height:400px;
 	background-color:White;	
+	z-index:1000;
 }
 
 .message_text

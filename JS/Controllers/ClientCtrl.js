@@ -78,10 +78,6 @@ app.controller('ClientCtrl',['$scope','amqInfoFactory','amqClientFactory', funct
 	{
 		$scope.amqClient.sendMessageHeaders.splice(index,1);
 	}
-	
-	$scope.getTypeOf=function(value)
-	{
-		return typeof(value);
-	}
+		
 }]
 );

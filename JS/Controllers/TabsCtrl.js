@@ -57,7 +57,10 @@ app.controller('TabsCtrl',['$scope','amqInfoFactory','amqClientFactory', 'toasty
 		$scope.amqInfo.connected = false;
 		$scope.amqInfo.stopRefreshTimer();
 
-		toasty.info({msg:'Goodbye, user ' + $scope.amqInfo.login + '.'});
+		if($scope.amqInfo.login!='')
+			toasty.info({msg:'Goodbye, user ' + $scope.amqInfo.login + '.'});
+		else
+			toasty.info({msg:'Goodbye.'});
 	}	
 
     $scope.onClickTab = function (tab) {

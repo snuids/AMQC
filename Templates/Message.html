@@ -1,14 +1,15 @@
 <div drag-me class="message_details" ng-show="currentMessage">
 	<H3 class='nomargin'>Destination {{currentMessage.destination}}</H3>
 	<div class="nodrag text_with_crlf message_text">{{currentMessage.message}}</div>
-	<div class="message_headers">
+	<div class="nodrag message_headers">
 		<table class="table table-striped table-bordered table-hover table-condensed small">
 		<tr>
-			<th>Value</th>
 			<th>Property</th>
+			<th>Type</th>
+			<th>Value</th>
 		</tr>
 		<tr ng-repeat="(key, value) in currentMessage.headers">
-		    <td>{{key}}</td><td>{{value}}</td>
+		    <td>{{key}}</td><td>{{amqInfo.getTypeOf(value)}}</td><td>{{value}}</td>
 		</tr>
 		</table>
 	</div>

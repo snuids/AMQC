@@ -42,21 +42,23 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 			factory.refreshTimer = $interval(function() { factory.refreshAll(); }, factory.autoRefreshInterval * 1000);
 	}
 	
+	/* Loading Preferences */
 	factory.loadPreferences = function() {
-
-
 		if(typeof(Storage) === undefined || factory.rememberMe === false)
 			return;
-		
-		if (localStorage.getItem("amqc.hideAdvisoryQueues") !== undefined)
+				
+		if ((localStorage.getItem("amqc.hideAdvisoryQueues") !== undefined)
+				&&(localStorage.getItem("amqc.hideAdvisoryQueues") !== null))		
 			factory.hideAdvisoryQueues = localStorage.getItem("amqc.hideAdvisoryQueues") === "true";
 		
-		if (localStorage.getItem("amqc.autoRefreshInterval") !== undefined)
+		if ((localStorage.getItem("amqc.autoRefreshInterval") !== undefined)
+				&&(localStorage.getItem("amqc.autoRefreshInterval") !== null))
 			factory.autoRefreshInterval = localStorage.getItem("amqc.autoRefreshInterval");
 
 		toasty.success({msg:'Loaded user saved preferences'});
 	}
-	
+
+	/* Saving Preferences */	
 	factory.savePreferences = function() {
 		if((typeof(Storage) === undefined) || factory.rememberMe === false)
 			return;
@@ -65,7 +67,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 		localStorage.setItem('amqc.autoRefreshInterval', factory.autoRefreshInterval);
 		toasty.success({msg:'Preferences updated'});
 	}
-	
+
+	/* Load Connection Parameters */		
 	factory.loadConnectionParameters = function()
 	{
 		if((typeof(Storage) !== undefined) && localStorage.getItem("amqc.rememberme") !== undefined && localStorage.getItem("amqc.rememberme") === "true") {
@@ -90,6 +93,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 		}
 	}
 
+	/* Save Connection Parameters */		
 	factory.saveConnectionParameters = function() {
 		if (typeof(Storage) === undefined)
 			return;							// Sorry! No Web Storage support..
@@ -252,16 +256,13 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 
 			for ( property in factory.connections ) {
 					factory.filteredConnections.push(factory.connections[property]);
-//					alert('push'+factory.connections[property].ClientId);
 					factory.activeConnections[factory.connections[property].ClientId.replace(/:/g,'_')]=true;
 			}
 			factory.currentlyRefreshing[2] = false;
-//			console.log(factory.activeConnections);
 		  }, function errorCallback(response) {
 			  toasty.error({msg:'Cannot read connections'});
 			  factory.stopRefreshTimer();
 			  factory.currentlyRefreshing[2] = false;
-		    //alert('Cannot read connections');
 		  });
 	}
 
@@ -309,7 +310,6 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 
 		  }, function errorCallback(response) {
 			  toasty.error({msg:'Unable to create queue ' + queueName});
-		    //alert('Unable to create new queue.');
 			console.log(response);
 		  });
 		
@@ -331,13 +331,11 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 		$http.post(postUrl, data, {})
 		.then(function successCallback(response) {
 			toasty.success('Topic ' + topicName + ' created.');
-			//alert('done');
 			console.log(response);
 			factory.refreshAll();
 
 		}, function errorCallback(response) {
 			toasty.error('Unable to create topic ' + topicName);
-			//alert('Unable to create new topic.');
 			console.log(response);
 		});		
 	}
@@ -359,12 +357,10 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 			toasty.success({msg:'Deleted queue ' + queueName});
 			console.log(response);
 			factory.refreshAll();
-		}, function errorCallback(response) {
+			}, function errorCallback(response) {
 			toasty.error({msg:'Unable to delete queue ' + queueName});
 			console.log(response);
 		  });
-		
-//		this.execQueue(queueName,'purge','Queue');
 	}
 	
 	factory.deleteTopic=function(topicName,queueAction)
@@ -492,6 +488,11 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 		if((res!=null)&&(res.length>2))
 			return res[2];
 		return str;		
+	}
+	
+	factory.getTypeOf=function(value)
+	{
+		return typeof(value);
 	}
 	
 	factory.prepareURLs = function() {

@@ -1,8 +1,9 @@
 <h2 class="nomargin">Preferences</h2>
-<input type="checkbox" ng-change="savePrefs()" ng-model="amqInfo.hideAdvisoryQueues"><span>Hide advisory queues and topics</span>
-<p>
-<input	type="text"
+<h4>
+<input type="checkbox" ng-change="savePrefs()" ng-model="amqInfo.hideAdvisoryQueues"><span>&nbsp;Hide advisory queues and topics</span></h4>
+<h4>
+	<input	type="number"  min="0" max="60"
 		ng-model="amqInfo.autoRefreshInterval"
 		ng-change="autoRefreshTinkered()"
-		size="1">
-<span>&nbsp;Automatically refresh ActiveMQ data every X seconds (0 == no refresh)</span>&nbsp;<button ng-show="autoRefreshChanged === true" type="button" ng-click="updateAutoRefresh()" class="btn btn-primary btn-sm btn-xs">Confirm change</button>
+		size="3">
+<span>&nbsp;Automatically refresh ActiveMQ data every X seconds (0 == no refresh)</span>&nbsp;<button ng-show="autoRefreshChanged === true" type="button" ng-click="updateAutoRefresh()" class="btn btn-primary btn-sm btn-xs">Confirm change</button></h4>

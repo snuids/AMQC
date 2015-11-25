@@ -1,7 +1,4 @@
 <div ng-controller="QueuesCtrl">
-
-	
-
 	<h4 class='nomargin'>Create a new Queue: <input type="text" ng-model="newQueueName" >&nbsp;	<button class="btn btn-primary btn-sm" ng-disabled="newQueueName.length==0" ng-click="createNewQueue()">Create</button></h4>
 
 
@@ -15,7 +12,7 @@
 			<td ng-repeat="(key, value) in head" class="{{key!='Name'?'text-center':'text-left'}}">
 				{{ent[key]}}
 			</td>
-			<td><div class="text-center"><button type="button" ng-click="showDetails(ent)" class="btn btn-primary btn-sm btn-xs">Details</button></div></td>
+			<td><div class="text-center"><button type="button" ng-click="showQueueDetails(ent)" class="btn btn-primary btn-sm btn-xs">Details</button></div></td>
 		</tr>
 	</table>
 
@@ -66,19 +63,18 @@
 		</div>
 
 		<div class="nodrag queue_details_tabs_footer" style="width:100%;text-align:center;">				
-			<button type="button" ng-click="showDetails(null)" class="btn btn-primary btn-sm btn-xs">Close</button>
-			<button type="button" ng-click="browseQueue()" class="btn btn-primary btn-sm btn-xs">Browse</button>
-			<button type="button" ng-click="purgeQueue()" class="btn btn-warning btn-sm btn-xs">Purge</button>
+			<button type="button" ng-click="showQueueDetails(null)" class="btn btn-primary btn-sm btn-xs">Close</button>
+			<button type="button" ng-click="browseQueue()" ng-show="currentQueue['QueueSize']>0" class="btn btn-primary btn-sm btn-xs">Browse</button>
+			<button type="button" ng-click="purgeQueue()" ng-show="currentQueue['QueueSize']>0" class="btn btn-warning btn-sm btn-xs">Purge</button>
 			<button type="button" ng-click="resetStatsQueue()" class="btn btn-warning btn-sm btn-xs">Reset Stats</button>
 			<button type="button" ng-click="deleteQueue()" class="btn btn-danger btn-sm btn-xs">Delete</button>
 		</div>
 	
 	</div>
 	
-	<div drag-me ng-show="queueBrowerVisible" class="browsemessagesview">
-		
+	<div drag-me ng-show="queueBrowerVisible" class="browsemessagesview">		
 		<H4>Queue:{{currentQueue.Name}}</H4>
-		<div class="browsemessagetable">
+		<div class="nodrag browsemessagetable">
 			<table class="table table-striped table-bordered table-hover table-condensed small">
 				<tr>
 					<th>Date</th>
@@ -88,13 +84,17 @@
 				<tr ng-repeat="message in amqInfo.queueMessages | filter:filterFieldMessage">
 			      <td>{{message.JMSTimestamp | date:'HH:mm:ss.sss'}}</td>
 						<td>{{message.Text | limitTo:60}}</td>
-						<td><!--button type="button" ng-click="showDetails(message)" class="btn btn-primary btn-sm btn-xs">Details</button--></td>		
+						<td><button type="button" ng-click="showQueueMessageDetails(message)" class="btn btn-primary btn-sm btn-xs">Details</button></td>		
 			</tr>
 		</table>
 		</div>
 		<div class="browsemessagefooter">		
-			<button type="button" ng-click="showQueueDetails(null)" class="btn btn-primary btn-sm btn-xs">Close</button>
+			<button type="button" ng-click="closeBrowseQueue(null)" class="btn btn-primary btn-sm btn-xs">Close</button>
 		</div>
 	</div>
+	
+	<div id="clientMessageView" >
+      <div ng-include="'Templates/Message.html'"></div>
+  </div>
 	
 </div>

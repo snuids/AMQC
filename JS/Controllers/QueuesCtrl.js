@@ -62,17 +62,23 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
         return tabUrl == $scope.currentDetailsTab.url;
     }
 	
-	$scope.purgeQueue=function()
-	{
-		$scope.amqInfo.purgeQueue($scope.currentQueue.Name);
-	}
 	
+	/* Queue broswer functions */
 	$scope.browseQueue=function()
 	{
 		$scope.amqInfo.browseQueue($scope.currentQueue.Name);
-		//$scope.showDetails(null);
 		$scope.queueBrowerVisible=true;
 	}
+	
+	$scope.closeBrowseQueue=function()
+	{
+		$scope.queueBrowerVisible=false;		
+	}
+		
+	$scope.purgeQueue=function()
+	{
+		$scope.amqInfo.purgeQueue($scope.currentQueue.Name);
+	}	
 	
 	$scope.deleteQueue=function()
 	{
@@ -93,10 +99,10 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 		$scope.amqInfo.resetStatsQueue($scope.currentQueue.Name);
 	}
 	
-	$scope.showDetails = function(ent)
+	$scope.showQueueDetails = function(ent)
 	{
 		$scope.currentQueue=ent;
-		//alert($scope.currentQueue.Name);
+		$scope.queueBrowerVisible=false;
 		if(ent !== null)
 		{
 			$scope.detailsTabs[1].visible=(ent.ConsumerCount>0);
@@ -104,9 +110,54 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 		}
 	}
 	
-	$scope.showQueueDetails = function(ent)
+
+	/* Message Detail Functions */
+	$scope.showQueueMessageDetails=function(message)
 	{
-		$scope.queueBrowerVisible=false;
+
+		$scope.currentMessage=message;
+		$scope.currentMessage.destination=$scope.currentQueue.Name;
+		$scope.currentMessage.message=message.Text;
+		$scope.currentMessage.headers={};
+				
+		var obj=$scope.currentMessage;
+//		console.log("obj message=====");
+//		console.log(obj);
+		
+		for ( property in obj ) {
+			if(
+				(!(obj[property] instanceof Array))
+			&&(!(obj[property] instanceof Object))
+			&&(property!='Text')
+			&&(property!='message')
+			&&(property!='name'))
+			{
+				$scope.currentMessage.headers[property]=obj[property];
+			}
+		}
+		
+		if(obj.StringProperties!=null)
+		{
+			for ( property in obj.StringProperties ) {
+				{
+					$scope.currentMessage.headers[property]=obj.StringProperties[property];
+				}
+			}
+		}
+		if(obj.LongProperties!=null)
+		{
+			for ( property in obj.LongProperties ) {
+				{
+					$scope.currentMessage.headers[property]=obj.LongProperties[property];
+				}
+			}
+		}
+		
+	}
+
+	$scope.closeDetails=function()
+	{
+		$scope.currentMessage=null;
 	}
 	
 	$scope.selectedCls = function(column) {
