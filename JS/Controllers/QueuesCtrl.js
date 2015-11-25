@@ -18,6 +18,7 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	$scope.newQueueName='';
 	
 	$scope.subscribers=[];
+	$scope.queueBrowerVisible=false;
 	
 	$scope.sort = {
 		column: 'Name',
@@ -66,6 +67,13 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 		$scope.amqInfo.purgeQueue($scope.currentQueue.Name);
 	}
 	
+	$scope.browseQueue=function()
+	{
+		$scope.amqInfo.browseQueue($scope.currentQueue.Name);
+		//$scope.showDetails(null);
+		$scope.queueBrowerVisible=true;
+	}
+	
 	$scope.deleteQueue=function()
 	{
 		if(confirm("Are you sure you want to delete the queue " + $scope.currentQueue.Name))
@@ -88,11 +96,17 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	$scope.showDetails = function(ent)
 	{
 		$scope.currentQueue=ent;
+		//alert($scope.currentQueue.Name);
 		if(ent !== null)
 		{
 			$scope.detailsTabs[1].visible=(ent.ConsumerCount>0);
 			$scope.currentDetailsTab = $scope.detailsTabs[0];
 		}
+	}
+	
+	$scope.showQueueDetails = function(ent)
+	{
+		$scope.queueBrowerVisible=false;
 	}
 	
 	$scope.selectedCls = function(column) {

@@ -13,6 +13,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 	factory.refreshing=false;
 	factory.rememberMe = false;
 	
+	factory.queueMessages=[];
+	
 	factory.autoRefresh = 0;		// in seconds, 0 == no refresh
 	factory.timeRefresh = undefined;
 	
@@ -381,6 +383,43 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 		  });
 	}
 	
+	factory.bin2String=function(array) {
+	  var result = "";
+	  for (var i = 0; i < array.length; i++) {
+	    result += String.fromCharCode(parseInt(array[i]));
+	  }
+	  return result;
+	}
+	
+	factory.browseQueue=function(queueName)
+	{
+		var postUrl=factory.getPostUrl();
+						
+		var data={
+		    "type":"exec",
+			"mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername+",destinationType=Queue,destinationName="+queueName,
+			"operation":"browse()"
+		};
+		
+		console.log(data);
+		
+		$http.post(postUrl, data, {})
+		.then(function successCallback(response) {
+			console.log(response);
+			factory.queueMessages=[];
+			for(var i=0;i<response.data.value.length;i++)
+			{
+				if(response.data.value[i].Text==undefined)
+					response.data.value[i].Text=factory.bin2String(response.data.value[i].BodyPreview);
+				factory.queueMessages.push(response.data.value[i]);
+			}
+
+
+		  }, function errorCallback(response) {
+		    alert('Unable to delete topic.');
+			console.log(response);
+		  });
+	}
 	
 	factory.getPostUrl=function ()
 	{

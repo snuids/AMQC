@@ -101,6 +101,7 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 			dest="/queue/"+this.selectedSendDestinationName;
 			
 //		alert(JSON.stringify(obj));
+
 		this.client.send(dest,obj,this.textToSend);
 		
 	}
