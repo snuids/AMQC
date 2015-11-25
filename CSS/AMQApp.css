@@ -67,6 +67,16 @@
 	padding-top:10px;
 }
 
+/* GitHub */
+
+#github
+{
+	position:absolute;
+	bottom:5px;
+	right:5px;
+	font-weight:9px;
+}
+
 /* Version */
 
 #version
