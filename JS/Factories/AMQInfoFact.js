@@ -172,6 +172,10 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 			for ( property in factory.queues ) {
 				factory.filteredQueues.push(factory.queues[property]);
 				factory.addQueueStat(factory.queues[property].Name);
+				
+				if (factory.queueStats[factory.queues[property].Name].length > 100)
+					factory.queueStats[factory.queues[property].Name].shift();
+				
 				factory.queueStats[factory.queues[property].Name].push({x:Math.floor(Date.now() / 1000), y:factory.queues[property].QueueSize});
 			} //    
 			factory.currentlyRefreshing[1] = false;
