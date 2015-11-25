@@ -1,4 +1,4 @@
-app.controller('TabsCtrl',['$scope','amqInfoFactory','amqClientFactory', 'toasty', function($scope,amqInfoFactory,amqClientFactory, toasty) {
+app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory','amqClientFactory', 'toasty', function($rootScope, $scope, $timeout, amqInfoFactory,amqClientFactory, toasty) {
     $scope.tabs = [{
             title: 'Info',
             url: 'Templates/Info.html',
@@ -61,7 +61,17 @@ app.controller('TabsCtrl',['$scope','amqInfoFactory','amqClientFactory', 'toasty
 	}	
 
     $scope.onClickTab = function (tab) {
+		console.log('clicked tab:' + tab.title);
+		
+		if (tab.url === $scope.currentTab.url)
+			return;
+		
+		console.log('switching tab');
+		
         $scope.currentTab = tab;
+		$timeout(function() {
+			$rootScope.$broadcast("activetab", tab.title);
+		});
     }
    
     $scope.isActiveTab = function(tabUrl) {

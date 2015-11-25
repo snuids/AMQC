@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-	<meta content="utf-8" http-equiv="encoding">
-	
+	<meta charset="utf-8" />
+
 	<script src="JQuery/jquery-1.8.3.js"></script>
 	<script src="JQuery/jquery-ui.js"></script>
 	<script src="AngularJS/angular-1.4.7/angular.js"></script>
+	
+	<script src="lib/d3.min.js"></script>
+	<script src="lib/nv.d3.min.js"></script>
+	<script src="lib/angular-nvd3.min.js"></script>	
+	
 	<script src="JS/AMQApp.js"></script>
 	<script src="JS/Factories/AMQInfoFact.js"></script>
 	<script src="JS/Factories/AMQClientFact.js"></script>
@@ -19,15 +23,17 @@
 	<script src="JS/Controllers/LoginCtrl.js"></script>
 	<script src="CSS/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
 	<script src="lib/angular-toasty.min.js"></script>
+	<!-- <script src="lib/d3.min.js"></script> -->
+
 	<script src="lib/stomp.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="CSS/AMQApp.css"></link>
 	<link rel="stylesheet" type="text/css" href="CSS/bootstrap-3.3.5-dist/css/bootstrap.css"></link>
 	<link rel="stylesheet" type="text/css" href="CSS/angular-toasty.min.css"></link>
+	<link rel="stylesheet" type="text/css" href="CSS/nv.d3.min.css"></link>
 
 </head>
 <body>
- 
 	
 <div ng-app="AMQApp" class="AMQApp">	
 	
@@ -90,7 +96,7 @@
 				</div>
     </div>
 
-		<div id="version">v0.68 November 2015</div>
+		<div id="version">v0.69 November 2015</div>
 		<toasty></toasty>
 		<div id="github"><a href="https://github.com/snuids/AMQC">Git Hub Repo</a></div>
 		
