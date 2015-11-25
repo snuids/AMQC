@@ -13,16 +13,23 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 	factory.rememberMe = false;
 	
 	factory.queueMessages = [];
-	factory.queueStats = {
-		queueName : '',
-		series : [{ value : 0, timestamp : new Date() }]
-	}
+	factory.queueStats = {};
 	
 	// 0 - Info, 1 - Queues, 2 - Connections, 3 - Topics
 	factory.currentlyRefreshing = [false, false, false, false];
 	
 	factory.autoRefreshInterval = 0; // in seconds, 0 == no refresh
 	factory.refreshTimer = undefined;
+	
+	factory.addQueueStat = function(queueName) {
+		if (queueName in factory.queueStats) {
+			//console.log('Trying to add queueStatsItem when it already exists (' + queueName + ')');
+			return;
+		}
+		
+		factory.queueStats[queueName] = [];
+		console.log('added stats entry for queue ' + queueName);
+	}
 	
 	factory.isRefreshing = function() {
 		return factory.currentlyRefreshing.indexOf(true) !== -1;
@@ -163,7 +170,9 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 
 			for ( property in factory.queues ) {
 				factory.filteredQueues.push(factory.queues[property]);
-			}
+				factory.addQueueStat(factory.queues[property].Name);
+				factory.queueStats[factory.queues[property].Name].push({x:Math.floor(Date.now() / 1000), y:factory.queues[property].QueueSize});
+			} //    
 			factory.currentlyRefreshing[1] = false;
 			//console.log(factory.filteredQueues);
 		  }, function errorCallback(response) {
