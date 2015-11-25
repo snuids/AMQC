@@ -24,6 +24,7 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', 'amqInfoFactor
 			},
 			x: function(d){ return d.x; },
 			y: function(d){ return d.y; },
+			isArea:false,
 			useInteractiveGuideline: true,
 			refreshDataOnly: false,
 			//deepWatchData: true,
@@ -41,6 +42,7 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', 'amqInfoFactor
 			}
 		}
 	};
+	
 	
 	$scope.options.chart.xAxis.tickFormat=function(d) {
 //	        var dx = $scope.data[0].values[d] && $scope.data[0].values[d][0] || 0;
