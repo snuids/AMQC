@@ -1,4 +1,6 @@
-app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', function($http, $location, $interval, toasty) {
+app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty','Base64'
+		, function($http, $location, $interval, toasty,Base64) {
+
 	var factory = {}; 
 
 	factory.hideAdvisoryQueues = true;
