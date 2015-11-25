@@ -6,6 +6,7 @@ app.controller('LoginCtrl',['$scope','amqInfoFactory', function($scope, amqInfoF
 		$scope.amqInfo.saveConnectionParameters();
 		$scope.amqInfo.prepareURLs();
 		$scope.amqInfo.refreshAll();
+		$scope.amqInfo.loadPreferences();
 		$scope.amqInfo.setRefresh();
     }
 }]

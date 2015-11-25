@@ -1,5 +1,4 @@
-app.controller('TabsCtrl',['$scope','amqInfoFactory','amqClientFactory', function($scope,amqInfoFactory,amqClientFactory) 
-{
+app.controller('TabsCtrl',['$scope','amqInfoFactory','amqClientFactory', 'toasty', function($scope,amqInfoFactory,amqClientFactory, toasty) {
     $scope.tabs = [{
             title: 'Info',
             url: 'Templates/Info.html',
@@ -49,18 +48,17 @@ app.controller('TabsCtrl',['$scope','amqInfoFactory','amqClientFactory', functio
 	
 	$scope.autoRefreshChanged = false;
 
-	$scope.refreshAll =function()
-	{
+	$scope.refreshAll = function() {
 		$scope.amqInfo.refreshAll();
 	}
 	
-	$scope.disconnectAMQ =function()
-	{
+	$scope.disconnectAMQ = function() {
 		$scope.amqClient.disconnect();
-		$scope.amqInfo.connected=false;
-		$scope.amqInfo.stopRefresh();
-	}
-	
+		$scope.amqInfo.connected = false;
+		$scope.amqInfo.stopRefreshTimer();
+
+		toasty.info({msg:'Goodbye, user ' + $scope.amqInfo.login + '.'});
+	}	
 
     $scope.onClickTab = function (tab) {
         $scope.currentTab = tab;
