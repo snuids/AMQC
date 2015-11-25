@@ -12,8 +12,8 @@ app.controller('QueuesCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 //			Actions: "Action"
 	    };
 	
-	$scope.amqInfo=amqInfoFactory;
-	$scope.queues=amqInfoFactory.filteredQueues;
+	$scope.amqInfo = amqInfoFactory;
+	$scope.queues = $scope.amqInfo.filteredQueues;
 	$scope.currentQueue=null;
 	$scope.newQueueName='';
 	

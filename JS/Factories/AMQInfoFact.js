@@ -13,6 +13,10 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 	factory.rememberMe = false;
 	
 	factory.queueMessages = [];
+	factory.queueStats = {
+		queueName : '',
+		series : [{ value : 0, timestamp : new Date() }]
+	}
 	
 	// 0 - Info, 1 - Queues, 2 - Connections, 3 - Topics
 	factory.currentlyRefreshing = [false, false, false, false];
@@ -25,7 +29,6 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 	}
 	
 	factory.stopRefreshTimer = function() {
-		console.log('bam');
 		if (angular.isDefined(factory.refreshTimer)) {
 			console.log('Removing time refresh.');
 			$interval.cancel(factory.refreshTimer);
@@ -159,7 +162,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 			factory.filteredQueues=[];
 
 			for ( property in factory.queues ) {
-					factory.filteredQueues.push(factory.queues[property]);
+				factory.filteredQueues.push(factory.queues[property]);
 			}
 			factory.currentlyRefreshing[1] = false;
 			//console.log(factory.filteredQueues);
