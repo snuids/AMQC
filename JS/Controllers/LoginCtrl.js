@@ -1,11 +1,13 @@
 app.controller('LoginCtrl',['$scope','amqInfoFactory', function($scope, amqInfoFactory) 
 {
-	$scope.amqInfo=amqInfoFactory;
+	$scope.amqInfo = amqInfoFactory;
 		
  	$scope.logAMQ = function() {
-		amqInfoFactory.saveConnectionParameters();
-		amqInfoFactory.prepareURLs();
-		amqInfoFactory.refreshAll();
+		$scope.amqInfo.saveConnectionParameters();
+		$scope.amqInfo.prepareURLs();
+		$scope.amqInfo.refreshAll();
+		$scope.amqInfo.loadPreferences();
+		$scope.amqInfo.setRefresh();
     }
 }]
 );
