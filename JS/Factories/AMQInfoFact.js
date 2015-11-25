@@ -370,7 +370,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty', func
 		
 		$http.post(postUrl, data, {})
 		.then(function successCallback(response) {
-			toasty.success({msg:'Deleted queue ' + queueName});
+			toasty.success({msg:'Queue ' + queueName+' deleted'});
 			console.log(response);
 			factory.refreshAll();
 			}, function errorCallback(response) {

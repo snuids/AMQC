@@ -3,6 +3,7 @@
 		<span class='nodrag' ng-repeat="dest in destinations">
 				&nbsp;&nbsp;<input type="radio" ng-model="$parent.amqClient.selectedSendDestination" name="amqClient.selectedSendDestination" value="{{dest.name}}">&nbsp;&nbsp;{{dest.name}}
 		</span></H4>
+		
 		<div class='nodrag'>
 			<textarea ng-model="amqClient.textToSend" cols="80" rows="5"></textarea>
 		</div>
@@ -10,8 +11,7 @@
 		<span><class='smallmargin'>Header:&nbsp;&nbsp;<input class="nodrag" type="text" ng-model="$parent.headerName" >
 		<class='smallmargin'>Value:&nbsp;&nbsp;<input class="nodrag" type="text" ng-model="$parent.headerValue" >
 		<button ng-show="(headerName.length>0) &amp;&amp; (headerValue.length>0)" class="nodrag btn btn-primary btn-xs" 
-				 ng-click="addHeader()">Add Header</button>
-		
+				 ng-click="addHeader()">Add Header</button>		
 		</span>
 		
 		<div id="send_message_details_headers">
