@@ -4,7 +4,7 @@ app.controller('LoginCtrl',['$scope','$rootScope','amqInfoFactory', function($sc
 		
  	$scope.logAMQ = function() {
 		
-		alert($scope.amqInfo.login);
+//		alert($scope.amqInfo.login);
 		$rootScope.auth_login=$scope.amqInfo.login;
 		$scope.amqInfo.saveConnectionParameters();
 		$scope.amqInfo.prepareURLs();
