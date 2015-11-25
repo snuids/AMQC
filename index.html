@@ -52,11 +52,11 @@
 					</tr>
 					<tr>
 						<td>Login</td>
-						<td><input type="text" value="" placeholder="Username"></td>
+						<td><input ng-model="amqInfo.login" type="text" value="" placeholder="Username"></td>
 					</tr>
 					<tr>
 						<td>Password</td>
-						<td><input type="text" value="" placeholder="Password"></td>
+						<td><input ng-model="amqInfo.password" type="password" value="" placeholder="Password"></td>
 					</tr>
 				</table>
 				<input type="checkbox" ng-model="amqInfo.rememberMe"> Remember Me
@@ -82,13 +82,15 @@
 			
         <div id="mainView">
             <div ng-include="currentTab.url"></div>
+			
         </div>
 				<div id="footerView">
-					<button class="btn btn-primary btn-sm" ng-show="!amqInfo.refreshing" ng-click="refreshAll()">Refresh</button>
+					<button class="btn btn-primary btn-sm" ng-click="refreshAll()">Refresh</button>
 					<button class="btn btn-danger btn-sm" ng-click="disconnectAMQ()">Disconnect</button>
 				</div>
     </div>
 
-		<div id="version">v0.67 November 2015</div>
+		<div id="version">v0.68 November 2015</div>
+		<toasty></toasty>
 </body>
 </html>

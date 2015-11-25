@@ -1,5 +1,4 @@
-app.controller('TabsCtrl',['$scope','amqInfoFactory','amqClientFactory', function($scope,amqInfoFactory,amqClientFactory) 
-{
+app.controller('TabsCtrl',['$scope','amqInfoFactory','amqClientFactory', 'toasty', function($scope,amqInfoFactory,amqClientFactory, toasty) {
     $scope.tabs = [{
             title: 'Info',
             url: 'Templates/Info.html',
@@ -43,21 +42,23 @@ app.controller('TabsCtrl',['$scope','amqInfoFactory','amqClientFactory', functio
 
 	$scope.filterField='';
 
-	$scope.amqInfo=amqInfoFactory;
-	$scope.amqClient=amqClientFactory;
+	$scope.amqInfo = amqInfoFactory;
+	$scope.amqClient = amqClientFactory;
     $scope.currentTab = $scope.tabs[0];
+	
+	$scope.autoRefreshChanged = false;
 
-	$scope.refreshAll =function()
-	{
-		amqInfoFactory.refreshAll();
+	$scope.refreshAll = function() {
+		$scope.amqInfo.refreshAll();
 	}
 	
-	$scope.disconnectAMQ =function()
-	{
-		amqClientFactory.disconnect();
-		amqInfoFactory.connected=false
-	}
-	
+	$scope.disconnectAMQ = function() {
+		$scope.amqClient.disconnect();
+		$scope.amqInfo.connected = false;
+		$scope.amqInfo.stopRefreshTimer();
+
+		toasty.info({msg:'Goodbye, user ' + $scope.amqInfo.login + '.'});
+	}	
 
     $scope.onClickTab = function (tab) {
         $scope.currentTab = tab;
@@ -69,6 +70,20 @@ app.controller('TabsCtrl',['$scope','amqInfoFactory','amqClientFactory', functio
  	$scope.hasFilter = function() {
         return $scope.currentTab.hasFilter;
     }
+	
+	$scope.savePrefs = function() {
+		$scope.amqInfo.savePreferences();
+	}
+	
+	$scope.updateAutoRefresh = function() {
+		$scope.amqInfo.setRefresh();
+		$scope.autoRefreshChanged = false;
+		$scope.savePrefs();
+	}
+	
+	$scope.autoRefreshTinkered = function() {
+		$scope.autoRefreshChanged = true;
+	}
 
 }]
 );

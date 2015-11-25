@@ -32,6 +32,11 @@ app.filter('percentage', ['$filter', function($filter) {
     };
 }]);
 
+app.config(['toastyConfigProvider', function(toastyConfigProvider) {
+	toastyConfigProvider.setConfig({
+		limit: 8
+	});
+}]);
 
 
 
