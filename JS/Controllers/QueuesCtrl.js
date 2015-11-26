@@ -1,4 +1,4 @@
-app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', 'amqInfoFactory', function($rootScope, $scope, $interval, amqInfoFactory) 
+app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', 'amqInfoFactory', 'toasty', function($rootScope, $scope, $interval, amqInfoFactory, toasty) 
 {
 	$scope.head = {
 			Name: "Name",
@@ -76,7 +76,7 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', 'amqInfoFactor
 	}
 	
 	$scope.refreshData = function() {
-		console.log('refreshing chart data');
+		//console.log('refreshing chart data');
 		
 		$scope.data[0].values = $scope.amqInfo.queueStats[$scope.selectedChartQueue];
 		//$scope.data[0].values.push({x:$scope.x++, y:Math.floor((Math.random() * 10) + 1)});
@@ -266,6 +266,17 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', 'amqInfoFactor
 			sort.descending = true;
 		}	
 	};
-	
+
+	$scope.deleteMessage = function() {
+		var promise = $scope.amqInfo.deleteMessage('Queue', $scope.currentMessage.destination, $scope.currentMessage.JMSMessageID);
+		
+		promise.then(function(result) {
+			toasty.success({msg:'Message ' + $scope.currentMessage.JMSMessageID + ' deleted from Queue ' + $scope.currentMessage.destination});
+			$scope.currentMessage = null;
+			$scope.browseQueue(); // Reload queue contents after delete
+		}, function(result) {
+			toasty.error({msg:'Unable to delete message ' + $scope.currentMessage.JMSMessageID + ' from Queue ' + $scope.currentMessage.destination});
+		});
+	}
 }]
 );
