@@ -80,15 +80,17 @@
 	                    Filter:&nbsp;<input type="text" ng-model="filterField"  autofocus/>
 	                </div>
 
+									<nav class="navbar-default">
 	                <div class="container-fluid">
 	                    <div>
-	                        <ul class="nav nav-tabs ">
+	                        <ul class="nav nav-pills ">
 	                            <li ng-repeat="tab in tabs" 
 	                                ng-class="{active:isActiveTab(tab.url)}" 
 	                                ng-click="onClickTab(tab)"><a href="#">{{tab.title}}</a></li>
 	                        </ul>
 	                    </div>
 	                </div>
+									</nav>
 
 	                <div id="mainView">
 	                    <div ng-include="currentTab.url"></div>
@@ -99,7 +101,7 @@
 	                    <button class="btn btn-danger btn-sm" ng-click="disconnectAMQ()">Disconnect</button>
 	                </div>
 	            </div>
-            	<div id="version">v0.71 November 2015 <img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
+            	<div id="version">v0.71 November 2015 ({{amqInfo.brokerip}})<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
           	</div>
 
             <toasty></toasty>
