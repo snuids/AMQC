@@ -1,5 +1,5 @@
-app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty','Base64'
-		, function($http, $location, $interval, $q, toasty,Base64) {
+app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
+		, function($http, $location, $interval, $q, toasty) {
 
 	var factory = {}; 
 
@@ -552,6 +552,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		factory.connectionsUrl=factory.connectionsUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
 		factory.execUrl=factory.execUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
 		factory.postUrl=factory.postUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);			
+
 	}
 
 	factory.loadConnectionParameters();

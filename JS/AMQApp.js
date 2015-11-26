@@ -38,6 +38,12 @@ app.config(['toastyConfigProvider', function(toastyConfigProvider) {
 	});
 }]);
 
+app.config(function($httpProvider) {
+    //Enable cross domain calls
+    //$httpProvider.defaults.useXDomain = true;
+	//$httpProvider.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+});
+
 app.config(function ($httpProvider) {
     $httpProvider.interceptors.push('httpRequestInterceptor');
 });
