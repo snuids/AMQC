@@ -1,5 +1,5 @@
-app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty','Base64'
-		, function($http, $location, $interval, toasty,Base64) {
+app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty','Base64'
+		, function($http, $location, $interval, $q, toasty,Base64) {
 
 	var factory = {}; 
 
@@ -65,7 +65,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty','Base
 		
 		if ((localStorage.getItem("amqc.autoRefreshInterval") !== undefined)
 				&&(localStorage.getItem("amqc.autoRefreshInterval") !== null))
-			factory.autoRefreshInterval = localStorage.getItem("amqc.autoRefreshInterval");
+			factory.autoRefreshInterval = parseInt(localStorage.getItem("amqc.autoRefreshInterval"));
 
 		toasty.success({msg:'Loaded user saved preferences'});
 	}
@@ -406,6 +406,31 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', 'toasty','Base
 		  });
 		
 //		this.execQueue(queueName,'purge','Queue');
+	}
+	
+	factory.deleteMessage = function(queueType, queueName, msgId) {
+		var execUrl = factory.execUrl;
+						
+		var data={
+		    "type":"exec",
+		    "mbean":"org.apache.activemq:type=Broker,brokerName=" + factory.brokername + ",destinationType=" + queueType + ",destinationName=" + queueName,
+			"operation":"removeMessage",
+			"arguments":[msgId]
+		};
+		
+		console.log(JSON.stringify(data));
+		
+		return $q(function(resolve, reject) {
+			$http.post(execUrl, data, {})
+				.then(function successCallback(response) {
+					console.log(response);
+					factory.refreshAll();
+					resolve(true);
+				}, function errorCallback(response) {
+					console.log(response);
+					reject(false);				
+				})
+		});
 	}
 
 	factory.resetStatsTopic=function(topicName)
