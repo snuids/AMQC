@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 Copyright 2015 Arnaud Marchand / Vasilis Papaleonidas
+=======
+Copyright 2015 Arnaud Marchand / Vassilis Papaleonidas
+>>>>>>> origin/master
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
