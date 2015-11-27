@@ -1,5 +1,5 @@
-app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
-		, function($http, $location, $interval, $q, toasty) {
+app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty', 'Base64'
+		, function($http, $location, $interval, $q, toasty, Base64) {
 
 	var factory = {}; 
 
@@ -15,7 +15,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	factory.rememberMe = false;
 	
 	factory.queueMessages = [];
-	factory.queueStats = {};
+	factory.queueStats = {}; // TODO: document internals
+	factory.queueStatsFields = [ 'QueueSize', 'EnqueueCount' ];//, 'ConsumerCount' ]; // TODO: user selectable from UI
 	
 	// 0 - Info, 1 - Queues, 2 - Connections, 3 - Topics
 	factory.currentlyRefreshing = [false, false, false, false];
@@ -29,7 +30,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			return;
 		}
 		
-		factory.queueStats[queueName] = [];
+		factory.queueStats[queueName] = {};
 		console.log('added stats entry for queue ' + queueName);
 	}
 	
@@ -177,13 +178,27 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 
 			for ( property in factory.queues ) {
 				factory.filteredQueues.push(factory.queues[property]);
-				factory.addQueueStat(factory.queues[property].Name);
 				
-				if (factory.queueStats[factory.queues[property].Name].length > 100)
-					factory.queueStats[factory.queues[property].Name].shift();
+				var queue = factory.queues[property];
 				
-				factory.queueStats[factory.queues[property].Name].push({x:Math.floor(Date.now()), y:factory.queues[property].QueueSize});
-			} //    
+				factory.addQueueStat(queue.Name);
+			
+				var qStat = factory.queueStats[queue.Name];
+				
+				for (i in factory.queueStatsFields) {
+					var statField = factory.queueStatsFields[i];
+					
+					if (qStat[statField] === undefined) {						
+						qStat[statField] = { key: statField, values: [] };
+						//console.log("new - " + JSON.stringify(qStat[statField]));
+					}
+					
+					if (qStat[statField].values.length > 100)
+						qStat[statField].values.shift();
+
+					qStat[statField].values.push({x:Math.floor(Date.now()), y:queue[statField]});
+				}
+			}
 			factory.currentlyRefreshing[1] = false;
 			//console.log(factory.filteredQueues);
 		  }, function errorCallback(response) {

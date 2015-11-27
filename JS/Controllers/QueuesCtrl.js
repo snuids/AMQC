@@ -1,4 +1,4 @@
-app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', 'amqInfoFactory', 'toasty', function($rootScope, $scope, $interval, amqInfoFactory, toasty) 
+app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', '$timeout', 'amqInfoFactory', 'toasty', function($rootScope, $scope, $interval, $timeout, amqInfoFactory, toasty) 
 {
 	$scope.head = {
 			Name: "Name",
@@ -9,7 +9,6 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', 'amqInfoFactor
 	        DequeueCount: "Dequeued",
 	        DispatchCount: "Dispatched",
 		    ExpiredCount: "Expired",
-//			Actions: "Action"
 	    };
 		
 	$scope.options = {
@@ -49,13 +48,6 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', 'amqInfoFactor
 	        return d3.time.format('%X')(new Date(d));
 	      };
 	
-	$scope.data = [
-		{
-			key: "Queue Size",
-			values: [{x:0, y:0}]
-		}
-	];
-	
 	$scope.timer = undefined;
 	
 	$scope.stopTimer = function() {
@@ -75,11 +67,22 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', 'amqInfoFactor
 			$scope.refreshTimer = $interval(function() { $scope.refreshData(); }, $scope.amqInfo.autoRefreshInterval * 1000);
 	}
 	
-	$scope.refreshData = function() {
-		//console.log('refreshing chart data');
+	$scope.data = [];
+	
+	$scope.setupChartData = function() {
 		
-		$scope.data[0].values = $scope.amqInfo.queueStats[$scope.selectedChartQueue];
-		//$scope.data[0].values.push({x:$scope.x++, y:Math.floor((Math.random() * 10) + 1)});
+		$scope.data = [];
+
+		var queueStat = $scope.amqInfo.queueStats[$scope.selectedChartQueue];
+		
+		for (var key in queueStat) {
+			$scope.data.push({ key: key, values: queueStat[key].values});
+		}
+
+		$timeout(function() { $scope.api.refresh(); }, 10);
+	}
+	
+	$scope.refreshData = function() {
 		$scope.api.update();
 	}
 	
@@ -94,14 +97,12 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', 'amqInfoFactor
 			
 			$scope.setTimer();
 
-			if (Object.keys($scope.amqInfo.queueStats).length > 0) {
-				console.log('getting new chart data');
-				$scope.selectedChartQueue = Object.keys($scope.amqInfo.queueStats)[0];
-				
-				$scope.data[0].values = $scope.amqInfo.queueStats[$scope.selectedChartQueue];
-
-				$scope.api.update();
-			}				
+			$timeout(function() {
+				if (Object.keys($scope.amqInfo.queueStats).length > 0) {
+					$scope.selectedChartQueue = Object.keys($scope.amqInfo.queueStats)[0]; // Pick first queue when first entering the tab
+					$scope.setupChartData();
+				}			
+			}, 10);		
 		}		
 	});
 	
@@ -244,8 +245,7 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', 'amqInfoFactor
 					$scope.currentMessage.headers[property]=obj.LongProperties[property];
 				}
 			}
-		}
-		
+		}		
 	}
 
 	$scope.closeDetails=function()
