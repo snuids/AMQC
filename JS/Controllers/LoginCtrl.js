@@ -3,6 +3,8 @@ app.controller('LoginCtrl',['$scope','$rootScope','amqInfoFactory','Base64', fun
 	$scope.amqInfo = amqInfoFactory;
 		
  	$scope.logAMQ = function() {		
+		
+		$scope.amqInfo.connectionError="";
 
 		if(($scope.amqInfo.login+$scope.amqInfo.password).length>0)
 			$rootScope.auth_login=Base64.encode($scope.amqInfo.login+":"+$scope.amqInfo.password);

@@ -18,6 +18,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	factory.queueStats = {}; // TODO: document internals
 	factory.queueStatsFields = [ 'QueueSize', 'EnqueueCount' ];//, 'ConsumerCount' ]; // TODO: user selectable from UI
 	
+	factory.connectionError="";
+		
 	// 0 - Info, 1 - Queues, 2 - Connections, 3 - Topics
 	factory.currentlyRefreshing = [false, false, false, false];
 	
@@ -36,6 +38,14 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	
 	factory.isRefreshing = function() {
 		return factory.currentlyRefreshing.indexOf(true) !== -1;
+	}
+	
+	factory.showCORSBanner=function()
+	{
+		if((factory.login.length>0)&&(window.location.hostname!=factory.brokerip))
+			return true;
+		else
+			return false;
 	}
 	
 	factory.stopRefreshTimer = function() {
@@ -153,6 +163,12 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			factory.currentlyRefreshing[0] = false;
 		}, function errorCallback(response) {
 			toasty.error({msg:'Unable to connect to ActiveMQ. Status:' + response.status});
+//			toasty.error({msg:'Unable to connect to ActiveMQ. Status:' + response.data});
+
+//			alert(response.data);
+			if(response.data!=null)
+				factory.connectionError=response.data.replace("<h2>","<h4>").replace("</h2>","</h4>");
+//			console.log(response);
 			//alert('Unable to connect to ActiveMQ. Status:'+response.status);
 			factory.connecting=false;
 			factory.stopRefreshTimer();
@@ -169,7 +185,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		
 		$http({
 		  method: 'GET',
-		  url: factory.queuesUrl
+		  url: factory.queuesUrl,
+		  timeout:5000
 		  
 		}).then(function successCallback(response) {
 		    factory.queues=response.data.value;
@@ -218,7 +235,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		
 		$http({
 		  method: 'GET',
-		  url: factory.topicsUrl
+		  url: factory.topicsUrl,
+		  timeout:5000
 		  
 		}).then(function successCallback(response) {
 		    factory.topics=response.data.value;
@@ -279,7 +297,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		
 		$http({
 		  method: 'GET',
-		  url: curl
+		  url: curl,
+		  timeout:5000
 		  
 		}).then(function successCallback(response) {
 		    factory.connections=response.data.value;
@@ -580,6 +599,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	factory.filteredTopics=[];		
 	factory.filteredConnections=[];		
 	factory.topicSubscribers=[];	
+
+//	alert(window.location.hostname);
 
 /*	var rep=$location.search().ip;
 

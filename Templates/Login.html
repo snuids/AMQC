@@ -29,7 +29,11 @@
 	  <input type="checkbox" ng-model="amqInfo.rememberMe"> Remember Me
 	<img  src="./Images/ajax-loader.gif" ng-show="amqInfo.connecting">    
 	<div class="login_footer" ng-show="!amqInfo.connecting">
-	      <button class="btn btn-primary btn-sm" ng-click="logAMQ()">Connect</button>
+	      <button type=submit class="btn btn-primary btn-sm" ng-click="logAMQ()">Connect</button>
 	  </div>
+	
+		<div class="login_alert alert alert-danger" ng-show="amqInfo.connectionError" role="alert" ng-bind-html="amqInfo.connectionError | rawHtml"></div>
+		
+			<div class="login_alert alert alert-warning" ng-show="amqInfo.showCORSBanner()" role="alert">You are using basic authentication but the CORS handshake will probably fail if the ActiveMQ IP and your current URL don't have the same origin. Deploy the console application in the webapps folder of ActiveMQ in order to avoid this. You can also try remove the CORS handshake from your browser.</div>
 	
 </div>
