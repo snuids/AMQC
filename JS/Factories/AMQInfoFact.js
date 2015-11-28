@@ -47,7 +47,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		else
 			return false;
 	}
-	
+		
 	factory.stopRefreshTimer = function() {
 		if (angular.isDefined(factory.refreshTimer)) {
 			console.log('Removing time refresh.');
