@@ -1,34 +1,32 @@
-<div class="modal-content" id="login" ng-controller="LoginCtrl" ng-show="!amqInfo.connected">
-    <h3 class="nomargin windowtitle">ActiveMQ Login</h3>
-    <table width="100%">
-        <tr>
-            <td>IP (Name)</td>
-            <td><input type="text" ng-model="amqInfo.brokerip" ></td>
-        </tr>
-        <tr>
-            <td>Port</td>
-            <td><input type="number" min="1" max="65556" ng-model="amqInfo.brokerport" ></td>
-        </tr>
-        <tr>
-            <td>Broker</td>
-            <td><input type="text" ng-model="amqInfo.brokername" ></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Login</td>
-            <td><input ng-model="amqInfo.login" type="text" value="" placeholder="Username"></td>
-        </tr>
-        <tr>
-            <td>Password</td>
-            <td><input ng-model="amqInfo.password" type="password" value="" placeholder="Password"></td>
-        </tr>
-    </table>
-    <input type="checkbox" ng-model="amqInfo.rememberMe"> Remember Me
-		<img  src="./Images/ajax-loader.gif" >    
-		<div class="login_footer" ng-show="!amqInfo.connecting">
-        <button class="btn btn-primary btn-sm" ng-click="logAMQ()">Connect</button>
-    </div>
-</div>
+  <h3 class="nomargin windowtitle">ActiveMQ Login</h3>
+  <table width="100%">
+      <tr>
+          <td>IP (Name)</td>
+          <td><input type="text" ng-model="amqInfo.brokerip" ></td>
+      </tr>
+      <tr>
+          <td>Port</td>
+          <td><input type="number" min="1" max="65556" ng-model="amqInfo.brokerport" ></td>
+      </tr>
+      <tr>
+          <td>Broker</td>
+          <td><input type="text" ng-model="amqInfo.brokername" ></td>
+      </tr>
+      <tr>
+          <td>&nbsp;</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>Login</td>
+          <td><input ng-model="amqInfo.login" type="text" value="" placeholder="Username"></td>
+      </tr>
+      <tr>
+          <td>Password</td>
+          <td><input ng-model="amqInfo.password" type="password" value="" placeholder="Password"></td>
+      </tr>
+  </table>
+  <input type="checkbox" ng-model="amqInfo.rememberMe"> Remember Me
+<img  src="./Images/ajax-loader.gif" >    
+<div class="login_footer" ng-show="!amqInfo.connecting">
+      <button class="btn btn-primary btn-sm" ng-click="logAMQ()">Connect</button>
+  </div>
