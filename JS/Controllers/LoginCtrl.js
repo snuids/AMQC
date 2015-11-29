@@ -17,5 +17,8 @@ app.controller('LoginCtrl',['$scope','$rootScope','amqInfoFactory','Base64', fun
 		$scope.amqInfo.setRefresh();		
 
     }
+
+	if($scope.amqInfo.autologin)
+		$scope.logAMQ();
 }]
 );

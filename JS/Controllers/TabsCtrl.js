@@ -56,6 +56,7 @@ app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory',
 		$scope.amqClient.disconnect();
 		$scope.amqInfo.connected = false;
 		$scope.amqInfo.stopRefreshTimer();
+		$scope.autologin=false;
 
 		if($scope.amqInfo.login!='')
 			toasty.info({msg:'Goodbye, user ' + $scope.amqInfo.login + '.'});

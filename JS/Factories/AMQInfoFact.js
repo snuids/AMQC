@@ -132,6 +132,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 				factory[uriparams[i]]=factory.getUrlParameter(uriparams[i]);
 		}			
 		factory.brokerport=parseInt(''+factory.brokerport);
+		if(factory.getUrlParameter("autologin")=="true")
+			factory.autologin=true;						
 	}
 
 	/* Save Connection Parameters */		
