@@ -6,6 +6,9 @@ app.controller('SubscribersCtrl',['$scope','$confirm','amqInfoFactory', function
 	        ConsumerID: "ConsumerID",
 	        Durable: "Durable",
 	        Connected: "Connected",
+			EnqueueCount: "Enqueue",
+	        DequeueCount: "Dequeue",
+	        DispatchCount: "Dispatch",
 			Actions: "Action"
 		
 	    };
@@ -14,6 +17,10 @@ app.controller('SubscribersCtrl',['$scope','$confirm','amqInfoFactory', function
 	$scope.currentSubscriber=null;
 	$scope.durableOnly=true;
 	$scope.notConnectedOnly=false;
+	
+	$scope.newDurableClientID='';
+	$scope.newDurableSubscriber='';
+	$scope.newDurableTopic='';
 	
 	$scope.sort = {
 	        column: 'Name',
@@ -62,5 +69,15 @@ app.controller('SubscribersCtrl',['$scope','$confirm','amqInfoFactory', function
 			});
 
 		};
+	
+	$scope.createNewDurableSubscriber=function()
+	{
+		$confirm({text: 'Are you sure you want to create the durable subscriber '+ $scope.newDurableSubscriber
+		+" with ID "+ $scope.newDurableClientID+' on topic '+$scope.newDurableTopic+' ?'})
+		        .then(function() 
+		{
+				$scope.amqInfo.createDurableSubscriber($scope.newDurableSubscriber,$scope.newDurableClientID,$scope.newDurableTopic);
+		});
+	}
 }]
 );

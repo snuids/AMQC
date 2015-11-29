@@ -3,3 +3,5 @@ v0.67 25Nov2015	Queue Browser, Remember me interface added
 v0.69 25Nov2015	Fixed a preference issue when window.location is not defined. Refresh icon added.
 v0.70 25Nov2015	Message browser finished
 v0.71 26Nov2015 Ability to delete a message from the queue message browser
+v0.73 29Nov2015 All dependencies are handled by bower. (.bowerrc folder must be bower_dep in the main folder) Angular-confirm dialog boxes instead of the regular javascript ones.
+v0.74 29Nov2015 Subscribers panel improved. Added the possibility to create a durable subscriber

@@ -276,6 +276,8 @@
 	left:3px;
 }
 
+/* Client Table */
+
 .clientTable
 {
 	position:absolute;
@@ -284,6 +286,13 @@
 	left:0px;
 	right:0px;	
 	overflow:auto;
+}
+
+.clientLoginPass
+{
+	position:absolute;
+	top:10px;
+	right:30px;
 }
 
 .message_details

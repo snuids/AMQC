@@ -26,6 +26,16 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	factory.autoRefreshInterval = 0; // in seconds, 0 == no refresh
 	factory.refreshTimer = undefined;
 	
+	factory.getUrlParameter=function(name)
+	{
+		  url = location.href;
+		  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+		  var regexS = "[\\?&]"+name+"=([^&#]*)";
+		  var regex = new RegExp( regexS );
+		  var results = regex.exec( url );
+		  return results == null ? null : results[1];		
+	}
+	
 	factory.addQueueStat = function(queueName) {
 		if (queueName in factory.queueStats) {
 			//console.log('Trying to add queueStatsItem when it already exists (' + queueName + ')');
@@ -114,6 +124,14 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			if(localStorage.getItem("amqc.rememberme") !== undefined)
 				factory.rememberMe = localStorage.getItem("amqc.rememberme") === "true";
 		}
+		// Set URI parameters if defined
+		var uriparams=["login","password","brokerip","brokername","brokerport"];
+		for(var i=0;i<uriparams.length;i++)
+		{
+			if(factory.getUrlParameter(uriparams[i])!=null)
+				factory[uriparams[i]]=factory.getUrlParameter(uriparams[i]);
+		}			
+		factory.brokerport=parseInt(''+factory.brokerport);
 	}
 
 	/* Save Connection Parameters */		
@@ -267,18 +285,47 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 						obj.Durable=false;
 
 					obj.ConsumerID=consuid;
-
 					obj.Connected=factory.activeConnections[obj.ClientID]!=undefined;
+					if((obj.Durable)&&(!obj.Connected))
+					{
+						factory.getSubscriberDetails(obj);
+					}
+
+									
 					factory.topicSubscribers.push(obj);
 				}
 			}
 			factory.currentlyRefreshing[3] = false;
+			
 		  }, function errorCallback(response) {
 			  toasty.error({msg:'Cannot read topics'});
 			  factory.stopRefreshTimer();
 			  factory.currentlyRefreshing[3] = false;
 		    //alert('Cannot read topics');
 		  });
+	}
+	
+	factory.getSubscriberDetails = function(obj)
+	{		
+		var postUrl=factory.getPostUrl();
+		
+		var data={
+		    "type":"read",
+		    "mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername+",destinationType="+obj.DestinationType+",destinationName="+obj.DestinationName+",endpoint=Consumer,clientId="+obj.ClientID.replace(/:/g,'_')+",consumerId="+obj.OriginalConsumerID.replace(/:/g,'_')
+		};
+//		alert(data.mbean);
+		//alert(JSON.stringify(data));
+		
+		$http.post(postUrl, data, {})
+		.then(function successCallback(response) {
+//			console.log("RES:");
+//			console.log(response);
+			obj.properties=response.data.value;
+			
+		  }, function errorCallback(response) {
+		    console.log("ERROR while reading subscriber details.");
+		  });
+
 	}
 	
 	factory.refreshConnections = function() {
@@ -308,7 +355,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 
 			for ( property in factory.connections ) {
 					factory.filteredConnections.push(factory.connections[property]);
-					factory.activeConnections[factory.connections[property].ClientId.replace(/:/g,'_')]=true;
+					factory.activeConnections[factory.connections[property].ClientId.replace(/:/g,'_')]=factory.connections[property];
 			}
 			factory.currentlyRefreshing[2] = false;
 		  }, function errorCallback(response) {
@@ -336,6 +383,31 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 
 		}, function errorCallback(response) {
 			toasty.error({msg:'Unable to delete durable subscriber ' + durablesub.OriginalConsumerID});
+		    //alert('Unable to destroy durable consumer.');
+			console.log(response);
+		  });
+	}
+	
+	factory.createDurableSubscriber=function(newDurableSubscriber,newDurableClientID,newDurableTopic)
+	{
+		var postUrl=factory.getPostUrl();
+						
+		var data={
+		    "type":"exec",
+		    "mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername,
+			"operation":"createDurableSubscriber",
+			"arguments":[newDurableClientID,newDurableSubscriber,newDurableTopic,null]
+		};
+		
+		console.log(data);
+		
+		$http.post(postUrl, data, {})
+		.then(function successCallback(response) {
+			toasty.success({msg:'Durable subscriber ' + newDurableSubscriber + ' created'});
+			factory.refreshAll();
+
+		}, function errorCallback(response) {
+			toasty.error({msg:'Unable to create durable subscriber ' + newDurableSubscriber});
 		    //alert('Unable to destroy durable consumer.');
 			console.log(response);
 		  });
