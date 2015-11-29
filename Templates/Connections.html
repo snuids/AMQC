@@ -8,16 +8,20 @@
 		
 	<table class="table table-striped table-bordered table-hover table-condensed small">
 		<tr>
-			<th class="text-center" ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">{{i}}<span table-header /></th>
+			<th class="{{$index>=1?'text-center':'text-left'}}" ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">{{th}}<span table-header /></th>
 		</tr>
 
 		<tr ng-repeat="ent in amqInfo.filteredConnections | filter:filterField | orderBy:sort.column:sort.descending">
-			<td>{{ent.ClientId}}</td>
+			<td title="{{ent.ClientId}}">{{ent.ClientId | limitTo:20}}</td>
 			<td class="text-center">{{ent.Producers.length}}</td>
 			<td class="text-center">{{ent.Consumers.length}}</td>
+			<td class="text-center">{{ent.DispatchQueueSize}}</td>
+						
 			<td class="text-center">{{ent.RemoteAddress}}</td>
 			<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Slow]" 
 				class="glyphicon glyphicon-ok queue-box-padding"></span></td>
+			<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Blocked]" 
+					class="glyphicon glyphicon-ok queue-box-padding"></span></td>
 			<td class="text-center"><button type="button" ng-click="showDetails(ent)" class="btn btn-primary btn-sm btn-xs">Details</button></td>
 		</tr>
 	</table>

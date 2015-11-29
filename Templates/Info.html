@@ -1,7 +1,11 @@
-<h3 class="nomargin">Version: <span class='label label-primary'>{{amqInfo.info['BrokerVersion']}}</span> Memory: <span class='label label-primary'>{{amqInfo.info['MemoryPercentUsage']/100 | percentage}}</span>
+<div class="panel panel-default">
+	<div class="panel-body">
+		<h3 class="nomargin">Version: <span class='label label-primary'>{{amqInfo.info['BrokerVersion']}}</span> Memory: <span class='label label-primary'>{{amqInfo.info['MemoryPercentUsage']/100 | percentage}}</span>
  Store: <span class='label label-primary'>{{amqInfo.info['StorePercentUsage']/100 | percentage}}</span> Temp: <span class='label label-primary'>{{amqInfo.info['TempPercentUsage']/100 | percentage}}</span></span> Up Time: <span class='label label-primary'>{{amqInfo.info['Uptime']}}</span>
-</h3>
-
+		</h3>
+	</div>
+</div>
+	
 <table class="table table-striped table-bordered table-hover table-condensed  small">
 <tr>
 	<th>Value</th>

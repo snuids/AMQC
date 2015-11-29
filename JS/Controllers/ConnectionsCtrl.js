@@ -1,11 +1,13 @@
 app.controller('ConnectionsCtrl',['$scope','$http','amqInfoFactory', function($scope,$http,amqInfoFactory) 
 {
 	$scope.head = {
-	        ClientId: "ClientId",
+	        ClientId: "Client Id",
 	        Producers: "Producers",
 	        Consumers: "Consumers",
-	        RemoteAddress: "RemoteAddress",
+			DispatchQueue: "Dispatch Queue",
+	        RemoteAddress: "Remote Address",
 	        Slow: "Slow",
+			Blocked: "Blocked",
 			Details:""
 	    };
 	

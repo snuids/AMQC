@@ -3,7 +3,7 @@
 	
 <table class="table table-striped table-bordered table-hover table-condensed small">
 <tr>
-	<th class="text-center" ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">{{th}}<span table-header /></th>
+	<th class="{{$index>1?'text-center':'text-left'}}" ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">{{th}}<span table-header /></th>
 </tr>
 <tr ng-repeat="ent in amqInfo.filteredTopics | filter:filterField | orderBy:sort.column:sort.descending | filter: filterFunction">
     <td>{{ent.Name}}</td>
@@ -13,7 +13,7 @@
 		<td class="text-center">{{ent.DequeueCount}}</td>
 		<td class="text-center">{{ent.DispatchCount}}</td>
 		<td class="text-center">{{ent.ExpiredCount}}</td>
-		<td><button type="button" ng-click="showDetails(ent)" class="btn btn-primary btn-sm btn-xs">Details</button></td>		
+		<td class="text-center"><button type="button" ng-click="showDetails(ent)" class="btn btn-primary btn-sm btn-xs">Details</button></td>		
 </tr>
 </table>
 <div drag-me class="topic_details" ng-show="currentTopic!=null">

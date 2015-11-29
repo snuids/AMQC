@@ -1,10 +1,11 @@
 app.controller('SubscribersCtrl',['$scope','$confirm','amqInfoFactory', function($scope,$confirm,amqInfoFactory) 
 {
 	$scope.head = {
-	        DestinationName: "Name",
-	        ClientID: "ClientID",
-	        ConsumerID: "ConsumerID",
-	        Durable: "Durable",
+	        DestinationName: "Topic",
+	        ClientID: "Client ID",
+	        ConsumerID: "Consumer ID",
+	        Selector: "Selector",
+			Durable: "Durable",
 	        Connected: "Connected",
 			EnqueueCount: "Enqueue",
 	        DequeueCount: "Dequeue",
@@ -21,6 +22,7 @@ app.controller('SubscribersCtrl',['$scope','$confirm','amqInfoFactory', function
 	$scope.newDurableClientID='';
 	$scope.newDurableSubscriber='';
 	$scope.newDurableTopic='';
+	$scope.newDurableSelector='';
 	
 	$scope.sort = {
 	        column: 'DestinationName',
@@ -76,7 +78,7 @@ app.controller('SubscribersCtrl',['$scope','$confirm','amqInfoFactory', function
 		+" with ID "+ $scope.newDurableClientID+' on topic '+$scope.newDurableTopic+' ?'})
 		        .then(function() 
 		{
-				$scope.amqInfo.createDurableSubscriber($scope.newDurableSubscriber,$scope.newDurableClientID,$scope.newDurableTopic);
+				$scope.amqInfo.createDurableSubscriber($scope.newDurableSubscriber,$scope.newDurableClientID,$scope.newDurableTopic,$scope.newDurableSelector);
 		});
 	}
 }]

@@ -26,7 +26,7 @@
 	
 	<div>		
 		Display chart for queue: <select name="repeatSelect" id="repeatSelect" ng-model="selectedChartQueue" ng-change="setupChartData()">
-			<option ng-repeat="(key, value) in amqInfo.queueStats" value="{{key}}">{{key}}</option>
+			<option ng-repeat="queue in amqInfo.orderedQueueList" value="{{queue}}">{{queue}}</option>
 		</select>
 		<nvd3 options='options' data='data' api='api'></nvd3>
 	</div>

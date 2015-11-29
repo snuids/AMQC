@@ -13,8 +13,10 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	factory.connected = false;
 	factory.connecting = false;
 	factory.rememberMe = false;
+	factory.host=location.host;
 	
 	factory.queueMessages = [];
+	factory.orderedQueueList=[];
 	factory.queueStats = {}; // TODO: document internals
 	factory.queueStatsFields = [ 'QueueSize', 'EnqueueCount' ];//, 'ConsumerCount' ]; // TODO: user selectable from UI
 	
@@ -25,7 +27,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	
 	factory.autoRefreshInterval = 0; // in seconds, 0 == no refresh
 	factory.refreshTimer = undefined;
-	
+		
 	factory.getUrlParameter=function(name)
 	{
 		  url = location.href;
@@ -46,13 +48,23 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		console.log('added stats entry for queue ' + queueName);
 	}
 	
+	factory.computeOrderedQueueList=function()
+	{
+		factory.orderedQueueList=[];
+		for ( property in factory.queueStats )
+		{
+			factory.orderedQueueList.push(property);
+		}
+		factory.orderedQueueList.sort();
+	}
+	
 	factory.isRefreshing = function() {
 		return factory.currentlyRefreshing.indexOf(true) !== -1;
 	}
 	
 	factory.showCORSBanner=function()
 	{
-		if((factory.login.length>0)&&(window.location.hostname!=factory.brokerip))
+		if((factory.login.length>0)&&(window.location.host!=(factory.brokerip+':'+factory.brokerport)))
 			return true;
 		else
 			return false;
@@ -236,7 +248,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 					qStat[statField].values.push({x:Math.floor(Date.now()), y:queue[statField]});
 				}
 			}
-			factory.currentlyRefreshing[1] = false;
+			factory.computeOrderedQueueList();
+			factory.currentlyRefreshing[1] = false; 
 			//console.log(factory.filteredQueues);
 		  }, function errorCallback(response) {
 			  toasty.error({msg:'Cannot read queues'});
@@ -367,6 +380,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		  });
 	}
 
+	/* Durables */
+
 	factory.deleteDurableSubscriber=function(durablesub)
 	{
 		var postUrl=factory.getPostUrl();
@@ -390,15 +405,18 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		  });
 	}
 	
-	factory.createDurableSubscriber=function(newDurableSubscriber,newDurableClientID,newDurableTopic)
+	factory.createDurableSubscriber=function(newDurableSubscriber,newDurableClientID,newDurableTopic,newDurableSelector)
 	{
 		var postUrl=factory.getPostUrl();
+		var selector=null;
+		if(newDurableSelector!='')
+			selector=newDurableSelector;
 						
 		var data={
 		    "type":"exec",
 		    "mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername,
 			"operation":"createDurableSubscriber",
-			"arguments":[newDurableClientID,newDurableSubscriber,newDurableTopic,null]
+			"arguments":[newDurableClientID,newDurableSubscriber,newDurableTopic,selector]
 		};
 		
 		console.log(data);
@@ -407,6 +425,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		.then(function successCallback(response) {
 			toasty.success({msg:'Durable subscriber ' + newDurableSubscriber + ' created'});
 			factory.refreshAll();
+			
 
 		}, function errorCallback(response) {
 			toasty.error({msg:'Unable to create durable subscriber ' + newDurableSubscriber});
@@ -414,6 +433,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			console.log(response);
 		  });
 	}
+
+	/* Queues */
 
 	factory.createNewQueue=function(queueName,queueAction)
 	{
@@ -441,31 +462,6 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		
 	}
 
-	factory.createNewTopic=function(topicName,queueAction)
-	{
-		var postUrl=factory.getPostUrl();
-						
-		var data = {
-		    "type":"exec",
-		    "mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername,
-			"operation":"addTopic",
-			"arguments":[topicName]
-		};
-		
-		console.log(data);
-		
-		$http.post(postUrl, data, {})
-		.then(function successCallback(response) {
-			toasty.success('Topic ' + topicName + ' created.');
-			console.log(response);
-			factory.refreshAll();
-
-		}, function errorCallback(response) {
-			toasty.error('Unable to create topic ' + topicName);
-			console.log(response);
-		});		
-	}
-
 	factory.deleteQueue = function(queueName,queueAction) {
 		var postUrl=factory.getPostUrl();
 						
@@ -489,6 +485,33 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		  });
 	}
 	
+	/* Topic */
+
+	factory.createNewTopic=function(topicName,queueAction)
+	{
+		var postUrl=factory.getPostUrl();
+						
+		var data = {
+		    "type":"exec",
+		    "mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername,
+			"operation":"addTopic",
+			"arguments":[topicName]
+		};
+		
+		console.log(data);
+		
+		$http.post(postUrl, data, {})
+		.then(function successCallback(response) {
+			toasty.success('Topic ' + topicName + ' created.');
+			console.log(response);
+			factory.refreshAll();
+
+		}, function errorCallback(response) {
+			toasty.error('Unable to create topic ' + topicName);
+			console.log(response);
+		});		
+	}	
+	
 	factory.deleteTopic=function(topicName,queueAction)
 	{
 		var postUrl=factory.getPostUrl();
@@ -504,7 +527,6 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		
 		$http.post(postUrl, data, {})
 		.then(function successCallback(response) {
-			alert('done');
 			console.log(response);
 			factory.refreshAll();
 
@@ -515,6 +537,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		
 //		this.execQueue(queueName,'purge','Queue');
 	}
+	
+	/* Delete Message */
 	
 	factory.deleteMessage = function(queueType, queueName, msgId) {
 		var execUrl = factory.execUrl;
