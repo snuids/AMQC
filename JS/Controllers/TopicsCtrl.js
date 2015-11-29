@@ -1,4 +1,4 @@
-app.controller('TopicsCtrl',['$scope','amqInfoFactory', function($scope,amqInfoFactory) 
+app.controller('TopicsCtrl',['$scope', '$confirm','amqInfoFactory', function($scope,$confirm,amqInfoFactory) 
 {
 	$scope.head = {
 	        Name: "Name",
@@ -98,11 +98,17 @@ app.controller('TopicsCtrl',['$scope','amqInfoFactory', function($scope,amqInfoF
 	$scope.deleteTopic=function()
 	{
 		
-		if(confirm("Are you sure you want to delete this topic " + $scope.currentTopic.Name))
+		$confirm({text: 'Are you sure you want to delete the topic '+ $scope.currentTopic.Name +' ?'})
+		        .then(function() 
 		{
 			$scope.amqInfo.deleteTopic($scope.currentTopic.Name);
 			$scope.showDetails(null);
-		}
+		});
+/*		if(confirm("Are you sure you want to delete this topic " + $scope.currentTopic.Name))
+		{
+			$scope.amqInfo.deleteTopic($scope.currentTopic.Name);
+			$scope.showDetails(null);
+		}*/
 	}
 }]
 );

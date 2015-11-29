@@ -1,4 +1,4 @@
-app.controller('SubscribersCtrl',['$scope','amqInfoFactory', function($scope,amqInfoFactory) 
+app.controller('SubscribersCtrl',['$scope','$confirm','amqInfoFactory', function($scope,$confirm,amqInfoFactory) 
 {
 	$scope.head = {
 	        Name: "Name",
@@ -55,11 +55,12 @@ app.controller('SubscribersCtrl',['$scope','amqInfoFactory', function($scope,amq
 	    };
 	
 	$scope.deleteDurable = function(sub) {
-			if(confirm("Are you sure you want to delete the durable subscriber "+sub.ConsumerID))
+			$confirm({text: 'Are you sure you want to delete the durable subscriber '+ sub.ConsumerID +' ?'})
+			        .then(function() 
 			{
 				$scope.amqInfo.deleteDurableSubscriber(sub);
-			}
-			return true;
+			});
+
 		};
 }]
 );

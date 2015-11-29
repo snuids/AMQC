@@ -1,4 +1,5 @@
-app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', '$timeout', 'amqInfoFactory', 'toasty', function($rootScope, $scope, $interval, $timeout, amqInfoFactory, toasty) 
+app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', '$timeout', '$confirm','amqInfoFactory', 'toasty'
+, function($rootScope, $scope, $interval, $timeout, $confirm,amqInfoFactory, toasty) 
 {
 	$scope.head = {
 			Name: "Name",
@@ -176,11 +177,14 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', '$timeout', 'a
 	
 	$scope.deleteQueue=function()
 	{
-		if(confirm("Are you sure you want to delete the queue " + $scope.currentQueue.Name))
+		
+		$confirm({text: 'Are you sure you want to delete the queue '+ $scope.currentQueue.Name +' ?'})
+		        .then(function() 
 		{
 			$scope.amqInfo.deleteQueue($scope.currentQueue.Name);
 			$scope.showDetails(null);
-		}
+		});
+
 	}
 	
 	$scope.createNewQueue=function()

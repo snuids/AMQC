@@ -331,11 +331,11 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		
 		$http.post(postUrl, data, {})
 		.then(function successCallback(response) {
-			toasty.success({msg:'Durable subscriber ' + durablesub + ' deleted'});
+			toasty.success({msg:'Durable subscriber ' + durablesub.OriginalConsumerID + ' deleted'});
 			factory.refreshAll();
 
 		}, function errorCallback(response) {
-			toasty.error({msg:'Unable to delete durable subscriber ' + durablesub});
+			toasty.error({msg:'Unable to delete durable subscriber ' + durablesub.OriginalConsumerID});
 		    //alert('Unable to destroy durable consumer.');
 			console.log(response);
 		  });

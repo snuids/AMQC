@@ -1,4 +1,4 @@
-app.controller('LoginCtrl',['$scope','$rootScope','amqInfoFactory','Base64', function($scope,$rootScope, amqInfoFactory,Base64) 
+app.controller('LoginCtrl',['$scope','$rootScope','amqInfoFactory','Base64', function($scope,$rootScope,amqInfoFactory,Base64) 
 {
 	$scope.amqInfo = amqInfoFactory;
 		
