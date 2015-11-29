@@ -1,7 +1,7 @@
 app.controller('SubscribersCtrl',['$scope','$confirm','amqInfoFactory', function($scope,$confirm,amqInfoFactory) 
 {
 	$scope.head = {
-	        Name: "Name",
+	        DestinationName: "Name",
 	        ClientID: "ClientID",
 	        ConsumerID: "ConsumerID",
 	        Durable: "Durable",
@@ -23,7 +23,7 @@ app.controller('SubscribersCtrl',['$scope','$confirm','amqInfoFactory', function
 	$scope.newDurableTopic='';
 	
 	$scope.sort = {
-	        column: 'Name',
+	        column: 'DestinationName',
 	        descending: false
 	    };
 	
