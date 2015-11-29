@@ -5,7 +5,7 @@
 	Subscriber: <input type="text" ng-model="newDurableSubscriber" >&nbsp;	
 	Topic: <input type="text" ng-model="newDurableTopic" >&nbsp;	
 	<button class="btn btn-primary btn-sm" ng-disabled="(newDurableClientID.length==0) || (newDurableSubscriber.length==0) || (newDurableTopic.length==0)" ng-click="createNewDurableSubscriber()">Create</button><br/>
-	<input type="checkbox" ng-model="durableOnly"> <span>Show Durable Only&nbsp;&nbsp;</span><input type="checkbox" ng-model="notConnectedOnly"> <span>Show Not Connected Only</span>
+	<input type="checkbox" ng-model="durableOnly"> <span>Show Durable Only&nbsp;&nbsp;</span><input type="checkbox" ng-model="notConnectedOnly"> <span>Show Not Connected Durable Only</span>
 		</div>
 	</div>
 
