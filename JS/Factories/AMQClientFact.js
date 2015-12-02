@@ -15,6 +15,17 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 	factory.selectedSendDestinationName="foo";
 	factory.textToSend="Enter your text message...";
 
+
+	if ((localStorage.getItem("amqc.topics") !== undefined)
+			&&(localStorage.getItem("amqc.topics") !== null))		
+		factory.topics = localStorage.getItem("amqc.topics") ;
+
+	if ((localStorage.getItem("amqc.queues") !== undefined)
+			&&(localStorage.getItem("amqc.queues") !== null))		
+		factory.queues = localStorage.getItem("amqc.queues") ;
+	
+
+
 	factory.subscribe= function(scope, callback) {
         var handler = $rootScope.$on('notifying-service-event', callback);
         scope.$on('$destroy', handler);
@@ -27,39 +38,45 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 	factory.callBackFunc=function(frame) 
 	{		
 		var cols=factory.topics.split(',');
-	
+		
 		for(var j=0;j<cols.length;j++)
 		{
-			
-	    	var sub = factory.client.subscribe("/topic/"+cols[j], function(message) 
-			{										
-				console.log(message);
-				var mes={};
-				mes.reception=new Date();
-				mes.message=message.body;
-				mes.destination=message.headers.destination;
-				mes.headers=message.headers;
-				factory.messages.unshift(mes);
-				factory.messagesCount++;
-				factory.notify('mes');
-	    	});
+			if(cols[j]!='')
+			{		
+				
+		    	var sub = factory.client.subscribe("/topic/"+cols[j], function(message) 
+				{										
+					console.log(message);
+					var mes={};
+					mes.reception=new Date();
+					mes.message=message.body;
+					mes.destination=message.headers.destination;
+					mes.headers=message.headers;
+					factory.messages.unshift(mes);
+					factory.messagesCount++;
+					factory.notify('mes');
+		    	});
+			}
 		}
 		
 		cols=factory.queues.split(',');
 		for(var j=0;j<cols.length;j++)
 		{
-	    	var sub = factory.client.subscribe("/queue/"+cols[j], function(message) 
-			{										
-				console.log(message);
-				var mes={};
-				mes.reception=new Date();
-				mes.message=message.body;
-				mes.destination=message.headers.destination;
-				mes.headers=message.headers;
-				factory.messages.unshift(mes);
-				factory.messagesCount++;
-				factory.notify('mes');				
-	    	});
+			if(cols[j]!='')
+			{
+		    	var sub = factory.client.subscribe("/queue/"+cols[j], function(message) 
+				{										
+					console.log(message);
+					var mes={};
+					mes.reception=new Date();
+					mes.message=message.body;
+					mes.destination=message.headers.destination;
+					mes.headers=message.headers;
+					factory.messages.unshift(mes);
+					factory.messagesCount++;
+					factory.notify('mes');				
+		    	});
+			}
 		}
 
 		factory.client.connected=true;
@@ -74,6 +91,11 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 		this.messagesCount=0;
 		this.client.connect(this.login, this.password, this.callBackFunc);
 		
+		if((typeof(Storage) === undefined) || amqInfoFactory.rememberMe === false)
+			return;
+		
+		localStorage.setItem('amqc.topics', factory.topics);
+		localStorage.setItem('amqc.queues', factory.queues);
 	}
 
 	factory.disconnect=function()
