@@ -6,3 +6,4 @@ v0.71 26Nov2015 Ability to delete a message from the queue message browser
 v0.73 29Nov2015 All dependencies are handled by bower. (.bowerrc folder must be bower_dep in the main folder) Angular-confirm dialog boxes instead of the regular javascript ones.
 v0.74 29Nov2015 Subscribers panel improved. Added the possibility to create a durable subscriber
 v0.75 29Nov2015 Selector added.
+v0.76 02Nov2015 Second filter added.

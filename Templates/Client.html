@@ -15,7 +15,10 @@
 	<button type="button" ng-show="amqClient.messages.length>0" ng-click="clearTable()" class="btn btn-primary btn-sm btn-xs">Clear Table</button>
 	
 	<span ng-show="amqClient.messages.length>0">
-	Filter:&nbsp;<input type="text" ng-model="filterFieldMessage"  autofocus/>
+	Filter 1:&nbsp;<input type="text" ng-model="filterFieldMessage"  placeholder="Use ! to reverse filter"/>
+	</span>
+	<span ng-show="amqClient.messages.length>0">
+	Filter 2:&nbsp;<input type="text" ng-model="filterFieldMessage2" placeholder="Use ! to reverse filter"/>
 	</span>
 	
 	<button type="button" ng-show="amqClient.client &amp;&amp; !sendMessageVisible"  ng-click="showSendMessage()" class="btn btn-primary btn-sm btn-xs">Send Message</button>
@@ -29,7 +32,7 @@
 			<th>Message</th>
 			<th>Action</th>
 		</tr>
-		<tr ng-repeat="message in amqClient.messages | filter:filterFieldMessage">
+		<tr ng-repeat="message in amqClient.messages | filter:filterFieldMessage | filter:filterFieldMessage2">
 	      <td>{{message.reception | date:'HH:mm:ss.sss'}}</td>
 		    <td>{{message.destination}}</td>
 				<td>{{message.message | limitTo:60}}</td>
