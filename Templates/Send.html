@@ -1,13 +1,13 @@
 <div ng-controller="SendCtrl">
-	<H3 class="nomargin">Send Message via Rest calls</span></H3>
+	<H3 class="nomargin">Send Message via REST calls on the ActiveMQ API</span></H3>
 
-	<H4 class='smallmargin'>Destination:&nbsp;&nbsp;<input  type="text" ng-model="selectedSendDestinationName" >&nbsp;
-		<span  ng-repeat="dest in destinations">
-				&nbsp;&nbsp;<input type="radio" ng-model="$parent.selectedSendDestination" name="$parent.selectedSendDestination" value="{{dest.name}}">&nbsp;&nbsp;{{dest.name}}
+	<H4 class='smallmargin'>Destination:&nbsp;&nbsp;<input  type="text" ng-model="msgInfo.selectedSendDestinationName" >&nbsp;
+		<span  ng-repeat="dest in msgInfo.destinations">
+				&nbsp;&nbsp;<input type="radio" ng-model="$parent.msgInfo.selectedSendDestination" name="$parent.msgInfo.selectedSendDestination" value="{{dest.name}}">&nbsp;&nbsp;{{dest.name}}
 		</span></H4>
 		
 		<div>
-			<textarea ng-model="textToSend" cols="80" rows="5"></textarea>
+			<textarea ng-model="msgInfo.textToSend" cols="80" rows="5"></textarea>
 		</div>
 		
 		<span><class='smallmargin'>Header:&nbsp;&nbsp;<input class="nodrag" type="text" ng-model="headerName" >
@@ -23,7 +23,7 @@
 					<th>Value</th>
 					<th>Action</th>
 				</tr>
-				<tr ng-repeat="head in sendMessageHeaders">
+				<tr ng-repeat="head in msgInfo.sendMessageHeaders">
 					<td>{{head.name}}</td>
 					<td>{{head.value}}</td>
 					<td><button class="nodrag btn btn-primary btn-xs" 
@@ -32,10 +32,10 @@
 			</table>		
 		</div>
 
-		<div id="send_message_viarest_footer">{{textToSend}}{{selectedSendDestination}}
-			Repeat:&nbsp;<input class="nodrag" type="number"  min="1" max="10000" ng-model="repeatMessages">
+		<div id="send_message_viarest_footer">
+			Repeat:&nbsp;<input class="nodrag" type="number"  min="1" max="10000" ng-model="msgInfo.repeatMessages">
 			<button class="nodrag btn btn-warning btn-sm" 
-				ng-disabled="(selectedSendDestinationName.length==0) || (textToSend.length==0)" ng-click="sendMessage()">Send</button>
+				ng-disabled="(msgInfo.selectedSendDestinationName.length==0) || (msgInfo.textToSend.length==0)" ng-click="sendMessage()">Send</button>
 			
 		</div>
 	

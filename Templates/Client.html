@@ -1,5 +1,5 @@
 <div ng-controller="ClientCtrl">
-	<H2 class="nomargin">Client<span ng-show="amqClient.client"> Messages({{amqClient.messagesCount}})</span></H2>
+	<H2 class="nomargin">STOMP Client<span ng-show="amqClient.client"> Messages({{amqClient.messagesCount}})</span></H2>
 
 		
 	Port: <input type="number" min="1" max="65556" ng-disabled="amqClient.client" ng-model="amqClient.port">

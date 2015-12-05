@@ -637,21 +637,11 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		  });
 	}
 	
-	factory.sendMessage=function(destType,destName,properties)
+	factory.sendMessage=function(destType,destName,text,properties)
 	{
-//		alert(destType+' '+text+' '+properties);
-		var postUrl=factory.getPostUrl();
+		var postUrl=factory.getAPIUrl()+"message/"+destName+"?type="+destType.toLowerCase()+properties;
 				
-		alert(properties);
-		
-		var data={
-		    "type":"exec",
-			"mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername+",destinationType="+destType
-					+",destinationName="+destName,
-			"operation":"sendTextMessageWithProperties()",
-			"arguments":[properties]
-		};
-
+		var data=text;
 		console.log(data);
 
 		$http.post(postUrl, data, {})
@@ -661,8 +651,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			{
 				toasty.error(response.data.error);
 			}
-			else
-				alert('ok');
+
 
 		  }, function errorCallback(response) {
 		    alert('Unable to send Message.');
@@ -672,6 +661,10 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	
 	factory.getPostUrl = function() {
 		return factory.postUrl;
+	}
+	
+	factory.getAPIUrl = function() {
+		return factory.apiUrl;
 	}		
 	
 	factory.refreshAll = function() {
@@ -710,6 +703,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		factory.connectionsUrl='http://REPLACEIP:REPLACEPORT/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,connector=clientConnectors,connectorName=CONNECTORNAME,connectionViewType=clientId,connectionName=*';	
 		factory.execUrl='http://REPLACEIP:REPLACEPORT/api/jolokia/exec/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,destinationType=QUEUETYPE,destinationName=QUEUENAME/QUEUEACTION';
 		factory.postUrl='http://REPLACEIP:REPLACEPORT/api/jolokia';		
+		factory.apiUrl='http://REPLACEIP:REPLACEPORT/api/';		
 		
 		factory.infoUrl=factory.infoUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
 		factory.queuesUrl=factory.queuesUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
@@ -717,6 +711,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		factory.connectionsUrl=factory.connectionsUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
 		factory.execUrl=factory.execUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
 		factory.postUrl=factory.postUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);			
+		factory.apiUrl=factory.apiUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);			
 
 	}
 
