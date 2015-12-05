@@ -84,9 +84,9 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 
 	factory.connect=function()
 	{
-		console.log("CONNECT");
+		console.log("CONNECT CLIENT");
 		var url="ws://"+amqInfoFactory.brokerip+":61614";
-		this.client = Stomp.client(url);
+		this.client = Stomp.client(url,['stomp']);
 		this.messages=[];
 		this.messagesCount=0;
 		this.client.connect(this.login, this.password, this.callBackFunc);

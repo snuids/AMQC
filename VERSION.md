@@ -7,3 +7,4 @@ v0.73 29Nov2015 All dependencies are handled by bower. (.bowerrc folder must be 
 v0.74 29Nov2015 Subscribers panel improved. Added the possibility to create a durable subscriber
 v0.75 29Nov2015 Selector added.
 v0.76 02Nov2015 Second filter added.
+v0.77 05Dec2015 Stomp protocol forced in the client connection
