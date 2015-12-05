@@ -28,11 +28,16 @@ app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory',
             url: 'Templates/Connections.html',
 			hasFilter:true
     	}
+		/*, {
+            title: 'Send',
+            url: 'Templates/Send.html',
+			hasFilter:true
+    	}*/
 		, {
             title: 'Client',
             url: 'Templates/Client.html',
 			hasFilter:true
-    	}
+    	}		
 		, {
             title: 'Preferences',
             url: 'Templates/Preferences.html',

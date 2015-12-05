@@ -3,6 +3,16 @@
 	margin-top:1px;
 }
 
+textarea{
+    border:1px solid #999999;
+    width:100%;
+    margin:5px 0;
+    padding:3px;
+}
+.textareacontainer{
+    padding-right: 8px;
+}
+
 .small_input_text
 {
 	width:80px;
@@ -371,7 +381,7 @@
 	border:0px solid  black;
 	left:0px;
 	right:0px;
-	top:190px;
+	top:200px;
 	bottom:40px;
 	overflow:auto;
 }
@@ -422,3 +432,24 @@
 	text-align:center;
 }
 
+/* Send Message Tab */
+
+#send_message_viarest_headers
+{
+	position:absolute;
+	border:0px solid  black;
+	left:0px;
+	right:0px;
+	top:240px;
+	bottom:40px;
+	overflow:auto;
+}
+
+#send_message_viarest_footer
+{
+	position:absolute;
+	bottom:5px;
+	left:0px;
+	right:0px;
+	text-align:center;
+}

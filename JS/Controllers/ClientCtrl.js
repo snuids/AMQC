@@ -1,4 +1,5 @@
-app.controller('ClientCtrl',['$scope','amqInfoFactory','amqClientFactory', function($scope,amqInfoFactory,amqClientFactory) 
+app.controller('ClientCtrl'
+	,['$scope','amqInfoFactory','amqClientFactory','toasty', function($scope,amqInfoFactory,amqClientFactory,toasty) 
 {	
 	amqClientFactory.subscribe($scope, function somethingChanged() 
 	{
@@ -64,6 +65,14 @@ app.controller('ClientCtrl',['$scope','amqInfoFactory','amqClientFactory', funct
 	
 	$scope.addHeader=function()
 	{
+		for(var i=0 ;i< $scope.amqClient.sendMessageHeaders.length;i++)
+		{
+			if($scope.amqClient.sendMessageHeaders[i].name==$scope.headerName)
+			{
+				toasty.error({msg:'Header ' + $scope.headerName + ' already exists.'});
+				return;
+			}
+		}	
 		var obj={"name":$scope.headerName,"value":$scope.headerValue};
 		$scope.amqClient.sendMessageHeaders.push(obj);
 	}
