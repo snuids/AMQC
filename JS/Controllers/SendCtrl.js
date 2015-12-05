@@ -1,6 +1,6 @@
 app.controller('SendCtrl',['$scope','amqInfoFactory','toasty', function($scope,amqInfoFactory,toasty) 
 {
-	
+	$scope.amqInfo=amqInfoFactory;
 	$scope.sendMessageClass='send_message_details';
 	$scope.sendMessageVisible=true;
 	$scope.selectedSendDestination='Topic';
@@ -49,6 +49,7 @@ app.controller('SendCtrl',['$scope','amqInfoFactory','toasty', function($scope,a
 			props+=$scope.sendMessageHeaders[i].name+"="+$scope.sendMessageHeaders[i].value+",";
 		if(props.length>0)
 			props=props.substring(0,props.length-1);
-		alert(props);
+		props+=",body="+$scope.textToSend;
+		$scope.amqInfo.sendMessage($scope.selectedSendDestination,$scope.selectedSendDestinationName,props);
 	}
 }]);

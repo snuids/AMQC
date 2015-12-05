@@ -637,6 +637,39 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		  });
 	}
 	
+	factory.sendMessage=function(destType,destName,properties)
+	{
+//		alert(destType+' '+text+' '+properties);
+		var postUrl=factory.getPostUrl();
+				
+		alert(properties);
+		
+		var data={
+		    "type":"exec",
+			"mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername+",destinationType="+destType
+					+",destinationName="+destName,
+			"operation":"sendTextMessageWithProperties()",
+			"arguments":[properties]
+		};
+
+		console.log(data);
+
+		$http.post(postUrl, data, {})
+		.then(function successCallback(response) {
+			console.log(response);
+			if((response.data!=null)&&(response.data.error!=null))
+			{
+				toasty.error(response.data.error);
+			}
+			else
+				alert('ok');
+
+		  }, function errorCallback(response) {
+		    alert('Unable to send Message.');
+			console.log(response);
+		  });
+	}
+	
 	factory.getPostUrl = function() {
 		return factory.postUrl;
 	}		
