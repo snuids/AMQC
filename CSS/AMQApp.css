@@ -173,6 +173,29 @@ textarea{
 	cursor:pointer;    
 }
 
+/* Info */
+
+.info_tabs_header
+{
+	position:absolute;
+	top:80px;
+	left:0px;
+	right:0px;
+}
+
+#info_table
+{
+	position:absolute;
+	bottom:30px;
+	top:120px;
+	left:0px;
+	right:0px;
+	overflow:auto;
+}
+
+
+/* Connections */
+
 .connection_details
 {
 	padding-bottom:3px !important;
