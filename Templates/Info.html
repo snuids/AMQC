@@ -19,6 +19,41 @@
 			</div>
 		</div>
 	</div>	
+	
+	<div id="info_stats"  ng-show="currentTab.title!='Info'">
+		<div id="info_stats_chart1">		
+			<nvd3-line-chart
+		    	data="amqInfo.connectionsData"
+		        id="connectionsId"
+		        xAxisTickFormat="xAxisTickFormatFunction()"
+		        yAxisTickFormat="yAxisTickFormatFunction()"
+		        showXAxis="true"
+		        showYAxis="true"
+				interactive="true"
+				useInteractiveGuideline="true"
+				isArea="true"
+				showLegend="true"
+				objectequality="true">
+		        	<svg></svg>
+		    </nvd3-line-chart>
+		</div>
+		<div id="info_stats_chart2">
+			<nvd3-line-chart
+		    	data="amqInfo.messagesData"
+		        id="messagesId"
+		        xAxisTickFormat="xAxisTickFormatFunction()"
+		        yAxisTickFormat="yAxisTickFormatFunction()"
+		        showXAxis="true"
+		        showYAxis="true"
+				interactive="true"
+				isArea="false"
+				showLegend="true"
+				objectequality="true">
+		        	<svg></svg>
+		    </nvd3-line-chart>
+		</div>
+	</div>
+	
 	<div id="info_table" ng-show="currentTab.title=='Info'">
 		
 		<table class="table table-striped table-bordered table-hover table-condensed  small">
@@ -26,9 +61,11 @@
 			<th>Value</th>
 			<th>Property</th>
 		</tr>
-		<tr ng-repeat="ent in amqInfo.filteredInfo | filter:filterField">
+		<tr ng-repeat="ent in amqInfo.filteredInfo | filter:$parent.filterField">
 		    <td>{{ent.key}}</td><td>{{ent.value}}</td>
 		</tr>
 		</table>
 	<div>
+		
+	
 </div>

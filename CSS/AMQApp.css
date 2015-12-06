@@ -193,6 +193,29 @@ textarea{
 	overflow:auto;
 }
 
+#info_stats
+{
+	position:absolute;
+	bottom:30px;
+	top:120px;
+	left:0px;
+	right:0px;
+	overflow:auto;
+}
+
+#info_stats_chart1
+{
+	height:100%;
+	width:50%;
+	float:left;
+}
+
+#info_stats_chart2
+{
+	height:100%;
+	width:50%;
+	float:left;
+}
 
 /* Connections */
 

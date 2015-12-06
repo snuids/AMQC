@@ -9,6 +9,8 @@
         <script src="bower_dep/angular/angular.min.js"></script>
 		<script src="bower_dep/d3/d3.min.js"></script>
 		<script src="bower_dep/angular-nvd3/dist/angular-nvd3.min.js"></script>	
+		<script src="bower_dep/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.min.js"></script>	
+
         <script src="bower_dep/angular-toasty/dist/angular-toasty.min.js"></script>
 		<script src="bower_dep/bootstrap/dist/js/bootstrap.min.js"></script>
 		<script src="bower_dep/nvd3/build/nv.d3.min.js"></script>
@@ -73,15 +75,15 @@
 	                    <div ng-include="currentTab.url"></div>
 	                </div>
 	                <div id="footerView">
-	                    <button class="btn btn-primary btn-sm" ng-click="refreshAll()">Refresh</button>
+	                    <button class="btn btn-primary btn-sm" ng-show="amqInfo.autoRefreshInterval==0" ng-click="refreshAll()">Refresh</button>
 	                    <button class="btn btn-danger btn-sm" ng-click="disconnectAMQ()">Disconnect</button>
 	                </div>
 	            </div>
-            	<div id="version">v0.78 December 2015 ({{amqInfo.brokerip}})<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
+            	<div id="version">v0.79 December 2015 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
           	</div>
 
             <toasty></toasty>
-            <div id="github"><a href="https://github.com/snuids/AMQC">Git Hub Repo</a></div>
+            <div id="github"><a href="https://github.com/snuids/AMQC/wiki" target="_blank">Git Hub Repo</a></div>
         </div>
     </body>
 </html>

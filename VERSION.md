@@ -9,3 +9,4 @@ v0.75 29Nov2015 Selector added.
 v0.76 02Nov2015 Second filter added.
 v0.77 05Dec2015 Stomp protocol forced in the client connection
 v0.78 05Dec2015 Message sending via the Active MQ Rest API panel added
+v0.79 06Dec2015 Broker stats added

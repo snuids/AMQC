@@ -37,10 +37,7 @@ app.controller('SendCtrl',['$scope','amqInfoFactory','sendMessageFactory','toast
 		for(var i=0 ;i< $scope.msgInfo.sendMessageHeaders.length;i++)
 			props+="&"+$scope.msgInfo.sendMessageHeaders[i].name+"="+$scope.msgInfo.sendMessageHeaders[i].value;
 		
-		for(var i=0;i<$scope.msgInfo.repeatMessages;i++)
-			$scope.amqInfo.sendMessage($scope.msgInfo.selectedSendDestination,$scope.msgInfo.selectedSendDestinationName
-				,$scope.msgInfo.textToSend,props);
-		
-		toasty.success($scope.msgInfo.repeatMessages+" message(s) sent.");	
+		$scope.amqInfo.sendMessage($scope.msgInfo.selectedSendDestination,$scope.msgInfo.selectedSendDestinationName
+				,$scope.msgInfo.textToSend,props,$scope.msgInfo.repeatMessages);				
 	}
 }]);

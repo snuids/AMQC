@@ -1,32 +1,36 @@
-app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty', 'Base64'
-		, function($http, $location, $interval, $q, toasty, Base64) {
+app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty', 'Base64','$rootScope'
+		, function($http, $location, $interval, $q, toasty, Base64,$rootScope) {    	
 
 	var factory = {}; 
 
-	factory.hideAdvisoryQueues = true;
-
-	factory.login = "";
-	factory.password = "";
-	factory.brokername = "localhost";
-	factory.brokerip = "127.0.0.1";
-	factory.brokerport = 8161;
-	factory.connected = false;
-	factory.connecting = false;
-	factory.rememberMe = false;
-	factory.host=location.host;
-	
-	factory.queueMessages = [];
-	factory.orderedQueueList=[];
-	factory.queueStats = {}; // TODO: document internals
-	factory.queueStatsFields = [ 'QueueSize', 'EnqueueCount' ];//, 'ConsumerCount' ]; // TODO: user selectable from UI
-	
-	factory.connectionError="";
+	factory.resetAll=function()
+	{
+		factory.updates=0;
+	    factory.connectionsData = [
+		{
+			"key": "Current Connections",
+			"values": []
+		}
+		];
 		
-	// 0 - Info, 1 - Queues, 2 - Connections, 3 - Topics
-	factory.currentlyRefreshing = [false, false, false, false];
-	
-	factory.autoRefreshInterval = 0; // in seconds, 0 == no refresh
-	factory.refreshTimer = undefined;
+	    factory.messagesData = [
+		{
+			"startValue":-1,
+			"startTime":new Date(),
+			"key": "Enqueues / Second",
+			"values": [],
+			 color: 'orange'
+		}
+		,
+		{
+			"startValue":-1,
+			"startTime":new Date(),
+			"key": "Dequeues / Second",
+			"values": [],
+			color: '#2ca02c'
+		}
+		];		
+	}
 		
 	factory.getUrlParameter=function(name)
 	{
@@ -84,7 +88,12 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		console.log('new autoRefreshInterval:' + factory.autoRefreshInterval * 1000);
 		
 		if (factory.autoRefreshInterval > 0)
-			factory.refreshTimer = $interval(function() { factory.refreshAll(); }, factory.autoRefreshInterval * 1000);
+			factory.refreshTimer = $interval(function() 
+			{ 
+				console.log('interval triggered');
+				factory.refreshAll(); 
+			}, 
+			factory.autoRefreshInterval * 1000);
 	}
 	
 	/* Loading Preferences */
@@ -187,23 +196,52 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 				{
 					var nobj={key:property,value:factory.info[property]};
 					factory.filteredInfo.push(nobj);
+					if(property=='CurrentConnectionsCount')
+					{
+						factory.connectionsData[0].values.push([new Date(),parseInt(factory.info[property])]);
+						if(factory.connectionsData[0].values.length>factory.MAXGRAPHVALUES)
+							factory.connectionsData[0].values.shift();
+						
+					}					
+					else if((property=='TotalEnqueueCount')||(property=='TotalDequeueCount'))
+					{
+						var k=0;
+						if(property=='TotalDequeueCount')
+							k=1;
+						var mes=factory.messagesData[k];
+						if(mes.startValue==-1)
+						{
+							mes.startValue=parseInt(factory.info[property]);
+							mes.lastValue=mes.startValue;
+							mes.startTime=new Date();
+						}
+						else
+						{
+							var times=(new Date()-mes.startTime)/1000;
+							if(times>0)
+							{
+								mes.values.push([new Date(),(parseInt(factory.info[property])-mes.lastValue)/times]);
+								if(mes.values.length>factory.MAXGRAPHVALUES)
+									mes.values.shift();
+								mes.lastValue=parseInt(factory.info[property]);
+								mes.startTime=new Date();
+							}
+						}
+					}
+
 				}
 			}
 			factory.filteredInfo.sort(function(a, b){return a.key.localeCompare(b.key)});
 			factory.connected = true;
 			factory.connecting = false;	
 			factory.currentlyRefreshing[0] = false;
+//			factory.notify();
 		}, function errorCallback(response) {
 			toasty.error({msg:'Unable to connect to ActiveMQ. Status:' + response.status});
-//			toasty.error({msg:'Unable to connect to ActiveMQ. Status:' + response.data});
-
-//			alert(response.data);
 			if(response.data!=null)
 				factory.connectionError=response.data.replace("<h2>","<h4>").replace("</h2>","</h4>");
-//			console.log(response);
-			//alert('Unable to connect to ActiveMQ. Status:'+response.status);
 			factory.connecting=false;
-			factory.stopRefreshTimer();
+			//factory.stopRefreshTimer();
 			factory.currentlyRefreshing[0] = false;
 		});
 	}
@@ -253,7 +291,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			//console.log(factory.filteredQueues);
 		  }, function errorCallback(response) {
 			  toasty.error({msg:'Cannot read queues'});
-			  factory.stopRefreshTimer();
+			  //factory.stopRefreshTimer();
 			  factory.currentlyRefreshing[1] = false;
 			///alert('Cannot read queues');
 		  });
@@ -314,7 +352,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			
 		  }, function errorCallback(response) {
 			  toasty.error({msg:'Cannot read topics'});
-			  factory.stopRefreshTimer();
+			  //factory.stopRefreshTimer();
 			  factory.currentlyRefreshing[3] = false;
 		    //alert('Cannot read topics');
 		  });
@@ -375,7 +413,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			factory.currentlyRefreshing[2] = false;
 		  }, function errorCallback(response) {
 			  toasty.error({msg:'Cannot read connections'});
-			  factory.stopRefreshTimer();
+			  //factory.stopRefreshTimer();
 			  factory.currentlyRefreshing[2] = false;
 		  });
 	}
@@ -637,26 +675,30 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		  });
 	}
 	
-	factory.sendMessage=function(destType,destName,text,properties)
+	factory.sendMessage=function(destType,destName,text,properties,repeat)
 	{
 		var postUrl=factory.getAPIUrl()+"message/"+destName+"?type="+destType.toLowerCase()+properties;
 				
 		var data=text;
-		console.log(data);
+//		console.log(data);
 
-		$http.post(postUrl, data, {})
-		.then(function successCallback(response) {
-			console.log(response);
-			if((response.data!=null)&&(response.data.error!=null))
-			{
-				toasty.error(response.data.error);
-			}
+		for(var j=0;j<repeat;j++)
+		{
+			$http.post(postUrl, data, {})
+			.then(function successCallback(response) {
+				if((response.data!=null)&&(response.data.error!=null))
+				{
+					toasty.error(response.data.error);
+				}
+				else
+					toasty.success("Message sent.");	
 
-
-		  }, function errorCallback(response) {
-		    alert('Unable to send Message.');
-			console.log(response);
-		  });
+			  }, function errorCallback(response) {
+				  	console.log(response);
+				  	toasty.error('Unable to send message.');
+					console.log(response);
+			  });
+		  }
 	}
 	
 	factory.getPostUrl = function() {
@@ -673,11 +715,12 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			toasty.warning({msg:'Already in a refresh cycle'});
 			return;
 		}
-
+		
 		factory.refreshInfo();
 		factory.refreshQueues();
 		factory.refreshConnections();	
 		factory.refreshTopics();	
+		factory.updates++;
 	}
 	
 	factory.extractProperty = function(prop,str) {
@@ -715,6 +758,44 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 
 	}
 
+	factory.MAXGRAPHVALUES=100;
+	factory.resetAll();
+
+	factory.subscribe= function(scope, callback) {
+        var handler = $rootScope.$on('amq_info_updated', callback);
+        scope.$on('$destroy', handler);
+    },
+
+    factory.notify= function() {
+        $rootScope.$emit('amq_info_updated');
+    }
+
+	factory.hideAdvisoryQueues = true;
+
+	factory.login = "";
+	factory.password = "";
+	factory.brokername = "localhost";
+	factory.brokerip = "127.0.0.1";
+	factory.brokerport = 8161;
+	factory.connected = false;
+	factory.connecting = false;
+	factory.rememberMe = false;
+	factory.host=location.host;
+	
+	factory.queueMessages = [];
+	factory.orderedQueueList=[];
+	factory.queueStats = {}; // TODO: document internals
+	factory.queueStatsFields = [ 'QueueSize', 'EnqueueCount' ];//, 'ConsumerCount' ]; // TODO: user selectable from UI
+	
+	factory.connectionError="";
+		
+	// 0 - Info, 1 - Queues, 2 - Connections, 3 - Topics
+	factory.currentlyRefreshing = [false, false, false, false];
+	
+	factory.autoRefreshInterval = 0; // in seconds, 0 == no refresh
+	factory.refreshTimer = undefined;
+
+    
 	factory.loadConnectionParameters();
 	factory.loadPreferences();
 	
@@ -726,14 +807,6 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	factory.filteredConnections=[];		
 	factory.topicSubscribers=[];	
 
-//	alert(window.location.hostname);
-
-/*	var rep=$location.search().ip;
-
-	if($location.search().ip == undefined)
-	{
-		rep=window.location.hostname;
-	}*/
 	
 	factory.selectedConnector='all';
 	

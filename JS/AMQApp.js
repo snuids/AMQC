@@ -4,7 +4,7 @@
    Copyright (C) 2015 [Arnaud Marchand]
  */
 
-var app = angular.module('AMQApp', ['angular-toasty', 'nvd3','ui.bootstrap','angular-confirm']);
+var app = angular.module('AMQApp', ['angular-toasty', 'nvd3','nvd3ChartDirectives','ui.bootstrap','angular-confirm']);
 
 
 app.directive('dragMe', function() {

@@ -1,6 +1,8 @@
 app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', '$timeout', '$confirm','amqInfoFactory', 'toasty'
 , function($rootScope, $scope, $interval, $timeout, $confirm,amqInfoFactory, toasty) 
 {
+	
+	
 	$scope.head = {
 			Name: "Name",
 			QueueSize: "Queue Size",
@@ -79,7 +81,6 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', '$timeout', '$
 		for (var key in queueStat) {
 			$scope.data.push({ key: key, values: queueStat[key].values});
 		}
-
 		$timeout(function() { $scope.api.refresh(); }, 10);
 	}
 	
