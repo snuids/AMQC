@@ -7,7 +7,12 @@
 		  <li class="list-group-item"><span>&nbsp;Automatically refresh ActiveMQ data every </span><input	type="number"  min="0" max="60"
 				ng-model="amqInfo.autoRefreshInterval"
 				ng-change="autoRefreshTinkered()"
-				size="3"><span> seconds (0 == no refresh)</span>&nbsp;<button ng-show="autoRefreshChanged === true" type="button" ng-click="updateAutoRefresh()" class="btn btn-primary btn-sm btn-xs">Confirm change</button></li>
+				size="3"><span> seconds (0 == no refresh)</span>&nbsp;<button ng-show="autoRefreshChanged === true" type="button" ng-click="updateAutoRefresh()" class="btn btn-primary btn-sm btn-xs">Confirm change</button>
+				<div ng-show="(amqInfo.autoRefreshInterval!=0)&amp;&amp;(amqInfo.autoRefreshInterval&lt;3)">
+					<br/>
+					<div class="alert alert-warning"  role="alert">Do not refresh too fast if your connection to the broker is not good enough.</div>
+				</div>
+			</li>
 		</ul>
 
 

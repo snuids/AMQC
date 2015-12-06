@@ -46,7 +46,7 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 				
 		    	var sub = factory.client.subscribe("/topic/"+cols[j], function(message) 
 				{										
-					console.log(message);
+//					console.log(message);
 					var mes={};
 					mes.reception=new Date();
 					mes.message=message.body;

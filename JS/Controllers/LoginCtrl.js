@@ -10,6 +10,7 @@ app.controller('LoginCtrl',['$scope','$rootScope','amqInfoFactory','Base64', fun
 			$rootScope.auth_login=Base64.encode($scope.amqInfo.login+":"+$scope.amqInfo.password);
 		else
 			$rootScope.auth_login='';
+		$scope.amqInfo.resetAll();
 		$scope.amqInfo.saveConnectionParameters();
 		$scope.amqInfo.prepareURLs();
 		$scope.amqInfo.refreshAll();
