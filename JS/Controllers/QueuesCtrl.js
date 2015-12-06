@@ -78,8 +78,15 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', '$timeout', '$
 
 		var queueStat = $scope.amqInfo.queueStats[$scope.selectedChartQueue];
 		
-		for (var key in queueStat) {
-			$scope.data.push({ key: key, values: queueStat[key].values});
+		var i=0;
+		
+		for (var key in queueStat) 
+		{
+			if(i==0)
+				$scope.data.push({ color:'red',key: key, values: queueStat[key].values});
+			else
+				$scope.data.push({ color:'#008',key: key, values: queueStat[key].values});
+			i++;
 		}
 		$timeout(function() { $scope.api.refresh(); }, 10);
 	}

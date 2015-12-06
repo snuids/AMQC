@@ -5,6 +5,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 
 	factory.resetAll=function()
 	{
+		factory.loginok=false;
 		factory.updates=0;
 	    factory.connectionsData = [
 		{
@@ -189,6 +190,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			factory.info=response.data.value;
 			
 			factory.filteredInfo=[];
+			factory.loginok=true;
 
 			for ( property in factory.info ) {
 				if((!(factory.info[property] instanceof Array))
@@ -241,7 +243,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			if(response.data!=null)
 				factory.connectionError=response.data.replace("<h2>","<h4>").replace("</h2>","</h4>");
 			factory.connecting=false;
-			//factory.stopRefreshTimer();
+			if(!factory.loginok)
+				factory.stopRefreshTimer();
 			factory.currentlyRefreshing[0] = false;
 		});
 	}
@@ -291,7 +294,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			//console.log(factory.filteredQueues);
 		  }, function errorCallback(response) {
 			  toasty.error({msg:'Cannot read queues'});
-			  //factory.stopRefreshTimer();
+			  if(!factory.loginok)
+			  	factory.stopRefreshTimer();
 			  factory.currentlyRefreshing[1] = false;
 			///alert('Cannot read queues');
 		  });
@@ -352,7 +356,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			
 		  }, function errorCallback(response) {
 			  toasty.error({msg:'Cannot read topics'});
-			  //factory.stopRefreshTimer();
+			  if(!factory.loginok)			  
+			  	factory.stopRefreshTimer();
 			  factory.currentlyRefreshing[3] = false;
 		    //alert('Cannot read topics');
 		  });
@@ -413,7 +418,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			factory.currentlyRefreshing[2] = false;
 		  }, function errorCallback(response) {
 			  toasty.error({msg:'Cannot read connections'});
-			  //factory.stopRefreshTimer();
+			  if(!factory.loginok)			  			  
+			  	factory.stopRefreshTimer();
 			  factory.currentlyRefreshing[2] = false;
 		  });
 	}
