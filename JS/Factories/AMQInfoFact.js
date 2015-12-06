@@ -9,7 +9,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		factory.updates=0;
 	    factory.connectionsData = [
 		{
-			"key": "Current Connections",
+			"key": "Current Number of Connections",
 			"values": []
 		}
 		];
