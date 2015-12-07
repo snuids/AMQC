@@ -39,7 +39,7 @@ app.controller('InfoCtrl',['$rootScope', '$scope','$timeout','$filter', 'amqInfo
 		console.log('switching tab');
 		
         $scope.currentTab = tab;
-		$timeout(function() {$scope.forceGraphRefresh();}, 300);
+		$timeout(function() {$scope.forceGraphRefresh();}, 0);
 		
 //		window.dispatchEvent(new Event('resize'));	// force the repaint
 /*		$timeout(function() {
