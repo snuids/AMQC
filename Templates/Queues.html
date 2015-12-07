@@ -1,9 +1,9 @@
-<div ng-controller="QueuesCtrl">
+<div ng-controller="QueuesCtrl" class="queues_main">
 
 	<h4 class='nomargin'>Create a new Queue: <input type="text" ng-model="newQueueName" >&nbsp;	<button class="btn btn-primary btn-sm" ng-disabled="newQueueName.length==0" ng-click="createNewQueue()">Create</button></h4>
 
 
-	<div style='overflow:auto; height:300px;'>
+	<div class='queues_table'>
 		<table class="table table-striped table-bordered table-hover table-condensed small">
 			<tr>
 				<th class="{{th!='Name'?'text-center':'text-left'}}" ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">{{th}}<span table-header></span>
@@ -11,26 +11,27 @@
 				<th class="text-center">Actions</th>
 			</tr>
 			<tr ng-repeat="ent in amqInfo.filteredQueues | filter:filterField | orderBy:sort.column:sort.descending">
-				<td ng-repeat="(key, value) in head" class="{{key!='Name'?'text-center':'text-left'}}">
+				<td  ng-repeat="(key, value) in head" class="{{key!='Name'?'text-center':'text-left'}}">
 					{{ent[key]}}
 				</td>
-				<td><div class="text-center"><button type="button" ng-click="showQueueDetails(ent)" class="btn btn-primary btn-sm btn-xs">Details</button></div></td>
+				<td ng-mouseover="$parent.selectedChartQueue=ent.Name;setupChartData();"><div class="text-center"><button type="button" ng-click="showQueueDetails(ent);" class="btn btn-primary btn-sm btn-xs">Details</button></div></td>
 			</tr>
 		</table>
 	</div>
 
 
-	
 
-	<br/>
-	
-	<div>		
-		Display chart for queue: <select name="repeatSelect" id="repeatSelect" ng-model="selectedChartQueue" ng-change="setupChartData()">
-			<option ng-repeat="queue in amqInfo.orderedQueueList" value="{{queue}}">{{queue}}</option>
-		</select>
+	<div class='queues_graph'>			
+		
 		<nvd3 options='options' data='data' api='api'></nvd3>
 	</div>
-	
+
+	<div class='queues_queue_selector'>
+		Display chart for queue: 
+		<select name="repeatSelect" id="repeatSelect" ng-model="selectedChartQueue" 		ng-change="setupChartData()">
+			<option ng-repeat="queue in amqInfo.orderedQueueList" value="{{queue}}">{{queue}}</option>
+		</select>
+	</div>	
 	
 	<div drag-me class="queue_details" ng-show="currentQueue!=null">
 		<div class="topright">

@@ -239,54 +239,7 @@ textarea{
 	max-height:300px;
 }
 
-.queue_details
-{
-	padding-bottom:3px !important;
-	position:absolute !important;
-	top:50px;
-	right:5px;
-    border: 1px solid black;
-	clear:both;
-	padding: 0 1em;
-	overflow:hidden;
-	width:800px;
-	height:410px;	
-	background-color:White;	
-}
 
-.queue_details_tabs_header
-{
-	position:absolute;
-	top:10px;
-	left:3px;
-}
-
-.queue_details_tabs
-{
-	padding-top:3px !important;
-	position:absolute;
-	top:48px;
-	left:0px;
-    border: 0px solid black;
-	clear:both;
-	bottom:40px;
-	overflow:auto;
-	right:0px;
-}
-
-.queue_details_table
-{
-	overflow:auto;
-	top:110px;	
-	height:300px;	
-}
-
-.queue_details_tabs_footer
-{
-	position:absolute;
-	bottom:10px;
-	left:3px;
-}
 
 .topic_details
 {
@@ -442,6 +395,91 @@ textarea{
 }
 
 /* Queue message list */
+
+.queues_main
+{
+}
+
+.queues_table
+{
+	position:absolute;
+	overflow:auto; 
+	bottom:300px;
+	top:50px;
+	left:0px;
+	right:0px;
+}
+
+.queues_graph
+{
+	border-top:solid 1px #ccc;
+	overflow:none;
+	position:absolute;
+	bottom:0px;
+	height:300px;
+	left:0px;
+	right:0px;
+}
+
+.queues_queue_selector
+{
+	position:absolute;
+	bottom:265px;
+	height:30px;
+	left:0px;
+	right:0px;
+	z-index:1;
+}
+
+.queue_details
+{
+	padding-bottom:3px !important;
+	position:absolute !important;
+	top:50px;
+	right:5px;
+    border: 1px solid black;
+	clear:both;
+	padding: 0 1em;
+	overflow:hidden;
+	width:800px;
+	height:410px;	
+	background-color:White;	
+	z-index:10;
+}
+
+.queue_details_tabs_header
+{
+	position:absolute;
+	top:10px;
+	left:3px;
+}
+
+.queue_details_tabs
+{
+	padding-top:3px !important;
+	position:absolute;
+	top:48px;
+	left:0px;
+    border: 0px solid black;
+	clear:both;
+	bottom:40px;
+	overflow:auto;
+	right:0px;
+}
+
+.queue_details_table
+{
+	overflow:auto;
+	top:110px;	
+	height:300px;	
+}
+
+.queue_details_tabs_footer
+{
+	position:absolute;
+	bottom:10px;
+	left:3px;
+}
 
 .browsemessagesview
 {
