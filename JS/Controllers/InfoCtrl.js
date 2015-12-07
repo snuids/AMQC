@@ -43,14 +43,19 @@ app.controller('InfoCtrl',['$rootScope', '$scope','$timeout','$filter', 'amqInfo
 		
     }
 
+	$scope.yAxisTickFormatFunction = function(){
+		return function(d)
+		{
+			return d;
+		}
+	}
+	
 	$scope.xAxisTickFormatFunction = function(){
 		return function(d)
 		{
 			return d3.time.format('%X')(new Date(d)); //uncomment for date format
 		}
 	}
-	
-
 
 }]
 );
