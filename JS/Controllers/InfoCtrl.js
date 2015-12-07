@@ -32,7 +32,7 @@ app.controller('InfoCtrl',['$rootScope', '$scope','$timeout','$filter', 'amqInfo
 	
     $scope.onClickTabInfo = function (tab) {
 		console.log('clicked tab:' + tab.title);
-		
+				
 		if (tab.title === $scope.currentTab)
 			return;
 		
@@ -41,10 +41,6 @@ app.controller('InfoCtrl',['$rootScope', '$scope','$timeout','$filter', 'amqInfo
         $scope.currentTab = tab;
 		$timeout(function() {$scope.forceGraphRefresh();}, 0);
 		
-//		window.dispatchEvent(new Event('resize'));	// force the repaint
-/*		$timeout(function() {
-			$rootScope.$broadcast("activetab", tab.title);
-		});*/
     }
 
 	$scope.xAxisTickFormatFunction = function(){
