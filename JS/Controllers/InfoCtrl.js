@@ -46,7 +46,7 @@ app.controller('InfoCtrl',['$rootScope', '$scope','$timeout','$filter', 'amqInfo
 	$scope.yAxisTickFormatFunction = function(){
 		return function(d)
 		{
-			return d;
+			return Math.round(d);
 		}
 	}
 	
