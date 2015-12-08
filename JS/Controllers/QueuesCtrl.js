@@ -67,7 +67,7 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', '$timeout', '$
 		console.log('new QueuesCtrl autoRefreshInterval:' + $scope.amqInfo.autoRefreshInterval * 1000);
 		
 		if ($scope.amqInfo.autoRefreshInterval > 0)
-			$scope.refreshTimer = $interval(function() { $scope.refreshData(); }, $scope.amqInfo.autoRefreshInterval * 1000);
+			$scope.timer = $interval(function() { $scope.refreshData(); }, $scope.amqInfo.autoRefreshInterval * 1000);
 	}
 	
 	$scope.data = [];
