@@ -14,7 +14,12 @@
 				<td  ng-repeat="(key, value) in head" class="{{key!='Name'?'text-center':'text-left'}}">
 					{{ent[key]}}
 				</td>
-				<td ng-mouseover="$parent.selectedChartQueue=ent.Name;setupChartData();"><div class="text-center"><button type="button" ng-click="showQueueDetails(ent);" class="btn btn-primary btn-sm btn-xs">Details</button></div></td>
+				<td>
+					<div class="text-center">
+						<button type="button" ng-click="showQueueDetails(ent);" class="btn btn-primary btn-sm btn-xs">Details</button>
+						<button type="button" ng-click="$parent.selectedChartQueue=ent.Name;setupChartData();" class="btn btn-success btn-sm btn-xs">Chart</button>
+					</div>
+				</td>
 			</tr>
 		</table>
 	</div>
