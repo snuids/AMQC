@@ -1,16 +1,32 @@
 <h2 class="nomargin">Preferences</h2>
 
 		<ul class="list-group">
-		  <li class="list-group-item"><input type="checkbox" ng-change="savePrefs()" ng-model="amqInfo.hideAdvisoryQueues"><span>&nbsp;Hide advisory queues and topics</span>
+		  <li class="list-group-item"><input type="checkbox" ng-change="savePrefs()" ng-model="prefs.hideAdvisoryQueues"><span>&nbsp;Hide advisory queues and topics</span>
 				
 			</li>
 		  <li class="list-group-item"><span>&nbsp;Automatically refresh ActiveMQ data every </span><input	type="number"  min="0" max="60"
-				ng-model="amqInfo.autoRefreshInterval"
+				ng-model="prefs.autoRefreshInterval"
 				ng-change="autoRefreshTinkered()"
 				size="3"><span> seconds (0 == no refresh)</span>&nbsp;<button ng-show="autoRefreshChanged === true" type="button" ng-click="updateAutoRefresh()" class="btn btn-primary btn-sm btn-xs">Confirm change</button>
-				<div ng-show="(amqInfo.autoRefreshInterval!=0)&amp;&amp;(amqInfo.autoRefreshInterval&lt;3)">
+				<div ng-show="(prefs.autoRefreshInterval != 0) &amp;&amp; (prefs.autoRefreshInterval &lt; 3)">
 					<br/>
 					<div class="alert alert-warning"  role="alert">Do not refresh too fast if your connection to the broker is not good enough.</div>
+				</div>
+			</li>
+			<li class="list-group-item">
+				<span>
+					<div class="text-center">Values displayed in Queues chart</div>
+
+					<br/>
+					
+					<div class="row" ng-repeat="rows in chunkedData">
+						<div class="col-md-2" ng-repeat="item in rows"><input type="checkbox" ng-model="prefs.queueChartFields[item]" ng-change="changedItem(item);"> {{item}}</div>
+					</div>
+					
+					<p/>
+				</span>
+				<div class="center-text">
+					<button ng-show="fieldsChanged === true" type="button" ng-click="savePrefs();" class="btn btn-primary btn-sm btn-xs">Confirm change</button>
 				</div>
 			</li>
 		</ul>

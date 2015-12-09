@@ -1,7 +1,7 @@
-app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', '$timeout', '$confirm','amqInfoFactory', 'toasty'
-, function($rootScope, $scope, $interval, $timeout, $confirm,amqInfoFactory, toasty) 
+app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '$confirm', 'amqInfoFactory', 'toasty', 'preferencesFact',
+	function ($rootScope, $scope, $interval, $timeout, $confirm, amqInfoFactory, toasty, preferencesFact) 
 {
-	
+	$scope.prefs = preferencesFact;
 	
 	$scope.head = {
 			Name: "Name",
@@ -63,11 +63,11 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', '$timeout', '$
 	
 	$scope.setTimer = function() {
 		$scope.stopTimer();
-		
-		console.log('new QueuesCtrl autoRefreshInterval:' + $scope.amqInfo.autoRefreshInterval * 1000);
-		
-		if ($scope.amqInfo.autoRefreshInterval > 0)
-			$scope.timer = $interval(function() { $scope.refreshData(); }, $scope.amqInfo.autoRefreshInterval * 1000);
+
+		console.log('new autoRefreshInterval:' + $scope.prefs.autoRefreshInterval * 1000);
+
+		if ($scope.prefs.autoRefreshInterval > 0)
+			$scope.timer = $interval(function() { $scope.refreshData(); }, $scope.prefs.autoRefreshInterval * 1000);
 	}
 	
 	$scope.data = [];
@@ -230,7 +230,7 @@ app.controller('QueuesCtrl',['$rootScope', '$scope', '$interval', '$timeout', '$
 //		console.log("obj message=====");
 //		console.log(obj);
 		
-		for ( property in obj ) {
+		for ( var property in obj ) {
 			if(
 				(!(obj[property] instanceof Array))
 			&&(!(obj[property] instanceof Object))

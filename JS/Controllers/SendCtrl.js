@@ -1,4 +1,5 @@
-app.controller('SendCtrl',['$scope','amqInfoFactory','sendMessageFactory','toasty', function($scope,amqInfoFactory,sendMessageFactory,toasty) 
+app.controller('SendCtrl', ['$scope', 'amqInfoFactory', 'sendMessageFactory', 'toasty',
+	function ($scope, amqInfoFactory, sendMessageFactory, toasty) 
 {
 	$scope.msgInfo=sendMessageFactory;
 	$scope.amqInfo=amqInfoFactory;

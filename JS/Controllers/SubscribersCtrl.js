@@ -1,4 +1,5 @@
-app.controller('SubscribersCtrl',['$scope','$confirm','amqInfoFactory', function($scope,$confirm,amqInfoFactory) 
+app.controller('SubscribersCtrl', ['$scope', '$confirm', 'amqInfoFactory',
+	function ($scope, $confirm, amqInfoFactory) 
 {
 	$scope.head = {
 	        DestinationName: "Topic",

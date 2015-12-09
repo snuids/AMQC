@@ -1,4 +1,4 @@
-app.factory('sendMessageFactory', [function($rootScope,sendMessageFactory)
+app.factory('sendMessageFactory', [function($rootScope)
 {			
     var factory = {}; 
 

@@ -1,4 +1,5 @@
-app.controller('ConnectionsCtrl',['$scope','$http','amqInfoFactory', function($scope,$http,amqInfoFactory) 
+app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
+	function ($scope, $http, amqInfoFactory) 
 {
 	$scope.head = {
 	        ClientId: "Client Id",

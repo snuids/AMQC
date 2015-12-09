@@ -11,3 +11,4 @@ v0.77 05Dec2015 Stomp protocol forced in the client connection
 v0.78 05Dec2015 Message sending via the Active MQ Rest API panel added
 v0.79 06Dec2015 Broker stats added
 v0.80 07Dec2015 Queues panel css enhanced
+v0.81 09Dec2015 User can now select which queue stats will be displayed from the Preferences tab (rough initial version, need to also add automatic different colors), moved preferences to PreferencesFact (new) from amqInfoFact, added angular-component for using component() before 1.5.0

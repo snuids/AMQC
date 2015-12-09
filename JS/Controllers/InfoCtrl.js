@@ -1,5 +1,5 @@
-app.controller('InfoCtrl',['$rootScope', '$scope','$timeout','$filter', 'amqInfoFactory','toasty'
-	, function($rootScope, $scope, $timeout,$filter, amqInfoFactory, toasty) {
+app.controller('InfoCtrl', ['$rootScope', '$scope', '$timeout', '$filter', 'amqInfoFactory', 'toasty',
+	function ($rootScope, $scope, $timeout, $filter, amqInfoFactory, toasty) {
     
 	/*amqInfoFactory.subscribe($scope, function somethingChanged() 
 	{

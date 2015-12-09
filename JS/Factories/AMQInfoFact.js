@@ -1,7 +1,9 @@
-app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty', 'Base64','$rootScope'
-		, function($http, $location, $interval, $q, toasty, Base64,$rootScope) {    	
+app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty', 'Base64', '$rootScope', 'preferencesFact'
+	, function ($http, $location, $interval, $q, toasty, Base64, $rootScope, preferencesFact) {    	
 
-	var factory = {}; 
+	var factory = {};
+	
+	factory.prefs = preferencesFact;
 
 	factory.resetAll=function()
 	{
@@ -86,43 +88,17 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	factory.setRefresh = function() {
 		factory.stopRefreshTimer();
 		
-		console.log('new autoRefreshInterval:' + factory.autoRefreshInterval * 1000);
+		console.log('new autoRefreshInterval:' + factory.prefs.autoRefreshInterval * 1000);
 		
-		if (factory.autoRefreshInterval > 0)
+		if (factory.prefs.autoRefreshInterval > 0)
 			factory.refreshTimer = $interval(function() 
 			{ 
 				console.log('interval triggered');
 				factory.refreshAll(); 
 			}, 
-			factory.autoRefreshInterval * 1000);
+			factory.prefs.autoRefreshInterval * 1000);
 	}
 	
-	/* Loading Preferences */
-	factory.loadPreferences = function() {
-		if(typeof(Storage) === undefined || factory.rememberMe === false)
-			return;
-				
-		if ((localStorage.getItem("amqc.hideAdvisoryQueues") !== undefined)
-				&&(localStorage.getItem("amqc.hideAdvisoryQueues") !== null))		
-			factory.hideAdvisoryQueues = localStorage.getItem("amqc.hideAdvisoryQueues") === "true";
-		
-		if ((localStorage.getItem("amqc.autoRefreshInterval") !== undefined)
-				&&(localStorage.getItem("amqc.autoRefreshInterval") !== null))
-			factory.autoRefreshInterval = parseInt(localStorage.getItem("amqc.autoRefreshInterval"));
-
-		toasty.success({msg:'Loaded user saved preferences'});
-	}
-
-	/* Saving Preferences */	
-	factory.savePreferences = function() {
-		if((typeof(Storage) === undefined) || factory.rememberMe === false)
-			return;
-		
-		localStorage.setItem('amqc.hideAdvisoryQueues', factory.hideAdvisoryQueues);
-		localStorage.setItem('amqc.autoRefreshInterval', factory.autoRefreshInterval);
-		toasty.success({msg:'Preferences updated'});
-	}
-
 	/* Load Connection Parameters */		
 	factory.loadConnectionParameters = function()
 	{
@@ -192,7 +168,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			factory.filteredInfo=[];
 			factory.loginok=true;
 
-			for ( property in factory.info ) {
+			for ( var property in factory.info ) {
 				if((!(factory.info[property] instanceof Array))
 				&&(!(factory.info[property] instanceof Object)))
 				{
@@ -266,16 +242,24 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 
 			factory.filteredQueues=[];
 
-			for ( property in factory.queues ) {
+			for ( var property in factory.queues ) {
 				factory.filteredQueues.push(factory.queues[property]);
 				
 				var queue = factory.queues[property];
-				
+								
 				factory.addQueueStat(queue.Name);
 			
 				var qStat = factory.queueStats[queue.Name];
 				
-				for (i in factory.queueStatsFields) {
+				factory.queueStatsFields = factory.prefs.getActiveFields();
+				
+				// Delete keys that were existing, but are no longer included in queueStatsFields (user preference change)
+				for (var key in qStat)
+					if (factory.queueStatsFields.indexOf(key) == -1)
+						delete qStat[key];
+				
+				// Grab data for include queueStatsFields
+				for (var i in factory.queueStatsFields) {
 					var statField = factory.queueStatsFields[i];
 					
 					if (qStat[statField] === undefined) {						
@@ -319,7 +303,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			factory.filteredTopics=[];
 			factory.topicSubscribers=[];
 
-			for ( property in factory.topics ) 
+			for ( var property in factory.topics ) 
 			{
 				factory.filteredTopics.push(factory.topics[property]);
 				var subs=factory.topics[property].Subscriptions;
@@ -776,7 +760,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
         $rootScope.$emit('amq_info_updated');
     }
 
-	factory.hideAdvisoryQueues = true;
+	//factory.hideAdvisoryQueues = true;
 
 	factory.login = "";
 	factory.password = "";
@@ -791,19 +775,18 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	factory.queueMessages = [];
 	factory.orderedQueueList=[];
 	factory.queueStats = {}; // TODO: document internals
-	factory.queueStatsFields = [ 'QueueSize', 'EnqueueCount' ];//, 'ConsumerCount' ]; // TODO: user selectable from UI
+	factory.queueStatsFields = []; // [ 'QueueSize', 'EnqueueCount' ];//, 'ConsumerCount' ]; // TODO: user selectable from UI
 	
 	factory.connectionError="";
 		
 	// 0 - Info, 1 - Queues, 2 - Connections, 3 - Topics
 	factory.currentlyRefreshing = [false, false, false, false];
 	
-	factory.autoRefreshInterval = 0; // in seconds, 0 == no refresh
 	factory.refreshTimer = undefined;
-
     
 	factory.loadConnectionParameters();
-	factory.loadPreferences();
+	if (factory.rememberMe)
+		factory.prefs.load();
 	
 	factory.info={};
 	factory.activeConnections={};
@@ -812,9 +795,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	factory.filteredTopics=[];		
 	factory.filteredConnections=[];		
 	factory.topicSubscribers=[];	
-
 	
-	factory.selectedConnector='all';
+	factory.selectedConnector = 'all';
 	
     return factory;
 }]);

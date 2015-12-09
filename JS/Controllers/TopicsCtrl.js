@@ -1,4 +1,5 @@
-app.controller('TopicsCtrl',['$scope', '$confirm','amqInfoFactory', function($scope,$confirm,amqInfoFactory) 
+app.controller('TopicsCtrl', ['$scope', '$confirm', 'amqInfoFactory',
+	function ($scope, $confirm, amqInfoFactory) 
 {
 	$scope.head = {
 	        Name: "Name",

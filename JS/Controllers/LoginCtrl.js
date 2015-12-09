@@ -1,5 +1,7 @@
-app.controller('LoginCtrl',['$scope','$rootScope','amqInfoFactory','Base64', function($scope,$rootScope,amqInfoFactory,Base64) 
-{
+app.controller('LoginCtrl', ['$scope', '$rootScope', 'amqInfoFactory', 'Base64', 'preferencesFact',
+	function ($scope, $rootScope, amqInfoFactory, Base64, preferencesFact) {
+		
+	$scope.prefs = preferencesFact;
 	$scope.amqInfo = amqInfoFactory;
 		
  	$scope.logAMQ = function() {		
@@ -14,9 +16,9 @@ app.controller('LoginCtrl',['$scope','$rootScope','amqInfoFactory','Base64', fun
 		$scope.amqInfo.saveConnectionParameters();
 		$scope.amqInfo.prepareURLs();
 		$scope.amqInfo.refreshAll();
-		$scope.amqInfo.loadPreferences();
-		$scope.amqInfo.setRefresh();		
-
+		if ($scope.amqInfo.rememberMe)
+			$scope.prefs.load();
+		$scope.amqInfo.setRefresh();
     }
 
 	if($scope.amqInfo.autologin)

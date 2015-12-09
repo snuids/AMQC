@@ -18,6 +18,7 @@
 		<script src="bower_dep/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>	
 		<script src="bower_dep/angular-confirm-modal/angular-confirm.js"></script>	
         <script src="bower_dep/stomp-websocket/lib/stomp.js"></script>
+        <script src="libs/angular-component.min.js"></script> <!-- TODO: remove when/if Angular 1.5.0+ will be used in the project -->
 
 
         <script src="JS/AMQApp.js"></script>
@@ -26,6 +27,7 @@
         <script src="JS/Factories/Base64Fact.js"></script>
         <script src="JS/Factories/httpRequestInterceptorFact.js"></script>
         <script src="JS/Factories/SendMessageFact.js"></script>
+        <script src="JS/Factories/PreferencesFact.js"></script>
 
         <script src="JS/Controllers/InfoCtrl.js"></script>
         <script src="JS/Controllers/TabsCtrl.js"></script>
@@ -75,11 +77,11 @@
 	                    <div ng-include="currentTab.url"></div>
 	                </div>
 	                <div id="footerView">
-	                    <button class="btn btn-primary btn-sm" ng-show="amqInfo.autoRefreshInterval==0" ng-click="refreshAll()">Refresh</button>
+	                    <button class="btn btn-primary btn-sm" ng-show="prefs.autoRefreshInterval==0" ng-click="refreshAll()">Refresh</button>
 	                    <button class="btn btn-danger btn-sm" ng-click="disconnectAMQ()">Disconnect</button>
 	                </div>
 	            </div>
-            	<div id="version">v0.80 December 2015 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
+            	<div id="version">v0.81 December 2015 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
           	</div>
 
             <toasty></toasty>
