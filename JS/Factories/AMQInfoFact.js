@@ -1,9 +1,13 @@
-app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty', 'Base64', '$rootScope', 'preferencesFact'
-	, function ($http, $location, $interval, $q, toasty, Base64, $rootScope, preferencesFact) {    	
+app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty', 'Base64', '$rootScope', 'preferencesFact', 'ProcessorFact',
+	function ($http, $location, $interval, $q, toasty, Base64, $rootScope, preferencesFact, ProcessorFact) {    	
 
 	var factory = {};
 	
 	factory.prefs = preferencesFact;
+	factory.procs = ProcessorFact;
+	
+	// queue => stat => processor
+	factory.assignedProcs = {};
 
 	factory.resetAll=function()
 	{
@@ -88,12 +92,12 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	factory.setRefresh = function() {
 		factory.stopRefreshTimer();
 		
-		console.log('new autoRefreshInterval:' + factory.prefs.autoRefreshInterval * 1000);
+		//console.log('new autoRefreshInterval:' + factory.prefs.autoRefreshInterval * 1000);
 		
 		if (factory.prefs.autoRefreshInterval > 0)
 			factory.refreshTimer = $interval(function() 
 			{ 
-				console.log('interval triggered');
+				//console.log('interval triggered');
 				factory.refreshAll(); 
 			}, 
 			factory.prefs.autoRefreshInterval * 1000);
@@ -251,6 +255,10 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			
 				var qStat = factory.queueStats[queue.Name];
 				
+				if (factory.assignedProcs[queue.Name] === undefined) {
+					factory.assignedProcs[queue.Name] = {};
+				}
+				
 				factory.queueStatsFields = factory.prefs.getActiveFields();
 				
 				// Delete keys that were existing, but are no longer included in queueStatsFields (user preference change)
@@ -258,19 +266,42 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 					if (factory.queueStatsFields.indexOf(key) == -1)
 						delete qStat[key];
 				
-				// Grab data for include queueStatsFields
+				//console.log("queueStatFields length:" + factory.queueStatsFields.length);
+				
+				// Grab data for included queueStatsFields
 				for (var i in factory.queueStatsFields) {
 					var statField = factory.queueStatsFields[i];
 					
-					if (qStat[statField] === undefined) {						
-						qStat[statField] = { key: statField, values: [] };
-						//console.log("new - " + JSON.stringify(qStat[statField]));
+					// Remove old processor in case user changed preference
+					if (factory.assignedProcs[queue.Name][statField] !== undefined
+						&& factory.assignedProcs[queue.Name][statField].procName != factory.prefs.queueChartFields[statField].procName) {
+						delete factory.assignedProcs[queue.Name][statField];
+						
+						// Restore original name also
+						if (qStat[statField] !== undefined) {
+							console.log("Restoring statField.key:" + statField);
+							qStat[statField].key = statField;
+						}
 					}
 					
-					if (qStat[statField].values.length > 100)
+					if (qStat[statField] === undefined) {
+						qStat[statField] = { key: statField, values: [] };
+					}
+					
+					if (factory.assignedProcs[queue.Name][statField] === undefined) {
+						var ProcFunc = factory.procs.getProcessorFromName(factory.prefs.queueChartFields[statField].procName);
+						factory.assignedProcs[queue.Name][statField] = new ProcFunc(statField, queue.Name);
+						//console.log(ProcFunc);
+						qStat[statField].key += factory.assignedProcs[queue.Name][statField].suffixForLegend;
+					}
+					
+					if (qStat[statField].values.length > factory.MAXGRAPHVALUES)
 						qStat[statField].values.shift();
 
 					qStat[statField].values.push({x:Math.floor(Date.now()), y:queue[statField]});
+					
+					// process data to apply changes (e.g. per second) based on selected processor for the field
+					factory.assignedProcs[queue.Name][statField].apply(qStat[statField].values);
 				}
 			}
 			factory.computeOrderedQueueList();

@@ -19,8 +19,30 @@
 
 					<br/>
 					
-					<div class="row" ng-repeat="rows in chunkedData">
-						<div class="col-md-2" ng-repeat="item in rows"><input type="checkbox" ng-model="prefs.queueChartFields[item]" ng-change="changedItem(item);"> {{item}}</div>
+					<div class="row text-center">
+						<div class="col-md-1">
+							Enabled
+						</div>
+						<div class="col-md-1">
+							Field
+						</div>
+						<div class="col-md-2">
+							Processor
+						</div>
+					</div>
+					
+					<div class="row text-center" ng-repeat="(key, value) in prefs.queueChartFields">
+						<div class="col-md-1">
+							<input type="checkbox" ng-model="value.isSelected" ng-change="changedItem(key, value);">
+						</div>
+						<div class="col-md-1">
+							{{ key }}
+						</div>
+						<div class="col-md-2">
+							<select name="repeatSelect" id="repeatSelect" ng-model="value.procName" ng-change="changedItem(key, value);">
+								<option ng-repeat="val in procs.availableProcessors()" value="{{val}}">{{val}}</option>
+							</select>
+						</div>
 					</div>
 					
 					<p/>

@@ -1,18 +1,22 @@
-app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory','amqClientFactory', 'toasty', 'preferencesFact',
-	function($rootScope, $scope, $timeout, amqInfoFactory,amqClientFactory, toasty, preferencesFact) {
+app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory','amqClientFactory', 'toasty', 'preferencesFact', 'ProcessorFact',
+	function($rootScope, $scope, $timeout, amqInfoFactory,amqClientFactory, toasty, preferencesFact, ProcessorFact) {
 	
 	$scope.prefs = preferencesFact;
+	$scope.procs = ProcessorFact;
 	 
 	// Removed	"Options", "AlwaysRetroactive", "CacheEnabled", "DLQ", "Name", "MaxAuditDepth", "Paused",
 	//			"MessageGroups", "CursorFull", "MemoryLimit", "MaxProducersToAudit", "BlockedProducerWarningInterval",
 	//			"MessageGroupType", "UseCache", "SlowConsumerStrategy"
+	// 			"MemoryUsageByteCount", "AverageBlockedTime", "MemoryPercentUsage", "CursorMemoryUsage",
+	// 			"InFlightCount", "Subscriptions", "ForwardCount", "StoreMessageSize", "AverageEnqueueTime", "BlockedSends",
+	// 			"TotalBlockedTime", "MaxPageSize", "PrioritizedMessages", "MemoryUsagePortion",
+	// 			"EnqueueCount", "ConsumerCount", "AverageMessageSize", "ExpiredCount", "CursorPercentUsage",
+	// 			"MinEnqueueTime", "MinMessageSize", "DispatchCount", "MaxEnqueueTime", "DequeueCount", 
+	// 			"ProducerCount", "MaxMessageSize"
+
+	
 	$scope.availableQueueChartFields = [
-		"MemoryUsageByteCount", "AverageBlockedTime", "MemoryPercentUsage", "CursorMemoryUsage",
-		"InFlightCount", "Subscriptions", "ForwardCount", "StoreMessageSize", "AverageEnqueueTime", "BlockedSends",
-		"TotalBlockedTime", "QueueSize", "MaxPageSize", "PrioritizedMessages", "MemoryUsagePortion",
-		"EnqueueCount", "ConsumerCount", "AverageMessageSize", "ExpiredCount", "CursorPercentUsage",
-		"MinEnqueueTime", "MinMessageSize", "DispatchCount", "MaxEnqueueTime", "DequeueCount", 
-		"ProducerCount", "MaxMessageSize"
+		"QueueSize", "EnqueueCount", "DequeueCount"
 	];
 	
 	$scope.availableQueueChartFields.sort();
@@ -108,7 +112,7 @@ app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory',
 			for (var field in $scope.availableQueueChartFields) {
 				//console.log(JSON.stringify($scope.prefs));
 				if ($scope.prefs.queueChartFields[$scope.availableQueueChartFields[field]] === undefined) {
-					$scope.prefs.queueChartFields[$scope.availableQueueChartFields[field]] = false;
+					$scope.prefs.queueChartFields[$scope.availableQueueChartFields[field]] = { procName:"None", isSelected:false };
 					changedPrefs = true;
 				}
 			}
@@ -151,9 +155,12 @@ app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory',
 	
 	$scope.chunkedData = chunk($scope.availableQueueChartFields, 6);
 	
-	$scope.changedItem = function(item) {
-		$scope.fieldsChanged = true;
-		//console.log('show chart field ' + item + ' -> ' + $scope.prefs.	queueChartFields[item]);
+	$scope.changedItem = function(key, value) {
+		$scope.savePrefs();
+		//$scope.fieldsChanged = true;
+		//console.log('key:' + JSON.stringify(key));
+		//console.log('value:' + JSON.stringify(value));
+		//console.log('chart field ' + key + ' -> show:' + value.isSelected + ', proc:' + value.procName);
 	}
 }]
 );

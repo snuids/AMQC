@@ -64,7 +64,7 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 	$scope.setTimer = function() {
 		$scope.stopTimer();
 
-		console.log('new autoRefreshInterval:' + $scope.prefs.autoRefreshInterval * 1000);
+		//console.log('new autoRefreshInterval:' + $scope.prefs.autoRefreshInterval * 1000);
 
 		if ($scope.prefs.autoRefreshInterval > 0)
 			$scope.timer = $interval(function() { $scope.refreshData(); }, $scope.prefs.autoRefreshInterval * 1000);
@@ -79,13 +79,13 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 		var queueStat = $scope.amqInfo.queueStats[$scope.selectedChartQueue];
 		
 		var i=0;
+		var colors = ['red', '#008', 'orange']; // TODO: make more colors available for chart
 		
 		for (var key in queueStat) 
 		{
-			if(i==0)
-				$scope.data.push({ color:'red',key: key, values: queueStat[key].values});
-			else
-				$scope.data.push({ color:'#008',key: key, values: queueStat[key].values});
+			var usedColor = (i >= colors.length ? colors[colors.length - 1] : colors[i]);
+					
+			$scope.data.push({ color:usedColor, key: queueStat[key].key, values: queueStat[key].values});
 			i++;
 		}
 		$timeout(function() { $scope.api.refresh(); }, 10);

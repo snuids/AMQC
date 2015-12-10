@@ -28,6 +28,7 @@
         <script src="JS/Factories/httpRequestInterceptorFact.js"></script>
         <script src="JS/Factories/SendMessageFact.js"></script>
         <script src="JS/Factories/PreferencesFact.js"></script>
+        <script src="JS/Factories/ProcessorFact.js"></script>
 
         <script src="JS/Controllers/InfoCtrl.js"></script>
         <script src="JS/Controllers/TabsCtrl.js"></script>
@@ -81,7 +82,7 @@
 	                    <button class="btn btn-danger btn-sm" ng-click="disconnectAMQ()">Disconnect</button>
 	                </div>
 	            </div>
-            	<div id="version">v0.81 December 2015 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
+            	<div id="version">v0.82 December 2015 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
           	</div>
 
             <toasty></toasty>

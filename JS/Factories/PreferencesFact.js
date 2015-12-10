@@ -4,18 +4,20 @@ app.factory('preferencesFact', ['$rootScope',
 	
 	factory.hideAdvisoryQueues = true;
 	factory.autoRefreshInterval = 0; // in seconds, no auto-refresh when equals to zero
+	
+	// contains entries of type: Field => Processor Name (procName), is selected/used (isSelected)
 	factory.queueChartFields = {};
 	
 	factory.checkStorageItem = function(itemName) {
 		var item = localStorage.getItem(itemName);
-		console.log(itemName + ':' + item);
-		console.log((item !== "undefined") + '');
-		console.log((item !== null) + '');
+		// console.log(itemName + ':' + item);
+		// console.log((item !== "undefined") + '');
+		// console.log((item !== null) + '');
 		return { isOk: (item !== "undefined" && item !== null), value: item };
 	}
 	
 	factory.load = function() {
-		console.log('prefs.load()');
+		//console.log('prefs.load()');
 		if(typeof(Storage) === undefined)
 			return false;
 		
@@ -32,13 +34,13 @@ app.factory('preferencesFact', ['$rootScope',
 	}
 	
 	factory.save = function() {
-		console.log('prefs.save()');
+		//console.log('prefs.save()');
 		if((typeof(Storage) === undefined))
 			return false;
 		
-		console.log('hideAdvisoryQueues:' + factory.hideAdvisoryQueues);
-		console.log('autoRefreshInterval:' + factory.autoRefreshInterval);
-		console.log('queueChartFields:' + JSON.stringify(factory.queueChartFields));
+		//console.log('hideAdvisoryQueues:' + factory.hideAdvisoryQueues);
+		//console.log('autoRefreshInterval:' + factory.autoRefreshInterval);
+		//console.log('queueChartFields:' + JSON.stringify(factory.queueChartFields));
 		
 		localStorage.setItem('amqc.hideAdvisoryQueues', factory.hideAdvisoryQueues);
 		localStorage.setItem('amqc.autoRefreshInterval', factory.autoRefreshInterval);
@@ -49,11 +51,12 @@ app.factory('preferencesFact', ['$rootScope',
 	
 	factory.getActiveFields = function() {
 		var fv = [];
-		
+
 		for (var key in factory.queueChartFields)
-			if (factory.queueChartFields[key] === true) {
+			if (factory.queueChartFields[key].isSelected === true) {
 				fv.push(key);
 			}
+
 		return fv;
 	}
 	
