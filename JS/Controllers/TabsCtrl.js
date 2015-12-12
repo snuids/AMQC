@@ -92,6 +92,17 @@ app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory',
 			toasty.info({msg:'Goodbye.'});
 	}	
 
+	$scope.selectTab=function(name)
+	{
+		angular.forEach($scope.tabs, function(value, key) {
+			if(value.title==name)
+			{
+				$scope.currentTab=value;
+			}	
+			
+			});
+	}
+
     $scope.onClickTab = function (tab) {
 		console.log('clicked tab:' + tab.title);
 		

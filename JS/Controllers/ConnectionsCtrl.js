@@ -117,5 +117,29 @@ app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
 	{
 		amqInfoFactory.refreshConnections();
 	}
+	$scope.showDestination=function(ent)
+	{
+		if(ent.DestinationQueue)
+		{
+			angular.forEach($scope.amqInfo.filteredQueues, function(value, key) {
+				if(ent.DestinationName==value.Name)
+				{
+					$scope.selectTab('Queues');
+					$scope.amqInfo.currentQueue=value;
+				}
+			});
+		}
+		else
+		{
+			angular.forEach($scope.amqInfo.filteredTopics, function(value, key) {
+				if(ent.DestinationName==value.Name)
+				{
+					$scope.selectTab('Topics');
+					$scope.amqInfo.currentTopic=value;
+				}
+			});
+		}
+	}
+	
 }]
 );

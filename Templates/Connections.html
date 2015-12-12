@@ -40,7 +40,7 @@
 						<th class="text-center" ng-repeat="(i,th) in headDetails" ng-class="selectedDetailsCls(i)" ng-click="changeDetailsSorting(i)">{{th}}</th>
 					</tr>
 					<tr ng-repeat="ent in detailsObject  | orderBy:sortDetails.column:sortDetails.descending">
-						<td>{{ent.DestinationName | limitTo: 30}}</td>
+						<td><a href="#" ng-click="showDestination(ent)">{{ent.DestinationName | limitTo: 30}}</a></td>
 							<td class="text-center">{{ent.EnqueueCounter}}</td>
 							<td class="text-center">{{ent.DequeueCounter}}</td>
 							<td class="text-center">{{ent.DispatchedCounter}}</td>

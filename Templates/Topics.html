@@ -16,10 +16,10 @@
 		<td class="text-center"><button type="button" ng-click="showDetails(ent)" class="btn btn-primary btn-sm btn-xs">Details</button></td>		
 </tr>
 </table>
-<div drag-me class="topic_details" ng-show="currentTopic!=null">
+<div drag-me class="topic_details" ng-show="amqInfo.currentTopic!=null">
 		<div class="topright">
 		<H4>
-				Topic:{{currentTopic.Name}}
+				Topic:{{amqInfo.currentTopic.Name}}
 		</H4>
 		</div>
 		
@@ -43,8 +43,8 @@
 				<tr>
 					<th>Key</th><th>Value</th>
 				</tr>
-				<tr ng-repeat="(key, value) in currentTopic">			
-					<td>{{key}}</td><td>{{currentTopic[key]}}</td>
+				<tr ng-repeat="(key, value) in amqInfo.currentTopic">			
+					<td>{{key}}</td><td>{{amqInfo.currentTopic[key]}}</td>
 				</tr>
 			</table>					
 		</div>		

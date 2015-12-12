@@ -117,7 +117,7 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 	
 	$scope.amqInfo = amqInfoFactory;
 	$scope.queues = $scope.amqInfo.filteredQueues;
-	$scope.currentQueue=null;
+//	$scope.amqInfo.currentQueue=null;
 	$scope.newQueueName='';
 	
 	$scope.subscribers=[];
@@ -146,14 +146,14 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 		if($scope.currentDetailsTab.title=='Subscribers')
 		{
 			$scope.subscribers=[];
-			for ( var i=0 ; i<$scope.currentQueue.Subscriptions.length;i++ ) 
+			for ( var i=0 ; i<$scope.amqInfo.currentQueue.Subscriptions.length;i++ ) 
 			{
 				var obj={};
 //				console.log($scope.currentQueue.Subscriptions[i]);
 				//alert($scope.amqInfo.extractProperty('clientId',$scope.currentQueue.Subscriptions[i].objectName));
 				
-				obj.ClientID=$scope.amqInfo.extractProperty('clientId',$scope.currentQueue.Subscriptions[i].objectName);
-				obj.ConsumerID=$scope.amqInfo.extractProperty('consumerId',$scope.currentQueue.Subscriptions[i].objectName);
+				obj.ClientID=$scope.amqInfo.extractProperty('clientId',$scope.amqInfo.currentQueue.Subscriptions[i].objectName);
+				obj.ConsumerID=$scope.amqInfo.extractProperty('consumerId',$scope.amqInfo.currentQueue.Subscriptions[i].objectName);
 
 
 				$scope.subscribers.push(obj);
@@ -169,7 +169,7 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 	/* Queue broswer functions */
 	$scope.browseQueue=function()
 	{
-		$scope.amqInfo.browseQueue($scope.currentQueue.Name);
+		$scope.amqInfo.browseQueue($scope.amqInfo.currentQueue.Name);
 		$scope.queueBrowerVisible=true;
 	}
 	
@@ -180,16 +180,16 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 		
 	$scope.purgeQueue=function()
 	{
-		$scope.amqInfo.purgeQueue($scope.currentQueue.Name);
+		$scope.amqInfo.purgeQueue($scope.amqInfo.currentQueue.Name);
 	}	
 	
 	$scope.deleteQueue=function()
 	{
 		
-		$confirm({text: 'Are you sure you want to delete the queue '+ $scope.currentQueue.Name +' ?'})
+		$confirm({text: 'Are you sure you want to delete the queue '+ $scope.amqInfo.currentQueue.Name +' ?'})
 		        .then(function() 
 		{
-			$scope.amqInfo.deleteQueue($scope.currentQueue.Name);
+			$scope.amqInfo.deleteQueue($scope.amqInfo.currentQueue.Name);
 			$scope.showDetails(null);
 		});
 
@@ -202,12 +202,12 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 	
 	$scope.resetStatsQueue=function()
 	{
-		$scope.amqInfo.resetStatsQueue($scope.currentQueue.Name);
+		$scope.amqInfo.resetStatsQueue($scope.amqInfo.currentQueue.Name);
 	}
 	
 	$scope.showQueueDetails = function(ent)
 	{
-		$scope.currentQueue=ent;
+		$scope.amqInfo.currentQueue=ent;
 		$scope.queueBrowerVisible=false;
 		if(ent !== null)
 		{
@@ -222,7 +222,7 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 	{
 
 		$scope.currentMessage=message;
-		$scope.currentMessage.destination=$scope.currentQueue.Name;
+		$scope.currentMessage.destination=$scope.amqInfo.currentQueue.Name;
 		$scope.currentMessage.message=message.Text;
 		$scope.currentMessage.headers={};
 				

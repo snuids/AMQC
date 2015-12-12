@@ -38,10 +38,10 @@
 		</select>
 	</div>	
 	
-	<div drag-me class="queue_details" ng-show="currentQueue!=null">
+	<div drag-me class="queue_details" ng-show="amqInfo.currentQueue!=null">
 		<div class="topright">
 			<h4>
-				Queue:{{currentQueue.Name}}
+				Queue:{{amqInfo.currentQueue.Name}}
 			</h4>
 		</div>
 		<div class="queue_details_tabs_header">
@@ -64,8 +64,8 @@
 					<tr>
 						<th>Key</th><th>Value</th>
 					</tr>
-					<tr ng-repeat="(key, value) in currentQueue">			
-						<td>{{key}}</td><td>{{currentQueue[key]}}</td>
+					<tr ng-repeat="(key, value) in amqInfo.currentQueue">			
+						<td>{{key}}</td><td>{{amqInfo.currentQueue[key]}}</td>
 					</tr>
 				</table>					
 			</div>		
@@ -86,8 +86,8 @@
 
 		<div class="nodrag queue_details_tabs_footer" style="width:100%;text-align:center;">				
 			<button type="button" ng-click="showQueueDetails(null)" class="btn btn-primary btn-sm btn-xs">Close</button>
-			<button type="button" ng-click="browseQueue()" ng-show="currentQueue['QueueSize']>0" class="btn btn-primary btn-sm btn-xs">Browse</button>
-			<button type="button" ng-click="purgeQueue()" ng-show="currentQueue['QueueSize']>0" class="btn btn-warning btn-sm btn-xs">Purge</button>
+			<button type="button" ng-click="browseQueue()" ng-show="amqInfo.currentQueue['QueueSize']>0" class="btn btn-primary btn-sm btn-xs">Browse</button>
+			<button type="button" ng-click="purgeQueue()" ng-show="amqInfo.currentQueue['QueueSize']>0" class="btn btn-warning btn-sm btn-xs">Purge</button>
 			<button type="button" ng-click="resetStatsQueue()" class="btn btn-warning btn-sm btn-xs">Reset Stats</button>
 			<button type="button" ng-click="deleteQueue()" class="btn btn-danger btn-sm btn-xs">Delete</button>
 		</div>
@@ -95,7 +95,7 @@
 	</div>
 	
 	<div drag-me ng-show="queueBrowerVisible" class="browsemessagesview">		
-		<H4>Queue:{{currentQueue.Name}}</H4>
+		<H4>Queue:{{amqInfo.currentQueue.Name}}</H4>
 		<div class="nodrag browsemessagetable">
 			<table class="table table-striped table-bordered table-hover table-condensed small">
 				<tr>
