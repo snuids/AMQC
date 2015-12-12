@@ -112,7 +112,7 @@ app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory',
 			for (var field in $scope.availableQueueChartFields) {
 				//console.log(JSON.stringify($scope.prefs));
 				if ($scope.prefs.queueChartFields[$scope.availableQueueChartFields[field]] === undefined) {
-					$scope.prefs.queueChartFields[$scope.availableQueueChartFields[field]] = { procName:"None", isSelected:false };
+					$scope.prefs.queueChartFields[$scope.availableQueueChartFields[field]] = { procName:"None", isSelected:true };
 					changedPrefs = true;
 				}
 			}

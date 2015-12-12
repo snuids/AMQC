@@ -266,11 +266,12 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 					if (factory.queueStatsFields.indexOf(key) == -1)
 						delete qStat[key];
 				
-				//console.log("queueStatFields length:" + factory.queueStatsFields.length);
+
 				
 				// Grab data for included queueStatsFields
 				for (var i in factory.queueStatsFields) {
 					var statField = factory.queueStatsFields[i];
+					
 					
 					// Remove old processor in case user changed preference
 					if (factory.assignedProcs[queue.Name][statField] !== undefined
@@ -304,6 +305,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 					factory.assignedProcs[queue.Name][statField].apply(qStat[statField].values);
 				}
 			}
+						
+			
 			factory.computeOrderedQueueList();
 			factory.currentlyRefreshing[1] = false; 
 			//console.log(factory.filteredQueues);

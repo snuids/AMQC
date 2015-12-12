@@ -10,9 +10,7 @@ app.factory('preferencesFact', ['$rootScope',
 	
 	factory.checkStorageItem = function(itemName) {
 		var item = localStorage.getItem(itemName);
-		// console.log(itemName + ':' + item);
-		// console.log((item !== "undefined") + '');
-		// console.log((item !== null) + '');
+
 		return { isOk: (item !== "undefined" && item !== null), value: item };
 	}
 	
@@ -30,6 +28,12 @@ app.factory('preferencesFact', ['$rootScope',
 		pref = factory.checkStorageItem("amqc.queueChartFields");
 		factory.queueChartFields = pref.isOk ? JSON.parse(pref.value) : {};
 		
+		if(Object.keys(factory.queueChartFields).length!=3)
+		{
+			console.log("Resetting preferences."+Object.keys(factory.queueChartFields).length);
+			factory.queueChartFields={};
+		}
+				
 		return true;
 	}
 	
@@ -59,6 +63,7 @@ app.factory('preferencesFact', ['$rootScope',
 
 		return fv;
 	}
+
 	
 	return factory;
 }]);

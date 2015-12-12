@@ -72,7 +72,7 @@ app.controller('TopicsCtrl', ['$scope', '$confirm', 'amqInfoFactory',
 	}
 	
 	$scope.filterFunction = function(element) {
-		if($scope.amqInfo.hideAdvisoryQueues)
+		if($scope.amqInfo.prefs.hideAdvisoryQueues)
 			return element.Name.match(/Advisory/) ? false : true;
 		return true;
 	};
