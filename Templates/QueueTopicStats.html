@@ -3,8 +3,8 @@
 		<nvd3 options="options" data="queueData"></nvd3>
 	<div>
 	<div id="#queues_stats_footer">
-		type: <select name="repeatSelect" id="repeatSelect" ng-model="graphType" ng-change="refreshGraph()" >
-			<option value="QueueSize" ng-show="destination=='queue'">Queue Size</option>
+		type:{{destination}} <select name="repeatSelect" id="repeatSelect" ng-model="graphType" ng-change="refreshGraph()" >
+			<option value="QueueSize" ng-if="destination=='queue'">Queue Size</option>
 			<option value="ConsumerCount">Consumers</option>
 			<option value="EnqueueCount">Enqueue</option>
 			<option value="DequeueCount">Dequeue</option>
@@ -12,7 +12,7 @@
 			<option value="ExpiredCount">Expired</option>
 			<option value="BlockedSends">Blocked</option>
 			<option value="enqueue_dequeue">Enqueue/Dequeue</option>
-			<option value="enqueue_dequeue_size" ng-show="destination=='queue'">Enqueue/Dequeue/Size</option>
+			<option value="enqueue_dequeue_size" ng-if="destination=='queue'">Enqueue/Dequeue/Size</option>
 		</select>
 		<button class="btn btn-primary btn-sm" ng-click="hideQueueStats()">Close</button>
 	</div>
