@@ -5,6 +5,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	
 	factory.prefs = preferencesFact;
 	factory.procs = ProcessorFact;
+	factory.connectionDetailsObject=[];
 	
 	// queue => stat => processor
 	factory.assignedProcs = {};
@@ -168,6 +169,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			timeout:5000
 		}).then(function successCallback(response) {
 			factory.info=response.data.value;
+			
+//			console.log(factory.info.TransportConnectors);
 			
 			factory.filteredInfo=[];
 			factory.loginok=true;
@@ -404,6 +407,8 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 
 	}
 	
+	/* Connections */
+	
 	factory.refreshConnections = function() {
 		
 		if (factory.currentlyRefreshing[2])
@@ -413,7 +418,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		
 		var connectorName = this.selectedConnector;
 		
-		if (this.selectedConnector === 'all')
+//		if (this.selectedConnector === 'all')
 			connectorName = '*';
 		
 		var curl=factory.connectionsUrl.replace(/CONNECTORNAME/g, connectorName);
@@ -430,6 +435,9 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			factory.activeConnections={};
 
 			for ( property in factory.connections ) {
+				
+//				console.log(factory.extractProperty("connectorName",property));
+				factory.connections[property].ConnectorName=factory.extractProperty("connectorName",property);
 					factory.filteredConnections.push(factory.connections[property]);
 					factory.activeConnections[factory.connections[property].ClientId.replace(/:/g,'_')]=factory.connections[property];
 			}
@@ -441,6 +449,35 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 			  factory.currentlyRefreshing[2] = false;
 		  });
 	}
+	
+	factory.computeConnectionDetails = function(ent)
+	{
+		factory.currentConnection=ent;
+
+		if(ent==null)
+			return;
+		var postUrl=factory.getPostUrl();
+		
+		var data={
+		    "type":"read",
+		    "mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername+",destinationType=*,destinationName=*,endpoint=Consumer,clientId="+ent.ClientId.replace(/:/g,'_')+",consumerId=*"
+		};
+		
+		$http.post(postUrl, data, {})
+		.then(function successCallback(response) {
+			factory.connectionDetailsObject=[];
+
+			for ( property in response.data.value ) {
+					factory.connectionDetailsObject.push(response.data.value[property]);
+
+			}
+			
+		  }, function errorCallback(response) {
+		    alert('ko');
+		  });
+
+	}
+	
 
 	/* Durables */
 
@@ -830,7 +867,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	factory.filteredConnections=[];		
 	factory.topicSubscribers=[];	
 	
-	factory.selectedConnector = 'all';
+	factory.selectedConnector = '';
 	
     return factory;
 }]);

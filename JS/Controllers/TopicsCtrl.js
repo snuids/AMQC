@@ -111,5 +111,17 @@ app.controller('TopicsCtrl', ['$scope', '$confirm', 'amqInfoFactory',
 			$scope.showDetails(null);
 		}*/
 	}
+	$scope.showConnection=function(con)
+	{
+		angular.forEach($scope.amqInfo.filteredConnections, function(value, key) {
+			console.log(value);
+			if(con.ClientID==value.ClientId.replace(/:/g,'_'))
+			{
+				$scope.amqInfo.currentConnection=value;
+				$scope.amqInfo.computeConnectionDetails($scope.amqInfo.currentConnection);
+				$scope.selectTab('Connections');
+			}
+		});
+	}
 }]
 );

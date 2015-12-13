@@ -78,7 +78,7 @@
 						<th>Client ID</th><th>Consumer ID</th>
 					</tr>
 					<tr ng-repeat="sub in subscribers">			
-						<td>{{sub.ClientID}}</td><td>{{sub.ConsumerID}}</td>
+						<td><a href="#" ng-click="showConnection(sub)">{{sub.ClientID}}</a></td><td>{{sub.ConsumerID}}</td>
 					</tr>
 				</table>					
 			</div>

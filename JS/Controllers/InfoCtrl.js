@@ -13,6 +13,9 @@ app.controller('InfoCtrl', ['$rootScope', '$scope', '$timeout', '$filter', 'amqI
 		, {
             title: 'Statistics'
         }
+		, {
+            title: 'Connectors'
+        }
 	];
 
 	$scope.filterField='';

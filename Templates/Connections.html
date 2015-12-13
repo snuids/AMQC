@@ -1,45 +1,47 @@
 <div ng-controller="ConnectionsCtrl">
 
-	<h3 class="nomargin">Connector: <select name="repeatSelect" id="repeatSelect" ng-model="amqInfo.selectedConnector" ng-change="updateSelectedConnector()">
-			<option value="all">all</option>
+	<h3 class="nomargin">Connector: <select name="repeatSelect" id="repeatSelect" ng-model="amqInfo.selectedConnector">
+			<option value="">all</option>
 			<option ng-repeat="(key, value) in amqInfo.info.TransportConnectors" value="{{key}}">{{key}}</option>
 		</select>
 	</h3>
-		
-	<table class="table table-striped table-bordered table-hover table-condensed small">
-		<tr>
-			<th class="{{$index>=1?'text-center':'text-left'}}" ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">{{th}}<span table-header /></th>
-		</tr>
+	
+	<div class='topics_table'>	
+		<table class="table table-striped table-bordered table-hover table-condensed small">
+			<tr>
+				<th class="{{$index>=1?'text-center':'text-left'}}" ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">{{th}}<span table-header /></th>
+			</tr>
 
-		<tr ng-repeat="ent in amqInfo.filteredConnections | filter:filterField | orderBy:sort.column:sort.descending">
-			<td title="{{ent.ClientId}}">{{ent.ClientId | limitTo:20}}</td>
-			<td class="text-center">{{ent.Producers.length}}</td>
-			<td class="text-center">{{ent.Consumers.length}}</td>
-			<td class="text-center">{{ent.DispatchQueueSize}}</td>
+			<tr ng-repeat="ent in amqInfo.filteredConnections | filter:filterField | filter:{ConnectorName:amqInfo.selectedConnector} | orderBy:sort.column:sort.descending">
+				<td title="{{ent.ClientId}}">{{ent.ClientId | limitTo:20}}</td>
+				<td>{{ent.ConnectorName}}</td>
+				
+				<td class="text-center">{{ent.Producers.length}}</td>
+				<td class="text-center">{{ent.Consumers.length}}</td>
+				<td class="text-center">{{ent.DispatchQueueSize}}</td>
 						
-			<td class="text-center">{{ent.RemoteAddress}}</td>
-			<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Slow]" 
-				class="glyphicon glyphicon-ok queue-box-padding"></span></td>
-			<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Blocked]" 
+				<td class="text-center">{{ent.RemoteAddress}}</td>
+				<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Slow]" 
 					class="glyphicon glyphicon-ok queue-box-padding"></span></td>
-			<td class="text-center"><button type="button" ng-click="showDetails(ent)" class="btn btn-primary btn-sm btn-xs">Details</button></td>
-		</tr>
-	</table>
+				<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Blocked]" 
+						class="glyphicon glyphicon-ok queue-box-padding"></span></td>
+				<td class="text-center"><button type="button" ng-click="showDetails(ent)" class="btn btn-primary btn-sm btn-xs">Details</button></td>
+			</tr>
+		</table>
+	</div>
 
-	<div drag-me class="connection_details" ng-show="currentConnection!=null">
+	<div drag-me class="connection_details" ng-show="amqInfo.currentConnection!=null">
 		<h2>
-			{{currentConnection.ClientId}}
+			{{amqInfo.currentConnection.ClientId}}
 		</h2>
 		
 		<div>
-			<!--span ng-repeat="(key, value) in currentConnection.Consumers" 
-					ng-class="getDestinationType(currentConnection.Consumers[key])=='Topic'?'bg-success':'bg-warning'">{{getDestinationName(currentConnection.Consumers[key])}} </span-->
 			<div class="connection_details_table">
 				<table class="table table-striped table-bordered table-hover table-condensed small">
 					<tr>
 						<th class="text-center" ng-repeat="(i,th) in headDetails" ng-class="selectedDetailsCls(i)" ng-click="changeDetailsSorting(i)">{{th}}</th>
 					</tr>
-					<tr ng-repeat="ent in detailsObject  | orderBy:sortDetails.column:sortDetails.descending">
+					<tr ng-repeat="ent in amqInfo.connectionDetailsObject  | orderBy:sortDetails.column:sortDetails.descending">
 						<td><a href="#" ng-click="showDestination(ent)">{{ent.DestinationName | limitTo: 30}}</a></td>
 							<td class="text-center">{{ent.EnqueueCounter}}</td>
 							<td class="text-center">{{ent.DequeueCounter}}</td>

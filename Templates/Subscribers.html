@@ -13,7 +13,9 @@
 		</tr>
 		<tr ng-repeat="ent in amqInfo.topicSubscribers | filter:filterField | orderBy:sort.column:sort.descending | filter: filterFunction">
 			<td title="{{ent.DestinationName}}">
+				<a href="#" ng-click="showDestination(ent)">
 				{{ent.DestinationName | limitTo:20}}
+				</a>
 			</td>
 			<td class="text-left" title="{{ent.ClientID}}">
 				{{ent.ClientID | limitTo:20}}

@@ -290,5 +290,18 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 			toasty.error({msg:'Unable to delete message ' + $scope.currentMessage.JMSMessageID + ' from Queue ' + $scope.currentMessage.destination});
 		});
 	}
+	
+	$scope.showConnection=function(con)
+	{
+		angular.forEach($scope.amqInfo.filteredConnections, function(value, key) {
+			console.log(value);
+			if(con.ClientID==value.ClientId.replace(/:/g,'_'))
+			{
+				$scope.amqInfo.currentConnection=value;
+				$scope.amqInfo.computeConnectionDetails($scope.amqInfo.currentConnection);
+				$scope.selectTab('Connections');
+			}
+		});
+	}
 }]
 );

@@ -1,8 +1,10 @@
 app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
 	function ($scope, $http, amqInfoFactory) 
 {
+	
 	$scope.head = {
 	        ClientId: "Client Id",
+	        ConnectorName: "Connector",
 	        Producers: "Producers",
 	        Consumers: "Consumers",
 			DispatchQueue: "Dispatch Queue",
@@ -22,10 +24,7 @@ app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
 				DestinationQueue:"Queue"
 		    };
 	
-	$scope.currentConnection=null;
-	$scope.amqInfo=amqInfoFactory;
-	$scope.detailsObject=null;
-	
+			
 	$scope.sort = {
 	        column: 'ClientId',
 	        descending: false
@@ -68,37 +67,8 @@ app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
 	
 	$scope.showDetails = function(ent)
 	{
-		$scope.currentConnection=ent;
-
-		if(ent==null)
-			return;
-		var postUrl=amqInfoFactory.getPostUrl();
+		$scope.amqInfo.computeConnectionDetails(ent);
 		
-		var data={
-		    "type":"read",
-		    "mbean":"org.apache.activemq:type=Broker,brokerName="+$scope.amqInfo.brokername+",destinationType=*,destinationName=*,endpoint=Consumer,clientId="+ent.ClientId.replace(/:/g,'_')+",consumerId=*"
-		};
-		//alert(data.mbean);
-		//alert(JSON.stringify(data));
-		
-		$http.post(postUrl, data, {})
-		.then(function successCallback(response) {
-			console.log("RES:");
-			console.log(response);
-			$scope.detailsObject=[];
-
-			for ( property in response.data.value ) {
-					$scope.detailsObject.push(response.data.value[property]);
-
-			}
-			console.log("RES2:");
-			console.log($scope.detailsObject);
-
-			
-		  }, function errorCallback(response) {
-		    alert('ko');
-		  });
-
 	}
 
 	$scope.getDestinationName = function(ent)
@@ -113,10 +83,7 @@ app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
 		var match=re.exec(ent.objectName);
 		return match[1];		
 	}
-	$scope.updateSelectedConnector=function()
-	{
-		amqInfoFactory.refreshConnections();
-	}
+
 	$scope.showDestination=function(ent)
 	{
 		if(ent.DestinationQueue)
@@ -139,7 +106,9 @@ app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
 				}
 			});
 		}
-	}
+	}	
+
+	$scope.amqInfo=amqInfoFactory;
 	
 }]
 );

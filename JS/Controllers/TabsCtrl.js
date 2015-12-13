@@ -15,6 +15,8 @@ app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory',
 	// 			"ProducerCount", "MaxMessageSize"
 
 	
+	
+	
 	$scope.availableQueueChartFields = [
 		"QueueSize", "EnqueueCount", "DequeueCount"
 	];
@@ -25,12 +27,7 @@ app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory',
             title: 'Info',
             url: 'Templates/Info.html',
 			hasFilter:true
-        }
-		, {
-            title: 'Connectors',
-            url: 'Templates/Connectors.html',
-			hasFilter:false
-        }
+        }		
 		, {
             title: 'Queues',
             url: 'Templates/Queues.html',
@@ -97,9 +94,8 @@ app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory',
 		angular.forEach($scope.tabs, function(value, key) {
 			if(value.title==name)
 			{
-				$scope.currentTab=value;
-			}	
-			
+				$scope.onClickTab(value);
+			}				
 			});
 	}
 
@@ -168,10 +164,7 @@ app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory',
 	
 	$scope.changedItem = function(key, value) {
 		$scope.savePrefs();
-		//$scope.fieldsChanged = true;
-		//console.log('key:' + JSON.stringify(key));
-		//console.log('value:' + JSON.stringify(value));
-		//console.log('chart field ' + key + ' -> show:' + value.isSelected + ', proc:' + value.procName);
+		
 	}
 }]
 );

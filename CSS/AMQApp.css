@@ -193,6 +193,16 @@ textarea{
 	overflow:auto;
 }
 
+#info_connectors
+{
+	position:absolute;
+	bottom:30px;
+	top:120px;
+	left:0px;
+	right:0px;
+	overflow:auto;
+}
+
 #info_stats
 {
 	position:absolute;
@@ -514,6 +524,30 @@ textarea{
 	right:0px;
 	bottom:5px;
 	text-align:center;
+}
+
+/* Topics table */
+
+.topics_table
+{
+	position:absolute;
+	overflow:auto; 
+	bottom:0px;
+	top:50px;
+	left:0px;
+	right:0px;
+}
+
+/* Connections table */
+
+.connections_table
+{
+	position:absolute;
+	overflow:auto; 
+	bottom:0px;
+	top:50px;
+	left:0px;
+	right:0px;
 }
 
 /* Send Message Tab */
