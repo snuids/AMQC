@@ -1,6 +1,8 @@
 <div ng-controller="QueuesCtrl" class="queues_main">
 
 	<h4 class='nomargin'>Create a new Queue: <input type="text" ng-model="newQueueName" >&nbsp;	<button class="btn btn-primary btn-sm" ng-disabled="newQueueName.length==0" ng-click="createNewQueue()">Create</button></h4>
+	<div class='nomargin queues_buttons'><h4><button class="btn btn-primary btn-sm" ng-click="showQueueStats()">Queue Stats</button>
+	</h4></div>
 
 
 	<div class='queues_table'>
@@ -25,10 +27,12 @@
 		</table>
 	</div>
 
+	<div class='queues_stats' ng-show="queueStatsVisible">
+		<div ng-include="'Templates/QueueTopicStats.html'"></div>
+	</div>
 
 
-	<div class='queues_graph'>			
-		
+	<div class='queues_graph'>					
 		<nvd3 options='options' data='data' api='api'></nvd3>
 	</div>
 

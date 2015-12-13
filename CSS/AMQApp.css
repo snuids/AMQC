@@ -439,6 +439,17 @@ textarea{
 	right:0px;
 }
 
+.queues_stats
+{
+	position:fixed;
+	left:0px;
+	right:0px;
+	bottom:0px;
+	top:0px;
+	background-color:white;
+	z-index:1000;
+}
+
 .queues_queue_selector
 {
 	position:absolute;
@@ -447,6 +458,13 @@ textarea{
 	left:0px;
 	right:0px;
 	z-index:1;
+}
+
+.queues_buttons
+{
+	position:fixed;
+	right:20px;
+	top:36px;
 }
 
 .queue_details
@@ -534,6 +552,27 @@ textarea{
 	text-align:center;
 }
 
+/* Queues Stats */
+
+#queues_stats_graph
+{
+	position:absolute;
+	left:40px;
+	right:10px;
+	bottom:40px;
+	top:0px;
+	text-align:center;
+}
+
+#queues_stats_footer
+{
+	position:absolute;
+	left:10px;
+	right:10px;
+	bottom:10px;
+	text-align:center;
+}
+
 /* Topics table */
 
 .topics_table
@@ -544,6 +583,13 @@ textarea{
 	top:50px;
 	left:0px;
 	right:0px;
+}
+
+.topics_buttons
+{
+	position:fixed;
+	right:20px;
+	top:36px;
 }
 
 /* Connections table */

@@ -3,11 +3,18 @@
 		Create a new Topic: <input type="text" ng-model="newTopicName">&nbsp; <button class="btn btn-primary btn-sm" ng-disabled="newTopicName.length==0" ng-click="createNewTopic()">Create</button>
 	</h4>
 	
+	<div class='nomargin topics_buttons'><h4><button class="btn btn-primary btn-sm" ng-click="showTopicStats()">Topic Stats</button>
+	</h4></div>
+		
+	<div class='queues_stats' ng-show="topicStatsVisible">
+		<div ng-include="'Templates/QueueTopicStats.html'"></div>
+	</div>
+	
 	<div class='topics_table'>
 		<table class="table table-striped table-bordered table-hover table-condensed small">
 			<tr>
 				<th class="{{$index&gt;1?'text-center':'text-left'}}" ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">
-					{{th}}
+					{{th}}<span table-header></span>
 				</th>
 			</tr>
 			<tr ng-repeat="ent in amqInfo.filteredTopics | filter:filterField[currentTab.id] | orderBy:sort.column:sort.descending | filter: filterFunction">
@@ -39,7 +46,7 @@
 		</table>
 	</div>
 	
-	<div drag-me="" class="topic_details" ng-show="amqInfo.currentTopic!=null">
+	<div drag-me class="topic_details" ng-show="amqInfo.currentTopic!=null">
 		<div class="topright">
 			<h4>
 				Topic:{{amqInfo.currentTopic.Name}}

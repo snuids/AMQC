@@ -2,6 +2,7 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 	function ($rootScope, $scope, $interval, $timeout, $confirm, amqInfoFactory, toasty, preferencesFact) 
 {
 	$scope.prefs = preferencesFact;
+	$scope.queueStatsVisible=false;		
 	
 	$scope.head = {
 			Name: "Name",
@@ -89,6 +90,24 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 			i++;
 		}
 		$timeout(function() { $scope.api.refresh(); }, 10);
+	}
+		
+	
+	$scope.showQueueStats=function()
+	{	
+		$timeout(function() {
+			$rootScope.$broadcast("show_queue_stats","queue");
+		});	
+		
+		$scope.queueStatsVisible=true;
+		
+	}
+	
+
+	
+	$scope.hideQueueStats=function()
+	{
+		$scope.queueStatsVisible=false;
 	}
 	
 	$scope.refreshData = function() {

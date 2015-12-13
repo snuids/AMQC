@@ -1,5 +1,5 @@
-app.controller('TopicsCtrl', ['$scope', '$confirm', 'amqInfoFactory',
-	function ($scope, $confirm, amqInfoFactory) 
+app.controller('TopicsCtrl', ['$rootScope','$scope','$timeout', '$confirm', 'amqInfoFactory',
+	function ($rootScope,$scope, $timeout,$confirm, amqInfoFactory) 
 {
 	$scope.head = {
 	        Name: "Name",
@@ -14,7 +14,7 @@ app.controller('TopicsCtrl', ['$scope', '$confirm', 'amqInfoFactory',
 	    };
 	
 	$scope.amqInfo=amqInfoFactory;
-//	$scope.amqInfo.currentTopic=null;
+	$scope.topicStatsVisible=false;
 	$scope.newTopicName='';
 	
 	$scope.sort = {
@@ -111,6 +111,21 @@ app.controller('TopicsCtrl', ['$scope', '$confirm', 'amqInfoFactory',
 			$scope.showDetails(null);
 		}*/
 	}
+	
+	$scope.showTopicStats=function()
+	{	
+		$timeout(function() {
+			$rootScope.$broadcast("show_queue_stats","topic");
+		});	
+		
+		$scope.topicStatsVisible=true;		
+	}
+	
+	$scope.hideQueueStats=function()
+	{
+		$scope.topicStatsVisible=false;
+	}
+	
 	$scope.showConnection=function(con)
 	{
 		angular.forEach($scope.amqInfo.filteredConnections, function(value, key) {

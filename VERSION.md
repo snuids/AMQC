@@ -18,3 +18,4 @@ v0.84 12Dec2015 Hyperlinks added from connections to queues and topics
 v0.85 13Dec2015 Hyperlinks finished. Connectors moved to a panel in the info tab
 v0.86 13Dec2015 Stomp Client Only mode added. Filter Field linked to a single tab
 v0.87 13Dec2015 Better stomp client error handling
+v0.88 13Dec2015 Queue and Topic stats added

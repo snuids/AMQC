@@ -33,6 +33,7 @@
         <script src="JS/Controllers/InfoCtrl.js"></script>
         <script src="JS/Controllers/TabsCtrl.js"></script>
         <script src="JS/Controllers/QueuesCtrl.js"></script>
+        <script src="JS/Controllers/QueueTopicStatsCtrl.js"></script>
         <script src="JS/Controllers/TopicsCtrl.js"></script>
         <script src="JS/Controllers/SubscribersCtrl.js"></script>
         <script src="JS/Controllers/ConnectionsCtrl.js"></script>
@@ -84,7 +85,7 @@
 	                    <button class="btn btn-danger btn-sm" ng-click="disconnectAMQ()">Disconnect</button>
 	                </div>
 	            </div>
-            	<div id="version">v0.87 December 2015 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
+            	<div id="version">v0.88 December 2015 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
           	</div>
 
             <toasty></toasty>
