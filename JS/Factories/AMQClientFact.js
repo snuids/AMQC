@@ -31,9 +31,24 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
         scope.$on('$destroy', handler);
     },
 
-    factory.notify= function() {
+    factory.notify= function(evt) {
         $rootScope.$emit('notifying-service-event');
     }
+
+	factory.subscribeToConnectionEvents= function(scope, callback) {
+        var handler = $rootScope.$on('notifying-connection-events', callback);
+        scope.$on('$destroy', handler);
+    },
+
+    factory.notifyConnectionEvents= function(evt) {
+        $rootScope.$emit('notifying-connection-events',evt);
+    }
+	
+	factory.failureFunc=function(error)
+	{
+		factory.disconnect();
+		factory.notifyConnectionEvents(error);	
+	}
 
 	factory.callBackFunc=function(frame) 
 	{		
@@ -80,16 +95,18 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 		}
 
 		factory.client.connected=true;
+		factory.notifyConnectionEvents('Connection Ok');
 	  }
 
 	factory.connect=function()
 	{
 		console.log("CONNECT CLIENT");
-		var url="ws://"+amqInfoFactory.brokerip+":61614";
+		var url="ws://"+amqInfoFactory.brokerip+":"+factory.port;
 		this.client = Stomp.client(url,['stomp']);
 		this.messages=[];
 		this.messagesCount=0;
-		this.client.connect(this.login, this.password, this.callBackFunc);
+		this.client.connect(this.login, this.password, this.callBackFunc,this.failureFunc);
+		console.log(this.client);
 		
 		if((typeof(Storage) === undefined) || amqInfoFactory.rememberMe === false)
 			return;

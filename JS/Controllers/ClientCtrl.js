@@ -5,6 +5,17 @@ app.controller('ClientCtrl', ['$scope', 'amqInfoFactory', 'amqClientFactory', 't
 	{
 		$scope.$apply();
 	});
+	
+	amqClientFactory.subscribeToConnectionEvents($scope, function connectionEventHandler(evt,param) 
+	{
+//		toasty.sucees({msg:'Header already exists.'});
+		if(param.toLowerCase().indexOf("ok")>=0)
+			toasty.success({msg:param});
+		else
+			toasty.error({msg:param});
+		$scope.$apply();
+	});
+	
 	$scope.amqClient=amqClientFactory;
 	
 	$scope.destinations = [{
@@ -22,6 +33,7 @@ app.controller('ClientCtrl', ['$scope', 'amqInfoFactory', 'amqClientFactory', 't
 	
 	$scope.connect=function()
 	{
+		toasty.success({msg:"Trying to connect"});		
 		$scope.amqClient.connect();
 	}
 	

@@ -10,7 +10,7 @@
 	
 	<br/><br/>
 
-	<button type="button" ng-show="!amqClient.client" ng-click="connect()" class="btn btn-primary btn-sm btn-xs">Connect</button>
+	<button type="button" ng-show="(!amqClient.client)" ng-click="connect()" class="btn btn-primary btn-sm btn-xs">Connect</button>
 	<button type="button" ng-show="amqClient.client" ng-click="disconnect()" class="btn btn-danger btn-sm btn-xs">Disconnect</button>
 	<button type="button" ng-show="amqClient.messages.length>0" ng-click="clearTable()" class="btn btn-primary btn-sm btn-xs">Clear Table</button>
 	
@@ -41,7 +41,7 @@
 	</table>
 	</div>
 	
-	<div id="sendMessageView" >			
+	<div id="sendMessageView" ng-show="amqClient.client">			
       <div ng-include="'Templates/SendMessage.html'"></div>
   </div>
 	
