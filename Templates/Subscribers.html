@@ -11,7 +11,7 @@
 				{{th}}
 			</th>
 		</tr>
-		<tr ng-repeat="ent in amqInfo.topicSubscribers | filter:filterField | orderBy:sort.column:sort.descending | filter: filterFunction">
+		<tr ng-repeat="ent in amqInfo.topicSubscribers | filter:filterField[currentTab.id] | orderBy:sort.column:sort.descending | filter: filterFunction">
 			<td title="{{ent.DestinationName}}">
 				<a href="#" ng-click="showDestination(ent)">
 				{{ent.DestinationName | limitTo:20}}

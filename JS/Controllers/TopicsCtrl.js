@@ -119,7 +119,7 @@ app.controller('TopicsCtrl', ['$scope', '$confirm', 'amqInfoFactory',
 			{
 				$scope.amqInfo.currentConnection=value;
 				$scope.amqInfo.computeConnectionDetails($scope.amqInfo.currentConnection);
-				$scope.selectTab('Connections');
+				$scope.selectTab('connections');
 			}
 		});
 	}

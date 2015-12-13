@@ -12,7 +12,7 @@
 				<th class="{{$index>=1?'text-center':'text-left'}}" ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">{{th}}<span table-header /></th>
 			</tr>
 
-			<tr ng-repeat="ent in amqInfo.filteredConnections | filter:filterField | filter:{ConnectorName:amqInfo.selectedConnector} | orderBy:sort.column:sort.descending">
+			<tr ng-repeat="ent in amqInfo.filteredConnections | filter:filterField[currentTab.id] | filter:{ConnectorName:amqInfo.selectedConnector} | orderBy:sort.column:sort.descending">
 				<td title="{{ent.ClientId}}">{{ent.ClientId | limitTo:20}}</td>
 				<td>{{ent.ConnectorName}}</td>
 				

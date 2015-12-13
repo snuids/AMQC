@@ -1,41 +1,66 @@
-<div class="modal-content" id="login" ng-controller="LoginCtrl" ng-show="!amqInfo.connected">							
-	 <h3 class="nomargin windowtitle">ActiveMQ Login</h3>
-	  <table width="100%">
-	      <tr>
-	          <td>IP (Name)</td>
-	          <td><input type="text" ng-model="amqInfo.brokerip"></td>
-	      </tr>
-	      <tr>
-	          <td>Port</td>
-	          <td><input type="number" min="1" max="65556" ng-model="amqInfo.brokerport" ></td>
-	      </tr>
-	      <tr>
-	          <td>Broker</td>
-	          <td><input type="text" ng-model="amqInfo.brokername"></td>
-	      </tr>
-	      <tr>
-	          <td>&nbsp;</td>
-	          <td></td>
-	      </tr>
-	      <tr>
-	          <td>Login</td>
-	          <td><input ng-model="amqInfo.login" type="text" value="" placeholder="Username"></td>
-	      </tr>
-	      <tr>
-	          <td>Password</td>
-	          <td><input ng-model="amqInfo.password" type="password" value="" placeholder="Password"></td>
-	      </tr>
-	  </table>
-	  <input type="checkbox" ng-model="amqInfo.rememberMe"> Remember Me
-	<img  src="./Images/ajax-loader.gif" ng-show="amqInfo.connecting">    
+<div class="modal-content" id="login" ng-controller="LoginCtrl" ng-show="!amqInfo.connected">
+	<h3 class="nomargin windowtitle">
+		ActiveMQ Login
+	</h3>
+	<table width="100%">
+		<tr>
+			<td>
+				IP (Name)
+			</td>
+			<td>
+				<input type="text" ng-model="amqInfo.brokerip">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Port
+			</td>
+			<td>
+				<input type="number" min="1" max="65556" ng-model="amqInfo.brokerport">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Broker
+			</td>
+			<td>
+				<input type="text" ng-model="amqInfo.brokername">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				&nbsp;
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>
+				Login
+			</td>
+			<td>
+				<input ng-model="amqInfo.login" type="text" value="" placeholder="Username">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Password
+			</td>
+			<td>
+				<input ng-model="amqInfo.password" type="password" value="" placeholder="Password">
+			</td>
+		</tr>
+	</table><input type="checkbox" ng-model="amqInfo.rememberMe"> Remember Me <img src="./Images/ajax-loader.gif" ng-show="amqInfo.connecting">
 	<div class="login_footer" ng-show="!amqInfo.connecting">
-	      <button type=submit class="btn btn-primary btn-sm" ng-click="logAMQ()">Connect</button>
-	  </div>
-
-
+		<button type="submit" class="btn btn-primary btn-sm" ng-click="logAMQ()">Connect</button>
+	</div>
 	
-		<div class="login_alert alert alert-danger" ng-show="amqInfo.connectionError" role="alert" ng-bind-html="amqInfo.connectionError | rawHtml"></div>
-		
-			<div class="login_alert alert alert-warning" ng-show="amqInfo.showCORSBanner()" role="alert">You are using basic authentication but the CORS handshake will probably fail if the ActiveMQ address ({{amqInfo.brokerip}}:{{amqInfo.brokerport}}) and your current URL ({{amqInfo.host}}) don't have the same origin. Deploy the console application in the webapps folder of ActiveMQ in order to avoid this. You can also try remove the CORS handshake from your browser.</div>
+	<div class="login_alert alert alert-danger" ng-show="amqInfo.connectionError" role="alert" ng-bind-html="amqInfo.connectionError | rawHtml">		
+	</div>
 	
+	<div class="login_alert alert alert-warning" ng-show="amqInfo.showCORSBanner()" role="alert">
+		You are using basic authentication but the CORS handshake will probably fail if the ActiveMQ address ({{amqInfo.brokerip}}:{{amqInfo.brokerport}}) and your current URL ({{amqInfo.host}}) don't have the same origin. Deploy the console application in the webapps folder of ActiveMQ in order to avoid this. You can also try remove the CORS handshake from your browser.
+	</div>
+	<div class="login_stomp" >
+		<button type="submit" class="btn btn-info btn-sm" ng-click="logStompOnly()">Stomp Client Only</button>
+	</div>
 </div>

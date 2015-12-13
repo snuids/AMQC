@@ -1,8 +1,10 @@
-app.controller('LoginCtrl', ['$scope', '$rootScope', 'amqInfoFactory', 'Base64', 'preferencesFact',
-	function ($scope, $rootScope, amqInfoFactory, Base64, preferencesFact) {
+app.controller('LoginCtrl', ['$scope', '$rootScope', 'amqInfoFactory','amqClientFactory', 'Base64', 'preferencesFact',
+	function ($scope, $rootScope, amqInfoFactory,amqClientFactory, Base64, preferencesFact) {
 		
 	$scope.prefs = preferencesFact;
 	$scope.amqInfo = amqInfoFactory;
+	$scope.amqClient = amqClientFactory;
+
 		
  	$scope.logAMQ = function() {		
 		
@@ -20,6 +22,15 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', 'amqInfoFactory', 'Base64',
 			$scope.prefs.load();
 		$scope.amqInfo.setRefresh();
     }
+
+	$scope.logStompOnly = function()
+	{
+		$scope.amqInfo.resetAll();
+		$scope.amqInfo.connected=true;
+		$scope.amqInfo.stompOnly=true;
+		$scope.amqClient.ip=$scope.amqInfo.brokerip;
+		$rootScope.$broadcast("stomponly");
+	}
 
 	if($scope.amqInfo.autologin)
 		$scope.logAMQ();

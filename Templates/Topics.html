@@ -10,7 +10,7 @@
 					{{th}}
 				</th>
 			</tr>
-			<tr ng-repeat="ent in amqInfo.filteredTopics | filter:filterField | orderBy:sort.column:sort.descending | filter: filterFunction">
+			<tr ng-repeat="ent in amqInfo.filteredTopics | filter:filterField[currentTab.id] | orderBy:sort.column:sort.descending | filter: filterFunction">
 				<td>
 					{{ent.Name}}
 				</td>

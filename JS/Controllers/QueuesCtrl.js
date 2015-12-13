@@ -299,7 +299,7 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 			{
 				$scope.amqInfo.currentConnection=value;
 				$scope.amqInfo.computeConnectionDetails($scope.amqInfo.currentConnection);
-				$scope.selectTab('Connections');
+				$scope.selectTab('connections');
 			}
 		});
 	}

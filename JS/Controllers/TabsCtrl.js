@@ -26,45 +26,53 @@ app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory',
 	$scope.tabs = [{
             title: 'Info',
             url: 'Templates/Info.html',
-			hasFilter:true
+			hasFilter:true,
+			id:'info'
         }		
 		, {
             title: 'Queues',
             url: 'Templates/Queues.html',
-			hasFilter:true
-        }, {
+			hasFilter:true,
+			id:'queues'
+		}, {
             title: 'Topics',
             url: 'Templates/Topics.html',
-			hasFilter:true
+			hasFilter:true,
+			id:'topics'
     	}
 		, {
             title: 'Subscribers',
             url: 'Templates/Subscribers.html',
-			hasFilter:true
+			hasFilter:true,
+			id:'subscribers'
     	}
 		, {
             title: 'Connections',
             url: 'Templates/Connections.html',
-			hasFilter:true
+			hasFilter:true,
+			id:'connections'
     	}
 		, {
             title: 'Send',
             url: 'Templates/Send.html',
-			hasFilter:true
+			hasFilter:false,
+			id:'send'
     	}
 		, {
             title: 'Client',
             url: 'Templates/Client.html',
-			hasFilter:true
+			hasFilter:false,
+			id:'client'
     	}		
 		, {
             title: 'Preferences',
             url: 'Templates/Preferences.html',
-			hasFilter:true
+			hasFilter:false,
+			id:'preferences'
     	}
 	];
 
-	$scope.filterField='';
+	$scope.filterField={};
 
 	$scope.amqInfo = amqInfoFactory;
 	$scope.amqClient = amqClientFactory;
@@ -89,10 +97,10 @@ app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory',
 			toasty.info({msg:'Goodbye.'});
 	}	
 
-	$scope.selectTab=function(name)
+	$scope.selectTab=function(tabid)
 	{
 		angular.forEach($scope.tabs, function(value, key) {
-			if(value.title==name)
+			if(value.id==tabid)
 			{
 				$scope.onClickTab(value);
 			}				
@@ -166,5 +174,11 @@ app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory',
 		$scope.savePrefs();
 		
 	}
+	
+	$scope.$on('stomponly', function(event) {	
+		console.log("Stomp Only mode triggered.");
+		$scope.selectTab('client');
+	}
+	);
 }]
 );

@@ -10,10 +10,12 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 	// queue => stat => processor
 	factory.assignedProcs = {};
 
+	/** Reset ALL **/
 	factory.resetAll=function()
 	{
 		factory.loginok=false;
 		factory.updates=0;
+		factory.stompOnly=false;
 	    factory.connectionsData = [
 		{
 			"key": "Current Number of Connections",

@@ -91,7 +91,7 @@ app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
 			angular.forEach($scope.amqInfo.filteredQueues, function(value, key) {
 				if(ent.DestinationName==value.Name)
 				{
-					$scope.selectTab('Queues');
+					$scope.selectTab('queues');
 					$scope.amqInfo.currentQueue=value;
 				}
 			});
@@ -101,7 +101,7 @@ app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
 			angular.forEach($scope.amqInfo.filteredTopics, function(value, key) {
 				if(ent.DestinationName==value.Name)
 				{
-					$scope.selectTab('Topics');
+					$scope.selectTab('topics');
 					$scope.amqInfo.currentTopic=value;
 				}
 			});

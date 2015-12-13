@@ -53,26 +53,28 @@
 
         <div ng-app="AMQApp" class="AMQApp">	
 
-						<div ng-include="'Templates/Login.html'">							
-						</div>           
+			<div ng-include="'Templates/Login.html'">							
+			</div>           
 
             <div id="tabs" ng-controller="TabsCtrl" ng-show="amqInfo.connected">	
-								<div>
-                	<div class="filterField" ng-show="currentTab.hasFilter">
-	                    Filter:&nbsp;<input type="text" ng-model="filterField"  autofocus/>
+				<div>
+                	<div class="filterField" ng-show="currentTab.hasFilter">						
+	                    Filter:&nbsp;<input type="text" ng-model="filterField[currentTab.id]"  autofocus/>
 	                </div>
 
-									<nav class="navbar-default">
-	                <div class="container-fluid">
-	                    <div>
-	                        <ul class="nav nav-pills ">
-	                            <li ng-repeat="tab in tabs" 
-	                                ng-class="{active:isActiveTab(tab.url)}" 
-	                                ng-click="onClickTab(tab)"><a href="#">{{tab.title}}</a></li>
-	                        </ul>
-	                    </div>
-	                </div>
-									</nav>
+					<nav class="navbar-default">
+		                <div class="container-fluid">
+		                    <div>
+		                        <ul class="nav nav-pills ">
+		                            <li ng-repeat="tab in tabs" 
+		                                ng-class="{active:isActiveTab(tab.url)}" 
+										ng-show="(!amqInfo.stompOnly) || (tab.id=='client')"
+		                                ng-click="onClickTab(tab)"><a href="#">{{tab.title}}</a></li>
+										
+		                        </ul>
+		                    </div>
+		                </div>
+					</nav>
 
 	                <div id="mainView">
 	                    <div ng-include="currentTab.url"></div>
@@ -82,7 +84,7 @@
 	                    <button class="btn btn-danger btn-sm" ng-click="disconnectAMQ()">Disconnect</button>
 	                </div>
 	            </div>
-            	<div id="version">v0.85 December 2015 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
+            	<div id="version">v0.86 December 2015 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
           	</div>
 
             <toasty></toasty>

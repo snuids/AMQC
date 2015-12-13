@@ -91,6 +91,14 @@ textarea{
 	padding-top:10px;
 }
 
+.login_stomp
+{
+	z-index:100;
+	position:fixed;
+	bottom:10px;
+	left:10px;
+}
+
 /* GitHub */
 
 #github

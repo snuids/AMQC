@@ -1,7 +1,7 @@
 <div ng-controller="ClientCtrl">
 	<H2 class="nomargin">STOMP Client<span ng-show="amqClient.client"> Messages({{amqClient.messagesCount}})</span></H2>
 
-		
+	<span ng-show="amqInfo.stompOnly">IP: <input ng-disabled="amqClient.client" ng-model="amqInfo.brokerip"></span>
 	Port: <input type="number" min="1" max="65556" ng-disabled="amqClient.client" ng-model="amqClient.port">
 	Login: <input class="small_input_text" type="text" ng-disabled="amqClient.client"  ng-model="amqClient.login">
 	Password: <input class="small_input_text" type="password" ng-disabled="amqClient.client"  ng-model="amqClient.password">	

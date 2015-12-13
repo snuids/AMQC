@@ -62,7 +62,7 @@
 			<th>Value</th>
 			<th>Property</th>
 		</tr>
-		<tr ng-repeat="ent in amqInfo.filteredInfo | filter:$parent.filterField">
+		<tr ng-repeat="ent in amqInfo.filteredInfo | filter:$parent.filterField[$parent.currentTab.id]">
 		    <td>{{ent.key}}</td><td>{{ent.value}}</td>
 		</tr>
 		</table>
