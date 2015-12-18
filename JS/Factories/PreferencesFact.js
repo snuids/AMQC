@@ -3,7 +3,7 @@ app.factory('preferencesFact', ['$rootScope',
 	var factory = {};
 	
 	factory.hideAdvisoryQueues = true;
-	factory.autoRefreshInterval = 0; // in seconds, no auto-refresh when equals to zero
+	factory.autoRefreshInterval = 10; // in seconds, no auto-refresh when equals to zero
 	
 	// contains entries of type: Field => Processor Name (procName), is selected/used (isSelected)
 	factory.queueChartFields = {};
