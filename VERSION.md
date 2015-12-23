@@ -21,3 +21,4 @@ v0.87 13Dec2015 Better stomp client error handling
 v0.88 13Dec2015 Queue and Topic stats added
 v0.89 18Dec2015 CSS fix for connector list. Refresh rate set to 10 seconds by default.
 v0.90 23Dec2015 Stomp message time line interface added.
+v0.91 23Dec2015 Client Time Lines on click issues fixed.

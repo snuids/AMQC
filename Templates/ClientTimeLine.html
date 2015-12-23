@@ -1,14 +1,15 @@
-<H4>Queues and Topics Time Line</H4>
+<H4>&nbsp;Queues and Topics Time Line 2</H4>
+
 
 <div id="client_timeline_curves">
-	<div class="client_timeline_onegraph" ng-repeat="graph in queuesAndTopics">
+	<div class="client_timeline_onegraph" ng-repeat="graph in queuesAndTopics ">
 		<div class="client_timeline_onegraph_canvas">
 			<canvas id="can_{{graph.type}}_{{graph.name}}" class="client_timeline_canvas"></canvas>		
 		</div>
 		<div class="client_timeline_onegraph_title">{{graph.name}} ({{graph.type}} Max={{graph.max}})</div>
 	</div>	
 </div>
-
+ 
 <div drag-me class="client_timeline_messages" ng-show="selectedMessages.length>0">
 	<h4>&nbsp;Messages</h4>
 	<div class="client_timeline_messages_table">

@@ -120,6 +120,7 @@ app.controller('ClientCtrl', ['$scope','$interval','$timeout', 'amqInfoFactory',
 		
 	$scope.showMessageGrapher=function()
 	{
+		$scope.eventListenersAdded=false;
 		$scope.queuesAndTopics=[];
 		var queues=$scope.amqClient.queues.split(',');
 		var topics=$scope.amqClient.topics.split(',');		
@@ -239,6 +240,8 @@ app.controller('ClientCtrl', ['$scope','$interval','$timeout', 'amqInfoFactory',
 //		console.log(curve);
 		var id='#can_'+curve.type+'_'+curve.name;
 		var c = $(id);
+		if(c.get(0)==undefined)
+			return;
 		var ctx = c.get(0).getContext('2d');
         var W = window.innerWidth;
         var H = $(id).parent().height();  			
