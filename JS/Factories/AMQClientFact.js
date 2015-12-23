@@ -70,6 +70,9 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 					factory.messages.unshift(mes);
 					factory.messagesCount++;
 					factory.notify('mes');
+					
+					if(factory.messages.length>1000)
+						factory.messages.pop();
 		    	});
 			}
 		}
@@ -90,6 +93,9 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 					factory.messages.unshift(mes);
 					factory.messagesCount++;
 					factory.notify('mes');				
+					if(factory.messages.length>1000)
+						factory.messages.pop();
+					
 		    	});
 			}
 		}
