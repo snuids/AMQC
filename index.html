@@ -85,7 +85,10 @@
 	                    <button class="btn btn-danger btn-sm" ng-click="disconnectAMQ()">Disconnect</button>
 	                </div>
 	            </div>
-            	<div id="version">v0.91 December 2015 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
+            	<div id="version">
+				v0.92 January 2016 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]
+					<div ng-show="amqInfo.connecting" class="connection_square connection_square_{{refresh}}" ng-repeat="refresh in amqInfo.currentlyRefreshing track by $index"></div>					
+					<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
           	</div>
 
             <toasty></toasty>

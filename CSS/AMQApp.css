@@ -3,6 +3,26 @@
 	margin-top:1px;
 }
 
+.connection_square
+{
+	width:8px;
+	height:8px;
+	float:right;
+	margin-left:2px;
+	margin-top:8px;
+}
+
+.connection_square_false
+{
+	background-color:green;	
+}
+
+.connection_square_true
+{
+	background-color:red;	
+}
+
+
 textarea{
     border:1px solid #999999;
     width:100%;
