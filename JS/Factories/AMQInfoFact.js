@@ -469,6 +469,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		.then(function successCallback(response) {
 			factory.connectionDetailsObject=[];
 
+
 			for ( property in response.data.value ) {
 					factory.connectionDetailsObject.push(response.data.value[property]);
 

@@ -23,3 +23,4 @@ v0.89 18Dec2015 CSS fix for connector list. Refresh rate set to 10 seconds by de
 v0.90 23Dec2015 Stomp message time line interface added.
 v0.91 23Dec2015 Client Time Lines on click issues fixed.
 v0.92 17Jan2016 Display refresh cycle details
+v0.93 26Jan2016 Slow column added in the connection details interface

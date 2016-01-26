@@ -21,7 +21,8 @@ app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
 		        DispatchedCounter: "Dispatched",
 		        DiscardedCount: "Discarded",
 				Durable:"Durable",
-				DestinationQueue:"Queue"
+				DestinationQueue:"Queue",
+				SlowConsumer:"Slow"
 		    };
 	
 			
