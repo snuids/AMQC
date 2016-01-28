@@ -16,7 +16,8 @@ app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
 	
 	$scope.headDetails = {
 		        DestinationName: "Name",
-		        EnqueueCounter: "Enqueue",
+		        Selector: "Selector",
+				EnqueueCounter: "Enqueue",
 		        DequeueCounter: "Dequeue",
 		        DispatchedCounter: "Dispatched",
 		        DiscardedCount: "Discarded",

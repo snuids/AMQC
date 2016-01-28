@@ -43,6 +43,8 @@
 					</tr>
 					<tr ng-repeat="ent in amqInfo.connectionDetailsObject  | orderBy:sortDetails.column:sortDetails.descending">
 						<td><a href="#" ng-click="showDestination(ent)">{{ent.DestinationName | limitTo: 30}}</a></td>
+						<td>{{ent.Selector | limitTo: 30}}</td>
+						
 							<td class="text-center">{{ent.EnqueueCounter}}</td>
 							<td class="text-center">{{ent.DequeueCounter}}</td>
 							<td class="text-center">{{ent.DispatchedCounter}}</td>
