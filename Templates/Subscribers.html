@@ -1,7 +1,10 @@
 <div ng-controller="SubscribersCtrl">
 	<div class="panel panel-default">
 		<div class="panel-body">
-			Create a new durable ID: <input class="small_input_text" type="text" ng-model="newDurableClientID">&nbsp; Subscriber: <input class="small_input_text" type="text" ng-model="newDurableSubscriber">&nbsp; Topic: <input class="small_input_text" type="text" ng-model="newDurableTopic">&nbsp; Selector: <input class="small_input_text" type="text" ng-model="newDurableSelector">&nbsp; <button class="btn btn-primary btn-sm" ng-disabled="(newDurableClientID.length==0) || (newDurableSubscriber.length==0) || (newDurableTopic.length==0)" ng-click="createNewDurableSubscriber()">Create</button><br>
+			Create a new durable ID: <input class="small_input_text" type="text" ng-model="newDurableClientID">&nbsp; Subscriber: <input class="small_input_text" type="text" ng-model="newDurableSubscriber">&nbsp; Topic: <input class="small_input_text" type="text" ng-model="newDurableTopic">&nbsp; Selector: <input class="small_input_text" type="text" ng-model="newDurableSelector">&nbsp; <button class="btn btn-primary btn-sm" ng-disabled="(newDurableClientID.length==0) || (newDurableSubscriber.length==0) || (newDurableTopic.length==0)" ng-click="createNewDurableSubscriber()" >Create</button>
+			<button class="btn btn-warning btn-sm" ng-click="checkSubscribers()" ng-show="!amqInfo.subscriberTesterVisible">Check subscribers</button>
+			
+			<br>
 			<input type="checkbox" ng-model="durableOnly"> <span>Show Durable Only&nbsp;&nbsp;</span><input type="checkbox" ng-model="notConnectedOnly"> <span>Show Not Connected Durable Only</span>
 		</div>
 	</div>
@@ -44,4 +47,46 @@
 			</td>
 		</tr>
 	</table>
+	
+	<div drag-me class="subscriber_tester" ng-show="amqInfo.subscriberTesterVisible">
+		<h2>
+			Subscriber Tester ({{amqInfo.subscriberTesterList.length}} / {{amqInfo.topicSubscribers.length}})
+		</h2>
+		
+		<div>
+			<div class="subscriber_tester_table">
+				<table class="table table-striped table-bordered table-hover table-condensed small">
+					<tr>
+						<th>Client ID</th>
+						<th>Destination</th>
+						<th>Enqueue</th>
+						<th>Dequeue</th>
+						<th>Dispatched</th>
+						<th>IsOk</th>
+					</tr>
+					<tr ng-repeat="ent in amqInfo.subscriberTesterList | orderBy:'isOk'">
+						<td title="{{ent.ClientID}}">{{ent.ClientID | limitTo:20}}</td>
+						<td>{{ent.DestinationName}}</td>
+						<td class="text-center">
+							{{ent.properties.EnqueueCounter}}
+						</td>
+						<td class="text-center">
+							{{ent.properties.DequeueCounter}}
+						</td>
+						<td class="text-center">
+							{{ent.properties.DispatchedCounter}}
+						</td>
+						<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.isOk]" class="glyphicon glyphicon-ok queue-box-padding"></span>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>			
+		<br/>
+		<div class="nodrag" style="width:100%;text-align:center;">				
+			<button type="button" ng-click="closeCheckSubscribers()" class="btn btn-primary btn-sm btn-xs">Close</button>
+
+		</div>
+	</div>
+	
 </div>

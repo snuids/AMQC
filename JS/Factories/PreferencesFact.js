@@ -3,6 +3,7 @@ app.factory('preferencesFact', ['$rootScope',
 	var factory = {};
 	
 	factory.hideAdvisoryQueues = true;
+	console.log("Creating pref fact:"+factory.hideAdvisoryQueues);
 	factory.autoRefreshInterval = 10; // in seconds, no auto-refresh when equals to zero
 	
 	// contains entries of type: Field => Processor Name (procName), is selected/used (isSelected)
@@ -20,8 +21,17 @@ app.factory('preferencesFact', ['$rootScope',
 			return false;
 		
 		var pref = factory.checkStorageItem("amqc.hideAdvisoryQueues");
-		factory.hideAdvisoryQueues = pref.isOk ? pref.value : true;
-				
+		factory.hideAdvisoryQueues = pref.isOk ? (pref.value == "true") : true;
+		
+//		alert("OK:"+pref.isOk);
+//		alert("Val:"+pref.value);
+//		alert("Hide:"+factory.hideAdvisoryQueues);
+		
+		//factory.hideAdvisoryQueues=!factory.hideAdvisoryQueues;						
+		//factory.hideAdvisoryQueues=!factory.hideAdvisoryQueues;
+//				alert(factory.hideAdvisoryQueues);
+		console.log("Fact Hide="+factory.hideAdvisoryQueues+" Obj:"+typeof factory.hideAdvisoryQueues);
+								
 		pref = factory.checkStorageItem("amqc.autoRefreshInterval");
 		factory.autoRefreshInterval = pref.isOk ? parseInt(pref.value) : 0;
 		

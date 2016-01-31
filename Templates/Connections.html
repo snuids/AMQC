@@ -43,7 +43,7 @@
 					</tr>
 					<tr ng-repeat="ent in amqInfo.connectionDetailsObject  | orderBy:sortDetails.column:sortDetails.descending">
 						<td><a href="#" ng-click="showDestination(ent)">{{ent.DestinationName | limitTo: 30}}</a></td>
-						<td>{{ent.Selector | limitTo: 30}}</td>
+						<td title="{{ent.Selector}}">{{ent.Selector | limitTo: 20}}</td>
 						
 							<td class="text-center">{{ent.EnqueueCounter}}</td>
 							<td class="text-center">{{ent.DequeueCounter}}</td>
@@ -69,6 +69,7 @@
 		<br/>
 		<div class="nodrag" style="width:100%;text-align:center;">				
 			<button type="button" ng-click="showDetails(null)" class="btn btn-primary btn-sm btn-xs">Close</button>
+			<button class="btn btn-primary btn-sm btn-xs" ng-show="!amqInfo.detailsComputingUnderway"  ng-click="refreshCurrentConnection()">Refresh</button>
 		</div>
 	</div>
 </div>

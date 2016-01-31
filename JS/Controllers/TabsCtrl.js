@@ -123,7 +123,15 @@ app.controller('TabsCtrl',['$rootScope', '$scope', '$timeout', 'amqInfoFactory',
 		if (tab.title == "Preferences") {
 			//console.log('doing pref things');
 			var changedPrefs = false;
-				
+			
+			//alert("COUCOU"+$scope.prefs.hideAdvisoryQueues);
+			
+			console.log("Switch Hide="+$scope.prefs.hideAdvisoryQueues);
+			$timeout(function() {
+				$scope.$apply();
+			});	
+			
+			
 			for (var field in $scope.availableQueueChartFields) {
 				//console.log(JSON.stringify($scope.prefs));
 				if ($scope.prefs.queueChartFields[$scope.availableQueueChartFields[field]] === undefined) {

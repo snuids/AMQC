@@ -255,6 +255,28 @@ textarea{
 	float:left;
 }
 
+/* Subscriber */
+
+.subscriber_tester
+{
+	padding-bottom:3px !important;
+	position:fixed;
+	top:50px;
+	right:5px;
+    border: 1px solid black;
+	clear:both;
+	padding: 0 1em;
+	overflow:auto;
+	width:800px;	
+	background-color:White;	
+}
+
+.subscriber_tester_table
+{
+	overflow:auto;
+	max-height:300px;
+}
+
 /* Connections */
 
 .connection_details

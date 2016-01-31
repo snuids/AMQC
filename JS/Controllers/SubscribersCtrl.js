@@ -73,6 +73,24 @@ app.controller('SubscribersCtrl', ['$scope', '$confirm', 'amqInfoFactory',
 
 		};
 	
+		$scope.checkSubscribers=function()
+		{
+			$confirm({text: 'Checking susbscribers will trigger '+$scope.amqInfo.topicSubscribers.length
+			+' REST calls and could take a few seconds. Do you want to continue ?'})
+			.then(function() 
+			{
+				$scope.amqInfo.checkSubscribers();
+			});
+		}
+		
+		$scope.closeCheckSubscribers=function()
+		{
+			
+				$scope.amqInfo.closeCheckSubscribers();
+			
+		}
+		
+	
 	$scope.createNewDurableSubscriber=function()
 	{
 		$confirm({text: 'Are you sure you want to create the durable subscriber '+ $scope.newDurableSubscriber

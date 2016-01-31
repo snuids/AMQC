@@ -69,9 +69,17 @@ app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
 	
 	$scope.showDetails = function(ent)
 	{
+		$scope.currentConnection=ent;
 		$scope.amqInfo.computeConnectionDetails(ent);
 		
 	}
+
+	$scope.refreshCurrentConnection=function()
+	{
+		$scope.amqInfo.detailsComputingUnderway=true;
+		$scope.amqInfo.computeConnectionDetails($scope.currentConnection);
+	}
+
 
 	$scope.getDestinationName = function(ent)
 	{

@@ -1,11 +1,13 @@
-app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty', 'Base64', '$rootScope', 'preferencesFact', 'ProcessorFact',
-	function ($http, $location, $interval, $q, toasty, Base64, $rootScope, preferencesFact, ProcessorFact) {    	
+app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q', 'toasty', 'Base64', '$rootScope', 'preferencesFact', 'ProcessorFact',
+	function ($timeout,$http, $location, $interval, $q, toasty, Base64, $rootScope, preferencesFact, ProcessorFact) {    	
 
 	var factory = {};
 	
 	factory.prefs = preferencesFact;
 	factory.procs = ProcessorFact;
 	factory.connectionDetailsObject=[];
+	factory.subscriberTesterList=[];
+	factory.subscriberTesterVisible=false;
 	
 	// queue => stat => processor
 	factory.assignedProcs = {};
@@ -386,7 +388,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		  });
 	}
 	
-	factory.getSubscriberDetails = function(obj)
+	factory.getSubscriberDetails = function(obj,isTester)
 	{		
 		var postUrl=factory.getPostUrl();
 		
@@ -399,9 +401,16 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 		
 		$http.post(postUrl, data, {})
 		.then(function successCallback(response) {
-//			console.log("RES:");
-//			console.log(response);
 			obj.properties=response.data.value;
+			
+			if(isTester)
+			{
+				obj.isOk=((obj.properties.EnqueueCounter==obj.properties.DequeueCounter)
+					&&(obj.properties.EnqueueCounter==obj.properties.DispatchedCounter));
+												
+				//if(!obj.isOk)
+				factory.subscriberTesterList.push(obj);
+			}
 			
 		  }, function errorCallback(response) {
 		    console.log("ERROR while reading subscriber details.");
@@ -474,7 +483,7 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
 					factory.connectionDetailsObject.push(response.data.value[property]);
 
 			}
-			
+			factory.detailsComputingUnderway=false;
 		  }, function errorCallback(response) {
 		    alert('ko');
 		  });
@@ -833,6 +842,22 @@ app.factory('amqInfoFactory', ['$http', '$location', '$interval', '$q', 'toasty'
     factory.notify= function() {
         $rootScope.$emit('amq_info_updated');
     }
+	
+	factory.checkSubscribers=function()
+	{				
+		factory.subscriberTesterList=[];
+		factory.subscriberTesterVisible=true;
+		for(var i=0;i<factory.topicSubscribers.length;i++)
+		{			
+			factory.getSubscriberDetails(factory.topicSubscribers[i],true);
+		}
+	}
+	
+	factory.closeCheckSubscribers=function()
+	{
+		factory.subscriberTesterVisible=false;
+		
+	}
 
 	//factory.hideAdvisoryQueues = true;
 
