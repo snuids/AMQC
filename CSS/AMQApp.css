@@ -314,6 +314,7 @@ textarea{
 	width:700px;
 	height:430px;	
 	background-color:White;	
+	overflow:hidden;
 }
 
 .topic_details_tabs_header
