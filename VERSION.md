@@ -28,3 +28,4 @@ v0.95 28Jan2016 Selector added in the connection detail
 v0.96 28Jan2016 Fixed a message time line button visibility issue
 v1.00 01Feb2016 Fixed a bug in the hide advisory topic preference. Refresh button added in connection details. Connection tester added.
 v1.01 01Feb2016 Cosmetic css change
+v1.02 01Feb2016 Connection details table is no longer draggable
