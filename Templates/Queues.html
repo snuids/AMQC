@@ -5,7 +5,7 @@
 	</h4></div>
 
 
-	<div class='queues_table'>
+	<div id="top-content-queue" class='queues_table'>
 
 		<table class="table table-striped table-bordered table-hover table-condensed small">
 			<tr>
@@ -27,21 +27,34 @@
 		</table>
 	</div>
 
-	<div class='queues_stats' ng-show="queueStatsVisible">
+	<div  class='queues_stats' ng-show="queueStatsVisible">
 		<div ng-include="'Templates/QueueTopicStats.html'"></div>
 	</div>
 
 
-	<div class='queues_graph'>					
+	<div id="content-resizer" 
+  			resizer="horizontal" 
+  			resizer-height="6" 
+  			resizer-top="#top-content-queue" 
+  			resizer-bottom="#bottom-content-queue">
+  	</div>
+		
+	
+
+	<div id="bottom-content-queue" class='queues_graph'>	
+		Display chart for queue: 
+		<select name="repeatSelect" id="repeatSelect" ng-model="selectedChartQueue" 		ng-change="setupChartData()">
+			<option ng-repeat="queue in amqInfo.orderedQueueList" value="{{queue}}">{{queue}}</option>
+		</select>				
 		<nvd3 options='options' data='data' api='api'></nvd3>
 	</div>
 
-	<div class='queues_queue_selector'>
+	<!--div class='queues_queue_selector'>
 		Display chart for queue: 
 		<select name="repeatSelect" id="repeatSelect" ng-model="selectedChartQueue" 		ng-change="setupChartData()">
 			<option ng-repeat="queue in amqInfo.orderedQueueList" value="{{queue}}">{{queue}}</option>
 		</select>
-	</div>	
+	</div-->	
 	
 	<div drag-me class="queue_details" ng-show="amqInfo.currentQueue!=null">
 		<div class="topright">

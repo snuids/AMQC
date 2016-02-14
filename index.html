@@ -40,6 +40,9 @@
         <script src="JS/Controllers/ClientCtrl.js"></script>
         <script src="JS/Controllers/LoginCtrl.js"></script>
         <script src="JS/Controllers/SendCtrl.js"></script>
+
+        <script src="JS/Directives/Resizer.js"></script>
+
         
 				<link rel="stylesheet" type="text/css" href="bower_dep/bootstrap/dist/css/bootstrap.min.css"></link>
         <link rel="stylesheet" type="text/css" href="bower_dep/angular-toasty/dist/angular-toasty.min.css"></link>
@@ -86,7 +89,7 @@
 	                </div>
 	            </div>
             	<div id="version">
-				v1.02 February 2016 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]
+				v1.03 February 2016 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]
 					<div ng-show="amqInfo.connecting" class="connection_square connection_square_{{refresh}}" ng-repeat="refresh in amqInfo.currentlyRefreshing track by $index"></div>					
 					<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
           	</div>

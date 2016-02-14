@@ -153,6 +153,7 @@ textarea{
 	bottom:40px;
 	overflow:auto;
 	right:3px;
+	overflow:hidden;
 
 }
 
@@ -256,6 +257,16 @@ textarea{
 }
 
 /* Subscriber */
+
+.subscriber_table
+{
+	position:absolute;
+	top:110px;
+	bottom:10px;
+	left:0px;
+	right:0px;
+	overflow:auto;
+}
 
 .subscriber_tester
 {
@@ -560,15 +571,41 @@ textarea{
 
 /* Queue message list */
 
+#sidebar-resizer {
+	background-color: #666;
+    position: absolute;
+    top: 35px;
+    bottom: 0;
+    left: 200px;
+    width: 6px;
+    cursor: e-resize;
+}
+#content-resizer {
+    position: absolute;
+    height: 6px;
+    bottom: 150px;
+    left: 0;
+    right: 0;
+    background-color: #048;
+    cursor: n-resize;
+	z-index:10;
+}
+
+#sidebar-resizer:hover, #preview-resizer:hover {
+	background-color: #00F;
+}
+
+
 .queues_main
 {
+	overflow:hidden;
 }
 
 .queues_table
 {
 	position:absolute;
 	overflow:auto; 
-	bottom:300px;
+	bottom:150px;
 	top:50px;
 	left:0px;
 	right:0px;
@@ -580,7 +617,7 @@ textarea{
 	overflow:none;
 	position:absolute;
 	bottom:0px;
-	height:300px;
+	height:150px;
 	left:0px;
 	right:0px;
 }

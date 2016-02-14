@@ -18,7 +18,7 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 	$scope.options = {
 		chart: {
 			type: 'lineChart',
-			height: 300,
+			/*height: 300,*/
 			margin : {
 				top: 0,
 				right: 40,

@@ -2,52 +2,54 @@
 	<div class="panel panel-default">
 		<div class="panel-body">
 			Create a new durable ID: <input class="small_input_text" type="text" ng-model="newDurableClientID">&nbsp; Subscriber: <input class="small_input_text" type="text" ng-model="newDurableSubscriber">&nbsp; Topic: <input class="small_input_text" type="text" ng-model="newDurableTopic">&nbsp; Selector: <input class="small_input_text" type="text" ng-model="newDurableSelector">&nbsp; <button class="btn btn-primary btn-sm" ng-disabled="(newDurableClientID.length==0) || (newDurableSubscriber.length==0) || (newDurableTopic.length==0)" ng-click="createNewDurableSubscriber()" >Create</button>
-			<button class="btn btn-warning btn-sm" ng-click="checkSubscribers()" ng-show="!amqInfo.subscriberTesterVisible">Check subscribers</button>
+			
 			
 			<br>
 			<input type="checkbox" ng-model="durableOnly"> <span>Show Durable Only&nbsp;&nbsp;</span><input type="checkbox" ng-model="notConnectedOnly"> <span>Show Not Connected Durable Only</span>
+			<button class="btn btn-warning btn-sm" ng-click="checkSubscribers()" ng-show="!amqInfo.subscriberTesterVisible">Check subscribers</button>
 		</div>
 	</div>
-	<table class="table table-striped table-bordered table-hover table-condensed small">
-		<tr>
-			<th class="{{$index>3?'text-center':'text-left'}}" ng:repeat="(i,th) in head" ng:class="selectedCls(i)" ng:click="changeSorting(i)"><span table-header />
-				{{th}}
-			</th>
-		</tr>
-		<tr ng-repeat="ent in amqInfo.topicSubscribers | filter:filterField[currentTab.id] | orderBy:sort.column:sort.descending | filter: filterFunction">
-			<td title="{{ent.DestinationName}}">
-				<a href="#" ng-click="showDestination(ent)">
-				{{ent.DestinationName | limitTo:20}}
-				</a>
-			</td>
-			<td class="text-left" title="{{ent.ClientID}}">
-				{{ent.ClientID | limitTo:20}}
-			</td>
-			<td class="text-left" title="{{ent.ConsumerID}}">
-				{{ent.ConsumerID | limitTo:20}}
-			</td>
-			<td class="text-left" title="{{ent.properties.Selector}}">
-				{{ent.properties.Selector | limitTo:20}}
-			</td>
-			<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Durable]" class="glyphicon glyphicon-ok queue-box-padding"></span>
-			</td>
-			<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Connected]" class="glyphicon glyphicon-ok queue-box-padding"></span>
-			</td>
-			<td class="text-center">
-				{{ent.properties.EnqueueCounter}}
-			</td>
-			<td class="text-center">
-				{{ent.properties.DequeueCounter}}
-			</td>
-			<td class="text-center">
-				{{ent.properties.DispatchedCounter}}
-			</td>
-			<td class="text-center">
-				<button ng-show="(!ent.Connected) &amp;&amp; (ent.Durable)" type="button" ng-click="deleteDurable(ent)" class="btn btn-danger btn-sm btn-xs">Delete</button>
-			</td>
-		</tr>
-	</table>
-	
+	<div class="subscriber_table">
+		<table class="table table-striped table-bordered table-hover table-condensed small">
+			<tr>
+				<th class="{{$index>3?'text-center':'text-left'}}" ng:repeat="(i,th) in head" ng:class="selectedCls(i)" ng:click="changeSorting(i)"><span table-header />
+					{{th}}
+				</th>
+			</tr>
+			<tr ng-repeat="ent in amqInfo.topicSubscribers | filter:filterField[currentTab.id] | orderBy:sort.column:sort.descending | filter: filterFunction">
+				<td title="{{ent.DestinationName}}">
+					<a href="#" ng-click="showDestination(ent)">
+					{{ent.DestinationName | limitTo:20}}
+					</a>
+				</td>
+				<td class="text-left" title="{{ent.ClientID}}">
+					{{ent.ClientID | limitTo:20}}
+				</td>
+				<td class="text-left" title="{{ent.ConsumerID}}">
+					{{ent.ConsumerID | limitTo:20}}
+				</td>
+				<td class="text-left" title="{{ent.properties.Selector}}">
+					{{ent.properties.Selector | limitTo:20}}
+				</td>
+				<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Durable]" class="glyphicon glyphicon-ok queue-box-padding"></span>
+				</td>
+				<td class="text-center"><span ng-class="{'true' : 'glyphicon-ok', false:'glyphicon-remove'}[ent.Connected]" class="glyphicon glyphicon-ok queue-box-padding"></span>
+				</td>
+				<td class="text-center">
+					{{ent.properties.EnqueueCounter}}
+				</td>
+				<td class="text-center">
+					{{ent.properties.DequeueCounter}}
+				</td>
+				<td class="text-center">
+					{{ent.properties.DispatchedCounter}}
+				</td>
+				<td class="text-center">
+					<button ng-show="(!ent.Connected) &amp;&amp; (ent.Durable)" type="button" ng-click="deleteDurable(ent)" class="btn btn-danger btn-sm btn-xs">Delete</button>
+				</td>
+			</tr>
+		</table>
+	</div>
 	<div drag-me class="subscriber_tester" ng-show="amqInfo.subscriberTesterVisible">
 		<h2>
 			Subscriber Tester ({{amqInfo.subscriberTesterList.length}} / {{amqInfo.topicSubscribers.length}})
