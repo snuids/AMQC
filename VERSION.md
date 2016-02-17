@@ -30,3 +30,4 @@ v1.00 01Feb2016 Fixed a bug in the hide advisory topic preference. Refresh butto
 v1.01 01Feb2016 Cosmetic css change
 v1.02 01Feb2016 Connection details table is no longer draggable
 v1.03 14Feb2016 Connection details table is no longer draggable. Main view should no longer have a scrollbar.
+v1.04 17Feb2016 Date format of message browser changed in order to add the day

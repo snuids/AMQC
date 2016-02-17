@@ -122,7 +122,7 @@
 					<th>Action</th>
 				</tr>
 				<tr ng-repeat="message in amqInfo.queueMessages | filter:filterFieldMessage">
-			      <td>{{message.JMSTimestamp | date:'HH:mm:ss.sss'}}</td>
+			      <td>{{message.JMSTimestamp | date:'ddMMMyyyy HH:mm:ss.sss'}}</td>
 						<td>{{message.Text | limitTo:60}}</td>
 						<td><button type="button" ng-click="showQueueMessageDetails(message)" class="btn btn-primary btn-sm btn-xs">Details</button></td>		
 			</tr>
