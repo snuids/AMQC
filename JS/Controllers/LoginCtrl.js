@@ -20,6 +20,7 @@ app.controller('LoginCtrl', ['$scope', '$rootScope', 'amqInfoFactory','amqClient
 		$scope.amqInfo.refreshAll();
 		if ($scope.amqInfo.rememberMe)
 			$scope.prefs.load();
+
 		$scope.amqInfo.setRefresh();
     }
 

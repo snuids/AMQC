@@ -99,6 +99,13 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 		
 		//console.log('new autoRefreshInterval:' + factory.prefs.autoRefreshInterval * 1000);
 		
+		if(factory.defaultrefreshrate>0)
+		{		
+			factory.prefs.autoRefreshInterval=factory.defaultrefreshrate;
+			factory.defaultrefreshrate=0;
+		}
+		
+		
 		if (factory.prefs.autoRefreshInterval > 0)
 			factory.refreshTimer = $interval(function() 
 			{ 
@@ -132,7 +139,7 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 				factory.rememberMe = localStorage.getItem("amqc.rememberme") === "true";
 		}
 		// Set URI parameters if defined
-		var uriparams=["login","password","brokerip","brokername","brokerport"];
+		var uriparams=["login","password","brokerip","brokername","brokerport","defaultinfotab","defaultrefreshrate"];
 		for(var i=0;i<uriparams.length;i++)
 		{
 			if(factory.getUrlParameter(uriparams[i])!=null)
@@ -869,7 +876,9 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 	factory.connected = false;
 	factory.connecting = false;
 	factory.rememberMe = false;
+	factory.defaultinfotab=0;
 	factory.host=location.host;
+	factory.defaultrefreshrate=0;
 	
 	factory.queueMessages = [];
 	factory.orderedQueueList=[];
@@ -896,6 +905,8 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 	factory.topicSubscribers=[];	
 	
 	factory.selectedConnector = '';
+	
+	
 	
     return factory;
 }]);

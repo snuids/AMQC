@@ -21,8 +21,13 @@ app.controller('InfoCtrl', ['$rootScope', '$scope', '$timeout', '$filter', 'amqI
 	$scope.filterField='';
 
 	$scope.amqInfo = amqInfoFactory;
-	$scope.currentTab = $scope.infoTabs[0];	
+	
+	
+	
+	$scope.currentTab = $scope.infoTabs[$scope.amqInfo.defaultinfotab];	
        
+	
+	
     $scope.isActiveTabInfo = function(tab) {
 		
         return tab.title == $scope.currentTab.title;
@@ -58,6 +63,11 @@ app.controller('InfoCtrl', ['$rootScope', '$scope', '$timeout', '$filter', 'amqI
 		{
 			return d3.time.format('%X')(new Date(d)); //uncomment for date format
 		}
+	}
+
+	if($scope.amqInfo.defaultinfotab>0)
+	{
+		$timeout(function() {$scope.forceGraphRefresh();}, 2000);		
 	}
 
 }]
