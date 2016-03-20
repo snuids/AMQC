@@ -209,7 +209,7 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 		        .then(function() 
 		{
 			$scope.amqInfo.deleteQueue($scope.amqInfo.currentQueue.Name);
-			$scope.showDetails(null);
+			$scope.showQueueDetails(null);
 		});
 
 	}
