@@ -11,7 +11,7 @@
 		<span><class='smallmargin'>Header:&nbsp;&nbsp;<input class="nodrag" type="text" ng-model="$parent.headerName" >
 		<class='smallmargin'>Value:&nbsp;&nbsp;<input class="nodrag" type="text" ng-model="$parent.headerValue" >
 		<button ng-show="(headerName.length>0) &amp;&amp; (headerValue.length>0)" class="nodrag btn btn-primary btn-xs" 
-				 ng-click="addHeader()">Add Header</button>		
+				 ng-click="addHeader()">Add Header <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></button>		
 		</span>
 		
 		<div id="send_message_details_headers">
@@ -24,8 +24,8 @@
 				<tr ng-repeat="head in amqClient.sendMessageHeaders">
 					<td>{{head.name}}</td>
 					<td>{{head.value}}</td>
-					<td><button class="nodrag btn btn-primary btn-xs" 
-							 ng-click="removeHeader($index)">Remove</button></td>
+					<td><button class="nodrag btn btn-danger btn-xs" 
+							 ng-click="removeHeader($index)">Remove <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></button></td>
 				</tr>
 			</table>		
 		</div>
@@ -33,7 +33,7 @@
 		<div id="send_message_details_footer">
 			Repeat:&nbsp;<input class="nodrag" type="number"  min="1" max="10000" ng-model="$parent.repeatMessages">
 			<button class="nodrag btn btn-warning btn-sm" 
-				ng-disabled="(amqClient.selectedSendDestinationName.length==0) || (amqClient.textToSend.length==0)" ng-click="sendMessage()">Send</button>
+				ng-disabled="(amqClient.selectedSendDestinationName.length==0) || (amqClient.textToSend.length==0)" ng-click="sendMessage()">Send <span class="glyphicon glyphicon-send" aria-hidden="true"></button>
 			<button class="nodrag btn btn-primary btn-sm" 
 					 ng-click="closeSendMessage()">Close</button>
 
