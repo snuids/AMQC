@@ -1,9 +1,9 @@
 <div ng-controller="TopicsCtrl">
 	<h4 class='nomargin'>
-		Create a new Topic: <input type="text" ng-model="newTopicName">&nbsp; <button class="btn btn-primary btn-sm" ng-disabled="newTopicName.length==0" ng-click="createNewTopic()">Create</button>
+		Create a new Topic: <input type="text" ng-model="newTopicName">&nbsp; <button class="btn btn-primary btn-sm" ng-disabled="newTopicName.length==0" ng-click="createNewTopic()">Create <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></button>
 	</h4>
 	
-	<div class='nomargin topics_buttons'><h4><button class="btn btn-primary btn-sm" ng-click="showTopicStats()">Topic Stats</button>
+	<div class='nomargin topics_buttons'><h4><button class="btn btn-primary btn-sm" ng-click="showTopicStats()">Topic Stats <span class="glyphicon glyphicon-signal" aria-hidden="true"></button>
 	</h4></div>
 		
 	<div class='queues_stats' ng-show="topicStatsVisible">

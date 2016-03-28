@@ -85,11 +85,11 @@
 	                </div>
 	                <div id="footerView">
 	                    <button class="btn btn-primary btn-sm" ng-show="prefs.autoRefreshInterval==0" ng-click="refreshAll()">Refresh</button>
-	                    <button class="btn btn-danger btn-sm" ng-click="disconnectAMQ()">Disconnect</button>
+	                    <button class="btn btn-danger btn-sm" ng-click="disconnectAMQ()">Disconnect <span class="glyphicon glyphicon-off" aria-hidden="true"></span></button>
 	                </div>
 	            </div>
             	<div id="version">
-				v1.06 March 2016 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]
+				v1.07 March 2016 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]
 					<div ng-show="amqInfo.connecting" class="connection_square connection_square_{{refresh}}" ng-repeat="refresh in amqInfo.currentlyRefreshing track by $index"></div>					
 					<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
           	</div>

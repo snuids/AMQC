@@ -37,7 +37,7 @@
 			<tr ng-repeat="message in amqClient.messages | filter:filterFieldMessage | filter:filterFieldMessage2">
 		      <td>{{message.reception | date:'HH:mm:ss.sss'}}</td>
 			    <td>{{message.destination}}</td>
-					<td>{{message.message | limitTo:60}}</td>
+					<td>{{message.message | limitTo:70}}</td>
 					<td><button type="button" ng-click="showDetails(message)" class="btn btn-primary btn-sm btn-xs">Details</button></td>		
 			</tr>
 		</table>

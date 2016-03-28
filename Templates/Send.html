@@ -35,7 +35,7 @@
 		<div id="send_message_viarest_footer">
 			Repeat:&nbsp;<input class="nodrag" type="number"  min="1" max="10000" ng-model="msgInfo.repeatMessages">
 			<button class="nodrag btn btn-warning btn-sm" 
-				ng-disabled="(msgInfo.selectedSendDestinationName.length==0) || (msgInfo.textToSend.length==0)" ng-click="sendMessage()">Send</button>
+				ng-disabled="(msgInfo.selectedSendDestinationName.length==0) || (msgInfo.textToSend.length==0)" ng-click="sendMessage()">Send <span class="glyphicon glyphicon-send" aria-hidden="true"></button>
 			
 		</div>
 	

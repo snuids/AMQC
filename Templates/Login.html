@@ -51,7 +51,7 @@
 		</tr>
 	</table><input type="checkbox" ng-model="amqInfo.rememberMe"> Remember Me <img src="./Images/ajax-loader.gif" ng-show="amqInfo.connecting">
 	<div class="login_footer" ng-show="!amqInfo.connecting">
-		<button type="submit" class="btn btn-primary btn-sm" ng-click="logAMQ()">Connect</button>
+		<button type="submit" class="btn btn-primary btn-sm" ng-click="logAMQ()">Connect <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span></button>
 	</div>
 	
 	<div class="login_alert alert alert-danger" ng-show="amqInfo.connectionError" role="alert" ng-bind-html="amqInfo.connectionError | rawHtml">		

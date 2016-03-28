@@ -1,12 +1,12 @@
 <div ng-controller="SubscribersCtrl">
 	<div class="panel panel-default">
 		<div class="panel-body">
-			Create a new durable ID: <input class="small_input_text" type="text" ng-model="newDurableClientID">&nbsp; Subscriber: <input class="small_input_text" type="text" ng-model="newDurableSubscriber">&nbsp; Topic: <input class="small_input_text" type="text" ng-model="newDurableTopic">&nbsp; Selector: <input class="small_input_text" type="text" ng-model="newDurableSelector">&nbsp; <button class="btn btn-primary btn-sm" ng-disabled="(newDurableClientID.length==0) || (newDurableSubscriber.length==0) || (newDurableTopic.length==0)" ng-click="createNewDurableSubscriber()" >Create</button>
+			Create a new durable ID: <input class="small_input_text" type="text" ng-model="newDurableClientID">&nbsp; Subscriber: <input class="small_input_text" type="text" ng-model="newDurableSubscriber">&nbsp; Topic: <input class="small_input_text" type="text" ng-model="newDurableTopic">&nbsp; Selector: <input class="small_input_text" type="text" ng-model="newDurableSelector">&nbsp; <button class="btn btn-primary btn-sm" ng-disabled="(newDurableClientID.length==0) || (newDurableSubscriber.length==0) || (newDurableTopic.length==0)" ng-click="createNewDurableSubscriber()" >Create  <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></button>
 			
 			
 			<br>
 			<input type="checkbox" ng-model="durableOnly"> <span>Show Durable Only&nbsp;&nbsp;</span><input type="checkbox" ng-model="notConnectedOnly"> <span>Show Not Connected Durable Only</span>
-			<button class="btn btn-warning btn-sm" ng-click="checkSubscribers()" ng-show="!amqInfo.subscriberTesterVisible">Check subscribers</button>
+			<button class="btn btn-warning btn-sm" ng-click="checkSubscribers()" ng-show="!amqInfo.subscriberTesterVisible">Check subscribers  <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></button>
 		</div>
 	</div>
 	<div class="subscriber_table">
