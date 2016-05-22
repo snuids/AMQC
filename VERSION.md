@@ -34,3 +34,4 @@ v1.04 17Feb2016 Date format of message browser changed in order to add the day
 v1.05 18Feb2016 defaultinfotab and defaultrefreshrate url parameters added
 v1.06 20Mar2016 Fixed a bug that occured when a queue was deleted.
 v1.07 28Mar2016 Glyph Icons added. Send Message parameters saved in the local storage.
+v1.08 22May2016 Correctly sets the Queue/Topic radio box in the Send Tab. Fixed a CSS issue with the time line view.

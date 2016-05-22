@@ -1,7 +1,7 @@
 <div drag-me ng-show="sendMessageVisible" class="send_message_details">
 	<H4 class='smallmargin'>Destination:&nbsp;&nbsp;<input class="nodrag" type="text" ng-model="amqClient.selectedSendDestinationName" >&nbsp;
 		<span class='nodrag' ng-repeat="dest in destinations">
-				&nbsp;&nbsp;<input type="radio" ng-model="$parent.amqClient.selectedSendDestination" name="amqClient.selectedSendDestination" value="{{dest.name}}">&nbsp;&nbsp;{{dest.name}}
+				&nbsp;&nbsp;<input type="radio" ng-model="$parent.msgInfo.selectedSendDestination" name="msgInfo.selectedSendDestination" value="{{dest.name}}">&nbsp;&nbsp;{{dest.name}}
 		</span></H4>
 		
 		<div class='nodrag'>

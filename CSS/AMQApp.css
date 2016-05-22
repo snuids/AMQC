@@ -452,7 +452,8 @@ textarea{
 {
 	position:absolute;
 	bottom:50px;left:0px;top:40px;right:0px;
-	overflow:auto;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 .client_timeline_onegraph
