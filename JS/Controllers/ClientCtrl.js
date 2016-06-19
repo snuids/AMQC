@@ -28,6 +28,7 @@ app.controller('ClientCtrl', ['$scope','$interval','$timeout', 'amqInfoFactory',
 	});
 	
 	$scope.amqClient=amqClientFactory;
+//	console.log()
 	
 	$scope.destinations = [{
 	        name: "Topic"
