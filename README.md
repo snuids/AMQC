@@ -64,7 +64,7 @@ More info here: https://hub.docker.com/r/snuids/activemq-amqcmonitoring/
 
  docker run --name AMQC -p 8161:8161 -p 61616:61616 -p 61614:61614 -p 61613:61613 -t snuids/activemq-amqcmonitoring
 
-5.15.2 ActiveMQ version available on github here: https://hub.docker.com/r/snuids/amqc/
+5.15.2 ActiveMQ version available on github here: https://hub.docker.com/r/snuids/activemq-amqcmonitoring/
 
 ## Login into the Docker Image on the mac
 ![](http://www.pi2s.be/AMQCAD/docker.jpg)
