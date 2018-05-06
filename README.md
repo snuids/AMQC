@@ -53,6 +53,7 @@ Live Version:[http://www.pi2s.be/AMQC/ ](http://www.pi2s.be/AMQC/) Courtesy of P
 * brokerport
 * brokername
 * autologin (Used to bypass the login screen)
+* urlprefix (If used with a reverse proxy such as nginx)
 
 ## Example:
 `http://127.0.0.1:8161/AMQC/index.html?brokerip=127.0.0.1&brokerport=8161&brokername=localhost&autologin=true`

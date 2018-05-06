@@ -63,7 +63,7 @@
             <div id="tabs" ng-controller="TabsCtrl" ng-show="amqInfo.connected">	
 				<div>
                 	<div class="filterField" ng-show="currentTab.hasFilter">						
-	                    Filter:&nbsp;<input type="text" ng-model="filterField[currentTab.id]"  autofocus/>
+	                    Filter:&nbsp;<input type="text" autocomplete="off" ng-model="filterField[currentTab.id]"  autofocus/>
 	                </div>
 
 					<nav class="navbar-default">
@@ -89,7 +89,7 @@
 	                </div>
 	            </div>
             	<div id="version">
-				v1.09 Jun 2016 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]
+				v1.11 May 2018 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]
 					<div ng-show="amqInfo.connecting" class="connection_square connection_square_{{refresh}}" ng-repeat="refresh in amqInfo.currentlyRefreshing track by $index"></div>					
 					<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
           	</div>

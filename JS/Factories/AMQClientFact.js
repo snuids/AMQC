@@ -5,6 +5,7 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 	factory.topics="foo,bar";
 	factory.queues="queue1";
 	factory.login="";
+	factory.useSsl=false;
 	factory.password="";
 	factory.messages=[];
 	factory.messagesCount=0;
@@ -23,7 +24,23 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 	if ((localStorage.getItem("amqc.queues") !== undefined)
 			&&(localStorage.getItem("amqc.queues") !== null))		
 		factory.queues = localStorage.getItem("amqc.queues") ;
-	
+
+	if ((localStorage.getItem("amqc.login") !== undefined)
+		&&(localStorage.getItem("amqc.login") !== null))		
+		factory.login = localStorage.getItem("amqc.login") ;
+
+	if ((localStorage.getItem("amqc.password") !== undefined)
+		&&(localStorage.getItem("amqc.password") !== null))		
+		factory.password = localStorage.getItem("amqc.password") ;
+
+	if ((localStorage.getItem("amqc.useSsl") !== undefined)
+		&&(localStorage.getItem("amqc.useSsl") !== null))		
+		factory.useSsl = localStorage.getItem("amqc.useSsl")=="true" ;
+
+	if ((localStorage.getItem("amqc.stompport") !== undefined)
+		&&(localStorage.getItem("amqc.stompport") !== null))		
+		factory.port = parseInt(localStorage.getItem("amqc.stompport")) ;
+
 
 
 	factory.subscribe= function(scope, callback) {
@@ -107,7 +124,10 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 	factory.connect=function()
 	{
 		console.log("CONNECT CLIENT");
-		var url="ws://"+amqInfoFactory.brokerip+":"+factory.port;
+		var url="ws://"+amqInfoFactory.brokerip+":"+factory.port;		
+		if (this.useSsl)
+			url="wss://"+amqInfoFactory.brokerip+":"+factory.port;
+
 		this.client = Stomp.client(url,['stomp']);
 		this.messages=[];
 		this.messagesCount=0;
@@ -119,6 +139,12 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 		
 		localStorage.setItem('amqc.topics', factory.topics);
 		localStorage.setItem('amqc.queues', factory.queues);
+		localStorage.setItem('amqc.login', factory.login);
+		localStorage.setItem('amqc.password', factory.password);
+		localStorage.setItem('amqc.useSsl', factory.useSsl);
+		localStorage.setItem('amqc.stompport', factory.port);
+		
+	
 	}
 
 	factory.disconnect=function()

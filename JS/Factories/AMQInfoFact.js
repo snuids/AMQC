@@ -820,21 +820,35 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 	}
 	
 	factory.prepareURLs = function() {
-		factory.infoUrl='http://REPLACEIP:REPLACEPORT/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME';
-		factory.queuesUrl='http://REPLACEIP:REPLACEPORT/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,destinationType=Queue,destinationName=*';
-		factory.topicsUrl='http://REPLACEIP:REPLACEPORT/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,destinationType=Topic,destinationName=*';
-		factory.connectionsUrl='http://REPLACEIP:REPLACEPORT/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,connector=clientConnectors,connectorName=CONNECTORNAME,connectionViewType=clientId,connectionName=*';	
-		factory.execUrl='http://REPLACEIP:REPLACEPORT/api/jolokia/exec/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,destinationType=QUEUETYPE,destinationName=QUEUENAME/QUEUEACTION';
-		factory.postUrl='http://REPLACEIP:REPLACEPORT/api/jolokia';		
-		factory.apiUrl='http://REPLACEIP:REPLACEPORT/api/';		
+
+		var urlprefix=""
+		if(factory.getUrlParameter("urlprefix")!=null)
+			urlprefix=factory.getUrlParameter("urlprefix");
+
+
+		factory.infoUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME';
+		factory.queuesUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,destinationType=Queue,destinationName=*';
+		factory.topicsUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,destinationType=Topic,destinationName=*';
+		factory.connectionsUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,connector=clientConnectors,connectorName=CONNECTORNAME,connectionViewType=clientId,connectionName=*';	
+		factory.execUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/jolokia/exec/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,destinationType=QUEUETYPE,destinationName=QUEUENAME/QUEUEACTION';
+		factory.postUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/jolokia';		
+		factory.apiUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/';		
 		
-		factory.infoUrl=factory.infoUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
-		factory.queuesUrl=factory.queuesUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
-		factory.topicsUrl=factory.topicsUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
-		factory.connectionsUrl=factory.connectionsUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
-		factory.execUrl=factory.execUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
-		factory.postUrl=factory.postUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);			
-		factory.apiUrl=factory.apiUrl.replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);			
+		var protocolrep="http://";
+		//alert(location.href.indexOf("http://"))
+		if(location.href.indexOf("https://")==0)
+			protocolrep="https://"
+
+		
+		
+
+		factory.infoUrl=factory.infoUrl.replace(/http:\/\//g,protocolrep).replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
+		factory.queuesUrl=factory.queuesUrl.replace(/http:\/\//g,protocolrep).replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
+		factory.topicsUrl=factory.topicsUrl.replace(/http:\/\//g,protocolrep).replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
+		factory.connectionsUrl=factory.connectionsUrl.replace(/http:\/\//g,protocolrep).replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
+		factory.execUrl=factory.execUrl.replace(/http:\/\//g,protocolrep).replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);
+		factory.postUrl=factory.postUrl.replace(/http:\/\//g,protocolrep).replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);			
+		factory.apiUrl=factory.apiUrl.replace(/http:\/\//g,protocolrep).replace(/REPLACEIP/g,factory.brokerip).replace(/REPLACEPORT/g,factory.brokerport).replace(/REPLACEBROKERNAME/g,factory.brokername);			
 
 	}
 

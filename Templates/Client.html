@@ -7,7 +7,7 @@
 	Password: <input class="small_input_text" type="password" ng-disabled="amqClient.client"  ng-model="amqClient.password">	
 	Topics: <input type="text" ng-disabled="amqClient.client"  ng-model="amqClient.topics" placeholder="Topics separated by ,">
 	Queues: <input type="text" ng-disabled="amqClient.client"  ng-model="amqClient.queues" placeholder="Queues separated by ,">
-	
+	SSL: <input type="checkbox" ng-model="amqClient.useSsl">
 	<br/><br/>
 
 	<button type="button" ng-show="(!amqClient.client)" ng-click="connect()" class="btn btn-primary btn-sm btn-xs">Connect</button>

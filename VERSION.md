@@ -36,3 +36,5 @@ v1.06 20Mar2016 Fixed a bug that occured when a queue was deleted.
 v1.07 28Mar2016 Glyph Icons added. Send Message parameters saved in the local storage.
 v1.08 22May2016 Correctly sets the Queue/Topic radio box in the Send Tab. Fixed a CSS issue with the time line view.
 v1.09 19Jun2016 Fixed a bug in the send message via the Stomp Client interface
+v1.10 05May2018 added urlprefix parameter and support https if used with a reverse proxy
+v1.11 06May2018 Save the stomp login and password in local storage
