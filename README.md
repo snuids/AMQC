@@ -39,13 +39,14 @@ Live Version:[http://www.pi2s.be/AMQC/ ](http://www.pi2s.be/AMQC/) Courtesy of P
 
 
 ## Queue Grapher
-![](http://www.pi2s.be/AMQCAD/Screen3.jpg)
+![Queue](https://raw.githubusercontent.com/snuids/AMQC/master/Medias/queuechart.png)
 
 ## Internal Stomp Client
-![](http://www.pi2s.be/AMQCAD/Screen4.jpg)
+![Client](https://raw.githubusercontent.com/snuids/AMQC/master/Medias/stompclient.png)
+![Client](https://raw.githubusercontent.com/snuids/AMQC/master/Medias/stomptimeline.png)
 
-## v0.79 Broker Statistics
-![](http://www.pi2s.be/AMQCAD/Screen5.jpg)
+## v1.11 Broker Statistics
+![Client](https://raw.githubusercontent.com/snuids/AMQC/master/Medias/stats.png)
 
 # URI parameters:
 * login
@@ -68,9 +69,6 @@ More info here: https://hub.docker.com/r/snuids/activemq-amqcmonitoring/
 
 5.15.2 ActiveMQ version available on github here: https://hub.docker.com/r/snuids/activemq-amqcmonitoring/
 
-## Login into the Docker Image on the mac
-![](http://www.pi2s.be/AMQCAD/docker.jpg)
-Note that the address in the login window matches the url IP. The default user/password is admin/admin see the base image (webcenter/activemq) for more details on how to configure ActiveMQ.
 
-Get more examples and fun by following our blog here: [https://pi2s.wordpress.com/]
+Get more examples and fun by following our blog here: [https://www.mannekentech.com/]
 
