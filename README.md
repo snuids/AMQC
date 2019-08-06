@@ -35,7 +35,8 @@ Live Version:[http://www.pi2s.be/AMQC/ ](http://www.pi2s.be/AMQC/) Courtesy of P
 
 # Screenshots:
 ## Login Window 
-![](http://www.pi2s.be/AMQCAD/Screen1.jpg)
+![Login](https://raw.githubusercontent.com/snuids/AMQC/master/medias/login.png)
+
 
 ## Queue Grapher
 ![](http://www.pi2s.be/AMQCAD/Screen3.jpg)
