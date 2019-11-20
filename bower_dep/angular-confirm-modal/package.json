@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/Schlogen/angular-confirm",
   "devDependencies": {
-    "angular": "1.4.7",
+    "angular": "1.7.9",
     "angular-ui-bootstrap": "0.14.3",
     "angular-mocks": "^1.4.7",
     "gulp": "3.9.0",
