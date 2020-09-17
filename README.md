@@ -31,7 +31,6 @@ If the ActiveMQ is protected by a password. The CORS handshake will fail on rece
 # Active MQ 5.13
 The Active MQ 5.13 version broke the compatibility with web sockets opened via Chrome, IE 11 or Safari. However, the internal stomp client still works correctly with Firefox. Fixed in version v0.77 of the console.
 
-Live Version:[http://www.pi2s.be/AMQC/ ](http://www.pi2s.be/AMQC/) Courtesy of PI2S.
 
 # Screenshots:
 ## Login Window 
