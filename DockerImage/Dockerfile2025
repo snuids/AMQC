@@ -24,9 +24,9 @@ RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python && \
 python3 -m ensurepip && \
 pip3 install --no-cache --upgrade pip setuptools
 
-
-RUN ls -l
+RUN echo 'tata2'
 RUN curl -LOk https://github.com/snuids/AMQC/archive/master.zip
+RUN ls -l
 RUN unzip master.zip
 RUN rm master.zip
 #RUN mkdir -p /opt/static/AMQC
