@@ -24,5 +24,24 @@ RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python && \
 python3 -m ensurepip && \
 pip3 install --no-cache --upgrade pip setuptools
 
+
+RUN ls -l
+RUN curl -LOk https://github.com/snuids/AMQC/archive/master.zip
+RUN unzip master.zip
+RUN rm master.zip
+#RUN mkdir -p /opt/static/AMQC
+RUN mv ./AMQC-master/ /opt/static
+#RUN mv /opt/static/AMQC-master/ /opt/static/AMQC/
+RUN ls -l /opt/static
+RUN pwd
+RUN mv /opt/static/server/ /opt/
+RUN ls -l /opt/static
+RUN pip3 --version
+RUN ls -l /opt/server
+
+RUN cat /opt/server/requirements.txt
+RUN pip3 install -r /opt/server/requirements.txt
+
+
 EXPOSE 1883 5672 8161 8162 61613 61614 61616
 
