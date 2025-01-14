@@ -1,14 +1,14 @@
-#FROM bellsoft/liberica-openjdk-alpine:13
 FROM python:3.11.3-alpine
-RUN sed -i '2s/^# *//' /etc/apk/repositories
-RUN apk update
-RUN apk add openjdk17
-RUN java -version
+LABEL maintainer="Arnaud,Jorge"
 
-LABEL maintainer="Arnaud"
+RUN sed -i '2s/^# *//' /etc/apk/repositories && \
+apk update && \
+apk add openjdk17
+
 ENV ACTIVEMQ_VERSION 6.1.4
 ENV ACTIVEMQ apache-activemq-$ACTIVEMQ_VERSION
 ENV ACTIVEMQ_HOME /opt/activemq
+
 RUN apk add --update curl && \ 
 rm -rf /var/cache/apk/* && \ 
 mkdir -p /opt
@@ -21,54 +21,23 @@ adduser -S -H -G activemq -h $ACTIVEMQ_HOME activemq && \
 chown -R activemq:activemq $ACTIVEMQ_HOME && \
 chown -h activemq:activemq $ACTIVEMQ_HOME
 
-RUN cat /opt/activemq/conf/jetty.xml | sed -E 's/(.*)(\"127\.0\.0\.1\")(.*)/\1"0.0.0.0"\3/g;t' > /opt/activemq/conf/jetty2.xml
-RUN chown activemq /opt/activemq/conf/jetty2.xml
-RUN chgrp activemq /opt/activemq/conf/jetty2.xml
-RUN cp /opt/activemq/conf/jetty2.xml /opt/activemq/conf/jetty.xml 
+RUN cat /opt/activemq/conf/jetty.xml | sed -E 's/(.*)(\"127\.0\.0\.1\")(.*)/\1"0.0.0.0"\3/g;t' > /opt/activemq/conf/jetty2.xml && \
+chown activemq /opt/activemq/conf/jetty2.xml && \
+chgrp activemq /opt/activemq/conf/jetty2.xml && \
+cp /opt/activemq/conf/jetty2.xml /opt/activemq/conf/jetty.xml 
 
-#ADD jetty.xml $ACTIVEMQ_HOME/conf
-#ENV PYTHONUNBUFFERED=1
-#RUN apk add --no-cache python3=~3.11 && ln -sf python3 /usr/bin/python && \
-#python3 -m ensurepip && \
-#pip3 install --no-cache --upgrade pip setuptools
+RUN echo 'TEST'
 
-RUN echo "toto2"
-#RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+RUN curl -LOk https://github.com/snuids/AMQC/archive/master.zip && \
+unzip master.zip && \
+rm master.zip && \
+mv ./AMQC-master/ /opt/static  && \
+mv /opt/static/server/ /opt/
 
-#RUN apk add --no-cache python3 py3-pip
-#RUN python3 --version
-
-#ENV PYTHONUNBUFFERED=1
-#RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
-#RUN python3 -m ensurepip
-#RUN pip3 install --no-cache --upgrade pip setuptools
-
-#RUN apk add --no-cache python3 py3-pip
-#RUN apk --update --no-cache add python3~3.12  --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main
-RUN python3 --version
-
-RUN echo 'tataaa========244axcb'
-RUN curl -LOk https://github.com/snuids/AMQC/archive/master.zip
-RUN ls -l
-RUN unzip master.zip
-RUN rm master.zip
-#RUN mkdir -p /opt/static/AMQC
-RUN mv ./AMQC-master/ /opt/static
-#RUN mv /opt/static/AMQC-master/ /opt/static/AMQC/
-RUN ls -l /opt/static
-RUN pwd
-RUN mv /opt/static/server/ /opt/
-RUN ls -l /opt/static
-RUN pip3 --version
-RUN ls -l /opt/server
-
-RUN cat /opt/server/requirements.txt
 RUN pip3 install -r /opt/server/requirements.txt
 
-#CMD ["/opt/activemq/bin/activemq", "start"]
-#CMD ["fastapi", "run", "/opt/server/main.py", "--port", "8180"]
-#CMD /opt/activemq/bin/activemq start;fastapi run /opt/server/main.py --port 8180
-
-CMD /opt/activemq/bin/activemq console
+CMD cat /opt/activemq/conf/log4j2.properties | sed -E 's/(.*)(#log4j2.logger.activemq.level=DEBUG)(.*)/\1log4j2\.qlogger\.activemq\.level='$ACTIVEMQ_LOG_LEVEL'\3/g' | sed -E 's/(.*)(#log4j2.logger.activemq.name=org.apache.activemq)(.*)/\1log4j2.logger.activemq.name=org.apache.activemq\3/g' |   sed -E  's/rootLogger\.level=INFO/rootLogger.level='$ACTIVEMQ_LOG_LEVEL'/g' > /opt/activemq/conf/log4j2.properties.tmp;\
+cp /opt/activemq/conf/log4j2.properties.tmp /opt/activemq/conf/log4j2.properties;\
+echo "$ACTIVEMQ_ADMIN_LOGIN:$ACTIVEMQ_ADMIN_PASSWORD" > /opt/activemq/conf/users.properties;/opt/activemq/bin/activemq start;fastapi run /opt/server/main.py --port 8180
 
 EXPOSE 1883 5672 8161 8168 8180 61613 61614 61616
