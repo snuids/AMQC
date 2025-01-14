@@ -7,7 +7,7 @@ import json
 
 app = FastAPI()
 
-app.mount("/AMQC", StaticFiles(directory="static"), name="static")
+app.mount("/AMQC", StaticFiles(directory="/opt/static"), name="static")
 
 @app.get("/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost")
 async def req1(request:Request ):

@@ -1,4 +1,10 @@
-FROM bellsoft/liberica-openjdk-alpine:13
+#FROM bellsoft/liberica-openjdk-alpine:13
+FROM python:3.11.3-alpine
+RUN sed -i '2s/^# *//' /etc/apk/repositories
+RUN apk update
+RUN apk add openjdk17
+RUN java -version
+
 LABEL maintainer="Arnaud"
 ENV ACTIVEMQ_VERSION 6.1.4
 ENV ACTIVEMQ apache-activemq-$ACTIVEMQ_VERSION
@@ -15,16 +21,33 @@ adduser -S -H -G activemq -h $ACTIVEMQ_HOME activemq && \
 chown -R activemq:activemq $ACTIVEMQ_HOME && \
 chown -h activemq:activemq $ACTIVEMQ_HOME
 
-RUN cat /opt/activemq/conf/jetty.xml | sed -E 's/(.*)(\"127\.0\.0\.1\")(.*)/\1"0.0.0.0"\3/g;t' > /opt/activemq/conf/jetty.xml
-RUN cat /opt/activemq/conf/jetty.xml
+RUN cat /opt/activemq/conf/jetty.xml | sed -E 's/(.*)(\"127\.0\.0\.1\")(.*)/\1"0.0.0.0"\3/g;t' > /opt/activemq/conf/jetty2.xml
+RUN chown activemq /opt/activemq/conf/jetty2.xml
+RUN chgrp activemq /opt/activemq/conf/jetty2.xml
+RUN cp /opt/activemq/conf/jetty2.xml /opt/activemq/conf/jetty.xml 
 
 #ADD jetty.xml $ACTIVEMQ_HOME/conf
-ENV PYTHONUNBUFFERED=1
-RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python && \
-python3 -m ensurepip && \
-pip3 install --no-cache --upgrade pip setuptools
+#ENV PYTHONUNBUFFERED=1
+#RUN apk add --no-cache python3=~3.11 && ln -sf python3 /usr/bin/python && \
+#python3 -m ensurepip && \
+#pip3 install --no-cache --upgrade pip setuptools
 
-RUN echo 'tata2'
+RUN echo "toto2"
+#RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+
+#RUN apk add --no-cache python3 py3-pip
+#RUN python3 --version
+
+#ENV PYTHONUNBUFFERED=1
+#RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+#RUN python3 -m ensurepip
+#RUN pip3 install --no-cache --upgrade pip setuptools
+
+#RUN apk add --no-cache python3 py3-pip
+#RUN apk --update --no-cache add python3~3.12  --repository=http://dl-cdn.alpinelinux.org/alpine/edge/main
+RUN python3 --version
+
+RUN echo 'tataaa========244axcb'
 RUN curl -LOk https://github.com/snuids/AMQC/archive/master.zip
 RUN ls -l
 RUN unzip master.zip
@@ -42,6 +65,10 @@ RUN ls -l /opt/server
 RUN cat /opt/server/requirements.txt
 RUN pip3 install -r /opt/server/requirements.txt
 
+#CMD ["/opt/activemq/bin/activemq", "start"]
+#CMD ["fastapi", "run", "/opt/server/main.py", "--port", "8180"]
+#CMD /opt/activemq/bin/activemq start;fastapi run /opt/server/main.py --port 8180
 
-EXPOSE 1883 5672 8161 8162 61613 61614 61616
+CMD /opt/activemq/bin/activemq console
 
+EXPOSE 1883 5672 8161 8168 8180 61613 61614 61616
