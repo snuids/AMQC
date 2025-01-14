@@ -1,0 +1,28 @@
+FROM bellsoft/liberica-openjdk-alpine:13
+LABEL maintainer="Arnaud"
+ENV ACTIVEMQ_VERSION 6.1.4
+ENV ACTIVEMQ apache-activemq-$ACTIVEMQ_VERSION
+ENV ACTIVEMQ_HOME /opt/activemq
+RUN apk add --update curl && \ 
+rm -rf /var/cache/apk/* && \ 
+mkdir -p /opt
+RUN curl -s -S https://archive.apache.org/dist/activemq/$ACTIVEMQ_VERSION/$ACTIVEMQ-bin.tar.gz | tar -xvz -C /opt
+RUN mv /opt/$ACTIVEMQ $ACTIVEMQ_HOME
+
+
+RUN addgroup -S activemq && \
+adduser -S -H -G activemq -h $ACTIVEMQ_HOME activemq && \
+chown -R activemq:activemq $ACTIVEMQ_HOME && \
+chown -h activemq:activemq $ACTIVEMQ_HOME
+
+RUN cat /opt/activemq/conf/jetty.xml | sed -E 's/(.*)(\"127\.0\.0\.1\")(.*)/\1"0.0.0.0"\3/g;t' > /opt/activemq/conf/jetty.xml
+RUN cat /opt/activemq/conf/jetty.xml
+
+#ADD jetty.xml $ACTIVEMQ_HOME/conf
+ENV PYTHONUNBUFFERED=1
+RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python && \
+python3 -m ensurepip && \
+pip3 install --no-cache --upgrade pip setuptools
+
+EXPOSE 1883 5672 8161 8162 61613 61614 61616
+

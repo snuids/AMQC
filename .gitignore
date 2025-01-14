@@ -1,2 +1,4 @@
-
+**/.DS_Store
 *.tmproj
+server/static/*
+**/__pycache__/*
