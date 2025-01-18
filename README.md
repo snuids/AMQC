@@ -77,6 +77,10 @@ Version> 56.15.2:
 `docker run -p 61616:61616 -p 8161:8161 -p 8180:8180 -e ACTIVEMQ_ADMIN_PASSWORD=admin -e ACTIVEMQ_ADMIN_LOGIN=admin amqc615` (Where amqc615 is the id of the image previsouly created)
 * Locally in the console use localhost as IP and 8180 as port
 
+Prebuild image:
 
-Get more examples and fun by following our blog here: [https://www.mannekentech.com/]
+* snuids/activemq-amqcmonitoring:v6.1.4
+
+
+Get more examples and fun by following our blog here: [https://pi2s.wordpress.com]
 
