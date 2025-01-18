@@ -22,7 +22,7 @@ It uses the Jolokia API in order to retrieve the broker information and the stom
 Simply deploy the AMQC folder in a running web site, and browse the index.html file from any recent web browser. A better way to do it is to copy this project directly in the ActiveMQ webapps folder and to access it via the following URL: http://BROKER_IP:8161/AMQC/index.html
 
 It should work with the recent releases of Active MQ. 
-
+Note tha as of Version 5.15 this system does not work anymore. It is possible to build a container with the console and ActiveMQ using the Dockerfile2025 in the Docker folder. See Docker section.
 
 # CORS limitations:
 If the ActiveMQ is protected by a password. The CORS handshake will fail on recent browsers because the Jetty web server hosting the ActiveMQ API is not CORS compliant out of the box. You can bypass this by disabling the CORS test in the browser or by tuning Jetty configuration in order to allow it.
@@ -67,6 +67,15 @@ More info here: https://hub.docker.com/r/snuids/activemq-amqcmonitoring/
  docker run --name AMQC -p 8161:8161 -p 61616:61616 -p 61614:61614 -p 61613:61613 -t snuids/activemq-amqcmonitoring
 
 5.15.2 ActiveMQ version available on github here: https://hub.docker.com/r/snuids/activemq-amqcmonitoring/
+
+Version> 56.15.2:
+
+
+* Build:
+`docker build -f Dockerfile2025 .`
+* Run:
+`docker run -p 61616:61616 -p 8161:8161 -p 8180:8180 -e ACTIVEMQ_ADMIN_PASSWORD=admin -e ACTIVEMQ_ADMIN_LOGIN=admin amqc615` (Where amqc615 is the id of the image previsouly created)
+* Locally in the console use localhost as IP and 8180 as port
 
 
 Get more examples and fun by following our blog here: [https://www.mannekentech.com/]
