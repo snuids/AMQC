@@ -28,11 +28,14 @@ cp /opt/activemq/conf/jetty2.xml /opt/activemq/conf/jetty.xml
 
 RUN echo 'TEST'
 
-RUN curl -LOk https://github.com/snuids/AMQC/archive/master.zip && \
-unzip master.zip && \
-rm master.zip && \
-mv ./AMQC-master/ /opt/static  && \
-mv /opt/static/server/ /opt/
+RUN curl -LOk --header "Cache-Control: no-cache, no-store, must-revalidate" \
+    --header "Pragma: no-cache" \
+    --header "Expires: 0" \
+    https://github.com/snuids/AMQC/archive/master.zip && \
+    unzip master.zip && \
+    rm master.zip && \
+    mv ./AMQC-master/ /opt/static && \
+    mv /opt/static/server/ /opt/
 
 RUN pip3 install -r /opt/server/requirements.txt
 
