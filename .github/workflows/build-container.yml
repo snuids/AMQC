@@ -29,8 +29,8 @@ jobs:
           echo "${{ github.event.head_commit.message }}"
           echo "${{ secrets.DOCKER_USERNAME }}"  
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker tag snuids/AMQC:${{ github.event.head_commit.message }} snuids/AMQC:${{ github.event.head_commit.message }}
-          docker push snuids/AMQC:${{ github.event.head_commit.message }}
+          docker tag snuids/amqc:${{ github.event.head_commit.message }} snuids/amqc:${{ github.event.head_commit.message }}
+          docker push snuids/amqc:${{ github.event.head_commit.message }}
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
