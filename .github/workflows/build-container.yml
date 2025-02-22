@@ -23,6 +23,7 @@ jobs:
         run: |
           docker build -t my-project:latest -f DockerImage/Dockerfile2025 .
 
+
       - name: Optionally push to Docker Hub
         run: |        
           echo "${{ github.event.head_commit.message }}"
