@@ -21,7 +21,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t my-project:latest -f Dockerfile2025 .
+          docker build -t my-project:latest -f DockerImage/Dockerfile2025 .
 
       - name: Optionally push to Docker Hub
         run: |
