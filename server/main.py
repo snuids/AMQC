@@ -10,6 +10,7 @@ PREFIX = os.getenv("AMQC_PREFIX", "")
 
 app = FastAPI()
 
+
 app.mount("/AMQC", StaticFiles(directory="/opt/static"), name="static")
 
 @app.get(f"{PREFIX}/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost")
