@@ -17,8 +17,8 @@ async def req1(request:Request ):
     response = requests.request("GET", "http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost"
                                 , headers=request.headers, data={})    
     print("====>"*30)
-    body=await request.json()
-    print(body)
+    print("http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost")
+    print(response.text)
     print(request.headers)
     return response.json()
 
