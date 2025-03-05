@@ -16,6 +16,10 @@ app.mount("/AMQC", StaticFiles(directory="/opt/static"), name="static")
 async def req1(request:Request ):
     response = requests.request("GET", "http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost"
                                 , headers=request.headers, data={})    
+    print("====>"*30)
+    body=await request.json()
+    print(body)
+    print(request.headers)
     return response.json()
 
 @app.get(f"{PREFIX}/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=*")
