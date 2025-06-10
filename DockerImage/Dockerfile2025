@@ -12,7 +12,7 @@ ENV ACTIVEMQ_HOME /opt/activemq
 RUN apk add --update curl && \ 
 rm -rf /var/cache/apk/* && \ 
 mkdir -p /opt
-RUN curl -s -S https://archive.apache.org/dist/activemq/$ACTIVEMQ_VERSION/$ACTIVEMQ-bin.tar.gz | tar -xvz -C /opt
+RUN curl -s -S https://dlcdn.apache.org/activemq/$ACTIVEMQ_VERSION/$ACTIVEMQ-bin.tar.gz | tar -xvz -C /opt
 RUN mv /opt/$ACTIVEMQ $ACTIVEMQ_HOME
 
 
