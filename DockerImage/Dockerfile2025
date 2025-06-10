@@ -13,7 +13,7 @@ RUN apk add --update curl && \
 rm -rf /var/cache/apk/* && \ 
 mkdir -p /opt
 #RUN curl -s -S https://dlcdn.apache.org/activemq/$ACTIVEMQ_VERSION/$ACTIVEMQ-bin.tar.gz | tar -xvz -C /opt
-RUN curl -s -S -L https://www.apache.org/dyn/closer.cgi\?filename\=/activemq/$ACTIVEMQ_VERSION/$ACTIVEMQ-bin.tar.gz\&action\=download
+RUN curl -s -S -L https://www.apache.org/dyn/closer.cgi\?filename\=/activemq/$ACTIVEMQ_VERSION/$ACTIVEMQ-bin.tar.gz\&action\=download  | tar -xvz -C /opt
 RUN mv /opt/$ACTIVEMQ $ACTIVEMQ_HOME
 
 
