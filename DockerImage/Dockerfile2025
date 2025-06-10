@@ -27,6 +27,10 @@ chown activemq /opt/activemq/conf/jetty2.xml && \
 chgrp activemq /opt/activemq/conf/jetty2.xml && \
 cp /opt/activemq/conf/jetty2.xml /opt/activemq/conf/jetty.xml 
 
+RUN cat /opt/activemq/conf/activemq.xml | sed -E 's#(5672\?maximumConnections=1000&amp;wireFormat\.maxFrameSize=104857600)#\1\&amp;transport.transformer=jms#g' \
+    > /opt/activemq/conf/activemq.xml.tmp;\
+    cp /opt/activemq/conf/activemq.xml.tmp /opt/activemq/conf/activemq.xml;\
+
 RUN echo 'TEST'
 
 RUN curl -LOk --header "Cache-Control: no-cache, no-store, must-revalidate" \
@@ -43,9 +47,7 @@ RUN pip3 install -r /opt/server/requirements.txt
 CMD cat /opt/activemq/conf/log4j2.properties | sed -E 's/(.*)(#log4j2.logger.activemq.level=DEBUG)(.*)/\1log4j2\.qlogger\.activemq\.level='$ACTIVEMQ_LOG_LEVEL'\3/g' | sed -E 's/(.*)(#log4j2.logger.activemq.name=org.apache.activemq)(.*)/\1log4j2.logger.activemq.name=org.apache.activemq\3/g' |   sed -E  's/rootLogger\.level=INFO/rootLogger.level='$ACTIVEMQ_LOG_LEVEL'/g' > /opt/activemq/conf/log4j2.properties.tmp;\
 cp /opt/activemq/conf/log4j2.properties.tmp /opt/activemq/conf/log4j2.properties;\
 echo "$ACTIVEMQ_ADMIN_LOGIN:$ACTIVEMQ_ADMIN_PASSWORD" > /opt/activemq/conf/users.properties;/opt/activemq/bin/activemq start;fastapi run /opt/server/main.py --port 8180
-CMD cat /opt/activemq/conf/activemq.xml | sed -E 's#(5672\?maximumConnections=1000&amp;wireFormat\.maxFrameSize=104857600)#\1\&amp;transport.transformer=jms#g' \
-    > /opt/activemq/conf/activemq.xml.tmp;\
-    cp /opt/activemq/conf/activemq.xml.tmp /opt/activemq/conf/activemq.xml;\
+
 
 
 EXPOSE 1883 5672 8161 8168 8180 61613 61614 61616
