@@ -29,7 +29,7 @@ cp /opt/activemq/conf/jetty2.xml /opt/activemq/conf/jetty.xml
 
 RUN cat /opt/activemq/conf/activemq.xml | sed -E 's#(5672\?maximumConnections=1000&amp;wireFormat\.maxFrameSize=104857600)#\1\&amp;transport.transformer=jms#g' \
     > /opt/activemq/conf/activemq.xml.tmp;\
-    cp /opt/activemq/conf/activemq.xml.tmp /opt/activemq/conf/activemq.xml;\
+    cp /opt/activemq/conf/activemq.xml.tmp /opt/activemq/conf/activemq.xml;
 
 RUN echo 'TEST'
 
