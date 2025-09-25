@@ -75,6 +75,10 @@ Version> 56.15.2:
 `docker build -f Dockerfile2025 .`
 * Run:
 `docker run -p 61616:61616 -p 8161:8161 -p 8180:8180 -e ACTIVEMQ_ADMIN_PASSWORD=admin -e ACTIVEMQ_ADMIN_LOGIN=admin amqc615` (Where amqc615 is the id of the image previsouly created)
+* Latest:
+`docker run -p 61616:61616 -p 8161:8161 -p 8180:8180 -e ACTIVEMQ_ADMIN_PASSWORD=admin -e ACTIVEMQ_ADMIN_LOGIN=admin snuids/activemq-amqcmonitoring:v6.1.7`
+Console: `http://localhost:8180/AMQC/index.html?brokerip=localhost&brokerport=8180&brokername=localhost&login=admin&password=admin`
+
 * Locally in the console use localhost as IP and 8180 as port url: http://localhost:8180/AMQC/index.html
 
 Prebuild image:
