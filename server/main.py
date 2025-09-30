@@ -58,6 +58,7 @@ async def req4(request:Request ):
     print(request.headers)
     print(request.response)
     return response.json()
+    
 
 @app.post(f"{PREFIX}/api/jolokia")
 async def jolpost(request:Request ):
