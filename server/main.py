@@ -56,7 +56,6 @@ async def req4(request:Request ):
     print(response.text)
     print("http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Topic,destinationName=*")
     print(request.headers)
-    print(request.response)
     return response.json()
 
 
