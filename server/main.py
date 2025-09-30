@@ -54,11 +54,11 @@ async def req4(request:Request ):
     #headers = {"authorization": auth, "referer": "http://localhost"}
     response = get_session(request).get("http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Topic,destinationName=*")
     print(response.text)
-    print("http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Topic,destinationName=*"")
+    print("http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Topic,destinationName=*")
     print(request.headers)
     print(request.response)
     return response.json()
-    
+
 
 @app.post(f"{PREFIX}/api/jolokia")
 async def jolpost(request:Request ):
