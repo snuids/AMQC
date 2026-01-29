@@ -64,7 +64,7 @@ async def jolpost(request:Request ):
     body = await request.json()
     auth = request.headers.get("authorization")
     headers = {"authorization": auth, "referer": "http://localhost"}
-    response = session.post("http://localhost:8161/api/jolokia", headers=headers, data=json.dumps(body))
+    response = get_session(request).post("http://localhost:8161/api/jolokia", headers=headers, data=json.dumps(body))
     return response.json()
 
 @app.post(f"{PREFIX}/api/message/{{target}}")
