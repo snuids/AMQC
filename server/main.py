@@ -1,3 +1,4 @@
+#v6.2.0
 from fastapi import FastAPI
 
 from fastapi.staticfiles import StaticFiles
