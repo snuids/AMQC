@@ -15,15 +15,7 @@ app = FastAPI()
 
 app.mount(f"{PREFIX}/AMQC", StaticFiles(directory="/opt/static"), name="static")
 
-session=None
-
-def get_session(req:Request):
-    global session
-    
-    if session is not None:        
-        return session
-
-    print("Create session")
+def get_session(req: Request):
     session = requests.Session()
     auth = req.headers.get("authorization")
     if auth:
@@ -63,17 +55,13 @@ async def req4(request:Request ):
 @app.post(f"{PREFIX}/api/jolokia")
 async def jolpost(request:Request ):
     body = await request.json()
-    auth = request.headers.get("authorization")
-    headers = {"authorization": auth, "referer": "http://localhost"}
-    response = get_session(request).post("http://localhost:8161/api/jolokia", headers=headers, data=json.dumps(body))
+    response = get_session(request).post("http://localhost:8161/api/jolokia", data=json.dumps(body))
     return response.json()
 
 @app.post(f"{PREFIX}/api/message/{{target}}")
 async def jolmessage(request:Request, target, type, Origin, ID ):
     body = await request.body()
     url = f"http://localhost:8161/api/message/{target}?type={type}&Origin={Origin}&ID={ID}"
-    auth = request.headers.get("authorization")
-    headers = {"authorization": auth, "referer": "http://localhost"}
-    response = session.post(url, headers=headers, data=body.decode("utf-8"))
+    response = get_session(request).post(url, data=body.decode("utf-8"))
     print(response.text)
     return {"result": response.text}
