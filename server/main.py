@@ -30,6 +30,7 @@ def get_session(req:Request):
         session.headers.update({"authorization": auth, "referer": "http://localhost"})
     return session
 
+
 @app.get(f"{PREFIX}/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost")
 async def req1(request:Request ):
     print(">>>> 1")
