@@ -829,7 +829,7 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 		factory.infoUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME';
 		factory.queuesUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,destinationType=Queue,destinationName=*';
 		factory.topicsUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,destinationType=Topic,destinationName=*';
-	factory.connectionsUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,connector=clientConnectors,connectorName=*,connectionName=*';	
+		factory.connectionsUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/jolokia/read/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,connector=clientConnectors,connectorName=CONNECTORNAME,connectionViewType=clientId,connectionName=*';	
 		factory.execUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/jolokia/exec/org.apache.activemq:type=Broker,brokerName=REPLACEBROKERNAME,destinationType=QUEUETYPE,destinationName=QUEUENAME/QUEUEACTION';
 		factory.postUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/jolokia';		
 		factory.apiUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/';		
