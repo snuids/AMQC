@@ -12,22 +12,24 @@ PREFIX = os.getenv("AMQC_PREFIX", "")
 
 app = FastAPI()
 
-
-app.mount(f"{PREFIX}/AMQC", StaticFiles(directory="/opt/static"), name="static")
+# Mount static files - use /opt/static in Docker, ../ locally
+static_dir = "/opt/static" if os.path.exists("/opt/static") else "../"
+app.mount(f"{PREFIX}/AMQC", StaticFiles(directory=static_dir), name="static")
 
 session=None
 
 def get_session(req:Request):
     global session
     
-    if session is not None:        
-        return session
-
-    print("Create session")
-    session = requests.Session()
+    if session is None:
+        print("Create session")
+        session = requests.Session()
+    
+    # Always update auth headers from the current request
     auth = req.headers.get("authorization")
     if auth:
         session.headers.update({"authorization": auth, "referer": "http://localhost"})
+    
     return session
 
 
@@ -43,12 +45,17 @@ async def req2(request:Request ):
     response = get_session(request).get("http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=*",)
     return response.json()
 
-@app.get(f"{PREFIX}/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,connectionViewType=clientId,connectionName=*")
+@app.get(f"{PREFIX}/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,connector=clientConnectors,connectorName=*,connectionName=*")
 async def req3(request:Request ):
-    #auth = request.headers.get("authorization")
-    #headers = {"authorization": auth, "referer": "http://localhost"}
-    response = get_session(request).get("http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,connectionViewType=clientId,connectionName=*")
-    return response.json()
+    response = get_session(request).get("http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,connectionViewType=remoteAddress,connector=clientConnectors,connectorName=*,connectionName=*")
+    
+    result = response.json()
+    # Handle 404 when no connections exist OR 500 due to ActiveMQ 6.2 wildcard bug
+    if result.get("status") in [404, 500]:
+        if "InstanceNotFoundException" in result.get("error_type", "") or "NullPointerException" in result.get("error_type", ""):
+            return {"request": {"mbean": "org.apache.activemq:type=Broker,brokerName=localhost,connectionViewType=remoteAddress,connector=clientConnectors,connectorName=*,connectionName=*", "type": "read"}, "value": {}, "status": 200}
+    
+    return result
 
 @app.get(f"{PREFIX}/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Topic,destinationName=*")
 async def req4(request:Request ):
