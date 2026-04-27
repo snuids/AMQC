@@ -45,15 +45,11 @@ async def req2(request:Request ):
     response = get_session(request).get("http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,connector=clientConnectors,connectorName=*,connectionViewType=clientId,connectionName=*")
     return response.json()
 
-@app.get(f"{PREFIX}/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,connector=clientConnectors,connectorName=*,connectionName=*")
+@app.get(f"{PREFIX}/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,connectionViewType=remoteAddress,connector=clientConnectors,connectorName=*,connectionName=*")
 async def req3(request:Request ):
     response = get_session(request).get("http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,connectionViewType=remoteAddress,connector=clientConnectors,connectorName=*,connectionName=*")
     
     result = response.json()
-    # Handle 404 when no connections exist OR 500 due to ActiveMQ 6.2 wildcard bug
-    if result.get("status") in [404, 500]:
-        if "InstanceNotFoundException" in result.get("error_type", "") or "NullPointerException" in result.get("error_type", ""):
-            return {"request": {"mbean": "org.apache.activemq:type=Broker,brokerName=localhost,connectionViewType=remoteAddress,connector=clientConnectors,connectorName=*,connectionName=*", "type": "read"}, "value": {}, "status": 200}
     
     return result
 
