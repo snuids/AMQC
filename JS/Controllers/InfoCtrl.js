@@ -1,12 +1,6 @@
 app.controller('InfoCtrl', ['$rootScope', '$scope', '$timeout', '$filter', 'amqInfoFactory', 'toasty',
 	function ($rootScope, $scope, $timeout, $filter, amqInfoFactory, toasty) {
     
-	/*amqInfoFactory.subscribe($scope, function somethingChanged() 
-	{
-		console.log("Something changed");
-	});*/
-	
-	
 	$scope.infoTabs = [{
             title: 'Info'
         }
