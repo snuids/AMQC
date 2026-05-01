@@ -1,4 +1,4 @@
-FROM python:3.11.3-alpine
+FROM python:3.12.3-alpine
 LABEL maintainer="Arnaud,Jorge"
 
 RUN sed -i '2s/^# *//' /etc/apk/repositories && \
