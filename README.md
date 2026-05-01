@@ -50,6 +50,7 @@ The Active MQ 5.13 version broke the compatibility with web sockets opened via C
 # URI parameters:
 * login
 * password
+* encryptedpassword (Base64 encoded password - more secure than plain text in URL)
 * brokerip
 * brokerport
 * brokername
@@ -58,6 +59,27 @@ The Active MQ 5.13 version broke the compatibility with web sockets opened via C
 
 ## Example:
 `http://127.0.0.1:8161/AMQC/index.html?brokerip=127.0.0.1&brokerport=8161&brokername=localhost&autologin=true`
+
+## Example with encrypted password:
+To use an encrypted password, first encode your password in Base64:
+```javascript
+// In browser console or using the password-encoder.html tool:
+btoa("admin")  // Returns: "YWRtaW4="
+```
+Then use it in the URL (the browser will automatically handle URL encoding):
+`http://127.0.0.1:8161/AMQC/index.html?login=admin&encryptedpassword=YWRtaW4=&brokerip=127.0.0.1&brokerport=8161&brokername=localhost&autologin=true`
+
+For passwords with special characters:
+```javascript
+btoa("BagStage01!")  // Returns: "QmFnU3RhZ2UwMSE="
+```
+URL: `http://127.0.0.1:8180/AMQC/index.html?login=admin&encryptedpassword=QmFnU3RhZ2UwMSE=&brokerip=127.0.0.1&brokerport=8180&brokername=localhost&autologin=true`
+
+**Password Encoder Utility**: Use the included `password-encoder.html` tool to easily generate encoded passwords for your URLs.
+
+Note: If both `password` and `encryptedpassword` are provided, `encryptedpassword` takes precedence.
+
+**Security Note**: Base64 encoding provides obscurity but not true encryption. Always use HTTPS for secure password transmission.
 
 ## Docker 
 There is a docker (snuids/activemq-amqcmonitoring) image that includes ActiveMQ and AMQC. The image is based on the webcenter/activemq image (https://hub.docker.com/r/webcenter/activemq/). 

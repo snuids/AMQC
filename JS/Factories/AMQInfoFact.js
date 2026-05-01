@@ -54,6 +54,33 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 		  return results == null ? null : results[1];		
 	}
 	
+	// Decrypt password from Base64 encoding
+	factory.decryptPassword=function(encryptedPassword)
+	{
+		try {
+			// First URL-decode in case the parameter has URL encoding (e.g., %3D for =)
+			// Then Base64 decode
+			var urlDecoded = decodeURIComponent(encryptedPassword);
+			return atob(urlDecoded);
+		} catch(e) {
+			console.error('Failed to decrypt password:', e);
+			console.error('Encrypted password value:', encryptedPassword);
+			return null;
+		}
+	};
+	
+	// Encrypt password to Base64 for URL usage
+	factory.encryptPassword=function(plainPassword)
+	{
+		try {
+			// Just Base64 encode - URL encoding should be done separately when constructing URLs
+			return btoa(plainPassword);
+		} catch(e) {
+			console.error('Failed to encrypt password:', e);
+			return null;
+		}
+	};
+	
 	factory.addQueueStat = function(queueName) {
 		if (queueName in factory.queueStats) {
 			//console.log('Trying to add queueStatsItem when it already exists (' + queueName + ')');
@@ -76,6 +103,77 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 	
 	factory.isRefreshing = function() {
 		return factory.currentlyRefreshing.indexOf(true) !== -1;
+	}
+	
+	// Enhanced error handler for jolokia API calls
+	factory.handleApiError = function(response, context) {
+		var errorMsg = '';
+		var statusCode = response.status || 0;
+		
+		console.error('API Error - Context: ' + context + ', Status: ' + statusCode, response);
+		
+		switch(statusCode) {
+			case 401:
+				errorMsg = 'Authentication failed. Please check your username and password.';
+				factory.connectionError = '<h4>Unauthorized (401)</h4><p>The username or password is incorrect. Please verify your credentials.</p>';
+				// Stop refresh timer on auth failure
+				factory.stopRefreshTimer();
+				factory.connected = false;
+				factory.loginok = false;
+				break;
+				
+			case 403:
+				errorMsg = 'Access forbidden. You don\'t have permission to access this resource.';
+				factory.connectionError = '<h4>Forbidden (403)</h4><p>You do not have sufficient permissions to access this resource.</p>';
+				factory.stopRefreshTimer();
+				break;
+				
+			case 404:
+				errorMsg = 'Resource not found. The ActiveMQ endpoint may not be available.';
+				factory.connectionError = '<h4>Not Found (404)</h4><p>The requested resource was not found. Check if the broker address and port are correct.</p>';
+				break;
+				
+			case 500:
+				errorMsg = 'Server error. The ActiveMQ broker encountered an internal error.';
+				factory.connectionError = '<h4>Internal Server Error (500)</h4><p>The ActiveMQ broker encountered an error processing your request.</p>';
+				break;
+				
+			case 503:
+				errorMsg = 'Service unavailable. The ActiveMQ broker may be starting up or shutting down.';
+				factory.connectionError = '<h4>Service Unavailable (503)</h4><p>The broker is temporarily unavailable. It may be starting up or under maintenance.</p>';
+				break;
+				
+			case 0:
+			case -1:
+				errorMsg = 'Cannot connect to ActiveMQ. Check network connection and CORS settings.';
+				factory.connectionError = '<h4>Connection Failed</h4><p>Unable to connect to the broker. Check:</p><ul><li>Broker IP and port are correct</li><li>ActiveMQ is running</li><li>CORS is properly configured</li><li>Network connectivity</li></ul>';
+				factory.stopRefreshTimer();
+				break;
+				
+			default:
+				errorMsg = 'Unable to connect to ActiveMQ. Status: ' + statusCode;
+				if(response.data != null) {
+					factory.connectionError = response.data.replace(/<h2>/g, '<h4>').replace(/<\/h2>/g, '</h4>');
+				} else {
+					factory.connectionError = '<h4>Error (Status: ' + statusCode + ')</h4><p>An unexpected error occurred.</p>';
+				}
+				break;
+		}
+		
+		// Show toast notification with context
+		if(context) {
+			toasty.error({
+				msg: context + ': ' + errorMsg,
+				title: 'Error'
+			});
+		} else {
+			toasty.error({msg: errorMsg});
+		}
+		
+		return {
+			message: errorMsg,
+			shouldStopRefresh: statusCode === 401 || statusCode === 403 || statusCode === 0 || statusCode === -1
+		};
 	}
 	
 	factory.showCORSBanner=function()
@@ -118,6 +216,8 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 	/* Load Connection Parameters */		
 	factory.loadConnectionParameters = function()
 	{
+		console.log('Loading connection parameters...');
+		
 		if((typeof(Storage) !== undefined) && localStorage.getItem("amqc.rememberme") !== undefined && localStorage.getItem("amqc.rememberme") === "true") {
 
 		    if(localStorage.getItem("amqc.brokerip") !== undefined)
@@ -137,17 +237,40 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			
 			if(localStorage.getItem("amqc.rememberme") !== undefined)
 				factory.rememberMe = localStorage.getItem("amqc.rememberme") === "true";
+			
+			console.log('Loaded from localStorage');
 		}
 		// Set URI parameters if defined
 		var uriparams=["login","password","brokerip","brokername","brokerport","defaultinfotab","defaultrefreshrate"];
 		for(var i=0;i<uriparams.length;i++)
 		{
-			if(factory.getUrlParameter(uriparams[i])!=null)
+			if(factory.getUrlParameter(uriparams[i])!=null) {
 				factory[uriparams[i]]=factory.getUrlParameter(uriparams[i]);
+				console.log('URL parameter ' + uriparams[i] + '=' + factory.getUrlParameter(uriparams[i]));
+			}
 		}			
+		
+		// Handle encrypted password if provided
+		if(factory.getUrlParameter("encryptedpassword")!=null)
+		{
+			var decrypted = factory.decryptPassword(factory.getUrlParameter("encryptedpassword"));
+			if(decrypted != null) {
+				factory.password = decrypted;
+				console.log('Using encrypted password from URL');
+			} else {
+				toasty.error({
+					msg: 'Invalid encrypted password in URL. Please check the Base64 encoding.',
+					title: 'Decryption Error'
+				});
+				console.error('Failed to decrypt password from URL parameter:', factory.getUrlParameter("encryptedpassword"));
+			}
+		}
+		
 		factory.brokerport=parseInt(''+factory.brokerport);
 		if(factory.getUrlParameter("autologin")=="true")
-			factory.autologin=true;						
+			factory.autologin=true;
+			
+		console.log('Connection parameters loaded - brokerip:', factory.brokerip, 'port:', factory.brokerport, 'login:', factory.login, 'autologin:', factory.autologin);
 	}
 
 	/* Save Connection Parameters */		
@@ -234,8 +357,10 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 //			factory.notify();
 		}, function errorCallback(response) {
 			toasty.error({msg:'Unable to connect to ActiveMQ. Status:' + response.status});
-			if(response.data!=null)
-				factory.connectionError=response.data.replace("<h2>","<h4>").replace("</h2>","</h4>");
+			if(response.data!=null) {
+				var errText = (typeof response.data === 'string') ? response.data : (response.data.error || JSON.stringify(response.data));
+				factory.connectionError=errText.replace("<h2>","<h4>").replace("</h2>","</h4>");
+			}
 			factory.connecting=false;
 			if(!factory.loginok)
 				factory.stopRefreshTimer();
@@ -325,11 +450,11 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			factory.currentlyRefreshing[1] = false; 
 			//console.log(factory.filteredQueues);
 		  }, function errorCallback(response) {
-			  toasty.error({msg:'Cannot read queues'});
-			  if(!factory.loginok)
+			  var errorInfo = factory.handleApiError(response, 'Reading queues');
+			  if(errorInfo.shouldStopRefresh || !factory.loginok) {
 			  	factory.stopRefreshTimer();
+			  }
 			  factory.currentlyRefreshing[1] = false;
-			///alert('Cannot read queues');
 		  });
 	}
 	
@@ -387,11 +512,11 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			factory.currentlyRefreshing[3] = false;
 			
 		  }, function errorCallback(response) {
-			  toasty.error({msg:'Cannot read topics'});
-			  if(!factory.loginok)			  
+			  var errorInfo = factory.handleApiError(response, 'Reading topics');
+			  if(errorInfo.shouldStopRefresh || !factory.loginok) {
 			  	factory.stopRefreshTimer();
+			  }
 			  factory.currentlyRefreshing[3] = false;
-		    //alert('Cannot read topics');
 		  });
 	}
 	
@@ -420,7 +545,7 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			}
 			
 		  }, function errorCallback(response) {
-		    console.log("ERROR while reading subscriber details.");
+		    factory.handleApiError(response, 'Reading subscriber details');
 		  });
 
 	}
@@ -461,9 +586,10 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			}
 			factory.currentlyRefreshing[2] = false;
 		  }, function errorCallback(response) {
-			  toasty.error({msg:'Cannot read connections'});
-			  if(!factory.loginok)			  			  
+			  var errorInfo = factory.handleApiError(response, 'Reading connections');
+			  if(errorInfo.shouldStopRefresh || !factory.loginok) {
 			  	factory.stopRefreshTimer();
+			  }
 			  factory.currentlyRefreshing[2] = false;
 		  });
 	}
@@ -492,11 +618,9 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			}
 			factory.detailsComputingUnderway=false;
 		  }, function errorCallback(response) {
-		    alert('ko');
+	    factory.handleApiError(response, 'Reading connection details');
 		  });
-
 	}
-	
 
 	/* Durables */
 
@@ -517,8 +641,7 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			factory.refreshAll();
 
 		}, function errorCallback(response) {
-			toasty.error({msg:'Unable to delete durable subscriber ' + durablesub.OriginalConsumerID});
-		    //alert('Unable to destroy durable consumer.');
+			factory.handleApiError(response, 'Deleting durable subscriber ' + durablesub.OriginalConsumerID);
 			console.log(response);
 		  });
 	}
@@ -546,8 +669,7 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			
 
 		}, function errorCallback(response) {
-			toasty.error({msg:'Unable to create durable subscriber ' + newDurableSubscriber});
-		    //alert('Unable to destroy durable consumer.');
+			factory.handleApiError(response, 'Creating durable subscriber ' + newDurableSubscriber);
 			console.log(response);
 		  });
 	}
@@ -574,7 +696,7 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			factory.refreshAll();
 
 		  }, function errorCallback(response) {
-			  toasty.error({msg:'Unable to create queue ' + queueName});
+			  factory.handleApiError(response, 'Creating queue ' + queueName);
 			console.log(response);
 		  });
 		
@@ -598,7 +720,7 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			console.log(response);
 			factory.refreshAll();
 			}, function errorCallback(response) {
-			toasty.error({msg:'Unable to delete queue ' + queueName});
+			factory.handleApiError(response, 'Deleting queue ' + queueName);
 			console.log(response);
 		  });
 	}
@@ -625,7 +747,7 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			factory.refreshAll();
 
 		}, function errorCallback(response) {
-			toasty.error('Unable to create topic ' + topicName);
+			factory.handleApiError(response, 'Creating topic ' + topicName);
 			console.log(response);
 		});		
 	}	
@@ -649,7 +771,7 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			factory.refreshAll();
 
 		  }, function errorCallback(response) {
-		    alert('Unable to delete topic.');
+		    factory.handleApiError(response, 'Deleting topic ' + topicName);
 			console.log(response);
 		  });
 		
@@ -677,6 +799,7 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 					factory.refreshAll();
 					resolve(true);
 				}, function errorCallback(response) {
+					factory.handleApiError(response, 'Deleting message ' + msgId);
 					console.log(response);
 					reject(false);				
 				})
@@ -713,7 +836,7 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			console.log(response);
 			factory.refreshAll();
 		  }, function errorCallback(response) {
-		    alert('ko');
+		    factory.handleApiError(response, 'Executing queue operation');
 		  });
 	}
 	
@@ -750,7 +873,7 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 
 
 		  }, function errorCallback(response) {
-		    alert('Unable to delete topic.');
+		    factory.handleApiError(response, 'Browsing queue ' + queueName);
 			console.log(response);
 		  });
 	}
@@ -775,7 +898,7 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 
 			  }, function errorCallback(response) {
 				  	console.log(response);
-				  	toasty.error('Unable to send message.');
+				  	factory.handleApiError(response, 'Sending message');
 					console.log(response);
 			  });
 		  }
@@ -858,11 +981,11 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 	factory.subscribe= function(scope, callback) {
         var handler = $rootScope.$on('amq_info_updated', callback);
         scope.$on('$destroy', handler);
-    },
+    };
 
     factory.notify= function() {
         $rootScope.$emit('amq_info_updated');
-    }
+    };
 	
 	factory.checkSubscribers=function()
 	{				
