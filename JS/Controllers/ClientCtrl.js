@@ -76,6 +76,36 @@ app.controller('ClientCtrl', ['$scope','$interval','$timeout', 'amqInfoFactory',
 		$scope.currentMessage=null;
 	}
 	
+	$scope.copyMessage = function() {
+		if ($scope.currentMessage && $scope.currentMessage.message) {
+			var textToCopy = $scope.currentMessage.message;
+			
+			// Modern clipboard API
+			if (navigator.clipboard && window.isSecureContext) {
+				navigator.clipboard.writeText(textToCopy).then(function() {
+					toasty.success({msg:'Message copied to clipboard!'});
+				}, function() {
+					toasty.error({msg:'Failed to copy message to clipboard'});
+				});
+			} else {
+				// Fallback for older browsers
+				var textArea = document.createElement("textarea");
+				textArea.value = textToCopy;
+				textArea.style.position = "fixed";
+				textArea.style.left = "-999999px";
+				document.body.appendChild(textArea);
+				textArea.select();
+				try {
+					document.execCommand('copy');
+					toasty.success({msg:'Message copied to clipboard!'});
+				} catch (err) {
+					toasty.error({msg:'Failed to copy message to clipboard'});
+				}
+				document.body.removeChild(textArea);
+			}
+		}
+	}
+	
 	$scope.sendMessage=function()
 	{
 		for(var i=0;i<$scope.repeatMessages;i++)

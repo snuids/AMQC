@@ -44,7 +44,7 @@ The Active MQ 5.13 version broke the compatibility with web sockets opened via C
 ![Client](https://raw.githubusercontent.com/snuids/AMQC/master/Medias/stompclient.png)
 ![Client](https://raw.githubusercontent.com/snuids/AMQC/master/Medias/stomptimeline.png)
 
-## v1.11 Broker Statistics
+## v1.13 Broker Statistics
 ![Client](https://raw.githubusercontent.com/snuids/AMQC/master/Medias/stats.png)
 
 # URI parameters:
