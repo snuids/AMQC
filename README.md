@@ -69,11 +69,6 @@ btoa("admin")  // Returns: "YWRtaW4="
 Then use it in the URL (the browser will automatically handle URL encoding):
 `http://127.0.0.1:8161/AMQC/index.html?login=admin&encryptedpassword=YWRtaW4=&brokerip=127.0.0.1&brokerport=8161&brokername=localhost&autologin=true`
 
-For passwords with special characters:
-```javascript
-btoa("BagStage01!")  // Returns: "QmFnU3RhZ2UwMSE="
-```
-URL: `http://127.0.0.1:8180/AMQC/index.html?login=admin&encryptedpassword=QmFnU3RhZ2UwMSE=&brokerip=127.0.0.1&brokerport=8180&brokername=localhost&autologin=true`
 
 **Password Encoder Utility**: Use the included `password-encoder.html` tool to easily generate encoded passwords for your URLs.
 
