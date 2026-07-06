@@ -42,16 +42,25 @@ def get_session(req:Request):
     auth = req.headers.get("authorization")
     if auth:
         session.headers.update({"authorization": auth, "referer": "http://localhost"})
-    
+    print(auth)
+    print(session.headers)
     return session
 
 
 @app.get(f"{PREFIX}/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost")
 async def req1(request:Request ):
     print(">>>> 1")
-    response = get_session(request).get("http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost")
+    url="http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost"
+    response = get_session(request).get(url)
     print("<<<< 1")
-    return parse_response(response)
+    res= parse_response(response)
+    if isinstance(res, JSONResponse):
+        print(f"Non-JSON response: HTTP {response.status_code}")
+    else:
+        print(res)
+    
+    print("<<<< 1a")
+    return res
 
 @app.get(f"{PREFIX}/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,connector=clientConnectors,connectorName=*,connectionViewType=clientId,connectionName=*")
 async def req2(request:Request ):
