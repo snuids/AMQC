@@ -310,7 +310,8 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			factory.loginok=true;
 
 			for ( var property in factory.info ) {
-				if((!(factory.info[property] instanceof Array))
+				if((property!='AcceptorsAsJSON')
+				&&(!(factory.info[property] instanceof Array))
 				&&(!(factory.info[property] instanceof Object)))
 				{
 					var nobj={key:property,value:factory.info[property]};
@@ -823,16 +824,16 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 	
 	factory.execQueue=function(queueName,queueAction,queueType)
 	{
-		var reseturl=factory.execUrl;
-		reseturl=reseturl.replace('QUEUENAME',queueName);
-		reseturl=reseturl.replace('QUEUEACTION',queueAction);
-		reseturl=reseturl.replace('QUEUETYPE',queueType);
+		var postUrl=factory.getPostUrl();
 
-		$http({
-		  method: 'GET',
-		  url: reseturl
-		  
-		}).then(function successCallback(response) {
+		var data={
+		    "type":"exec",
+		    "mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername+",destinationType="+queueType+",destinationName="+queueName,
+			"operation":queueAction
+		};
+
+		$http.post(postUrl, data, {})
+		.then(function successCallback(response) {
 			console.log(response);
 			factory.refreshAll();
 		  }, function errorCallback(response) {
@@ -868,6 +869,8 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			{
 				if(response.data.value[i].Text==undefined)
 					response.data.value[i].Text=factory.bin2String(response.data.value[i].BodyPreview);
+				if(response.data.value[i].JMSTimestamp==undefined)
+					response.data.value[i].JMSTimestamp=response.data.value[i].timestamp;
 				factory.queueMessages.push(response.data.value[i]);
 			}
 

@@ -40,3 +40,5 @@ v1.10 05May2018 added urlprefix parameter and support https if used with a rever
 v1.11 06May2018 Save the stomp login and password in local storage
 v1.12 01May2026 Fixed missing Queue endpoint in FastAPI server (404 error for Queue requests)
 v1.13 01May2026 Added copy to clipboard button in message viewer with confirmation toasty notification. Added encrypted password URL parameter support (Base64 encoded) for more secure password passing in URLs. Enhanced error handling for jolokia API calls with detailed messages for 401, 403, 404, 500, 503 errors and automatic logout on authentication failures
+
+v1.14 29Aug2026 More information for connection and Artemis backend added

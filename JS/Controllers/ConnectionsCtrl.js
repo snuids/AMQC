@@ -25,7 +25,22 @@ app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
 				DestinationQueue:"Queue",
 				SlowConsumer:"Slow"
 		    };
-	
+
+	$scope.connectorLabelClasses = {
+		STOMP: 'label-warning',
+		OPENWIRE: 'label-info',
+		AMQP: 'label-success',
+		MQTT: 'label-primary',
+		WS: 'label-default'
+	};
+
+	$scope.getConnectorClass = function(connectorName)
+	{
+		if(!connectorName)
+			return 'label-default';
+		return $scope.connectorLabelClasses[connectorName.toUpperCase()] || 'label-default';
+	}
+
 			
 	$scope.sort = {
 	        column: 'ClientId',
@@ -36,6 +51,27 @@ app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
 		        column: 'Name',
 		        descending: false
 		    };
+	
+	$scope.detailsTabs = [{
+	            title: 'Destinations',
+	            url: 'Templates/Connections.html',
+				visible:true
+	        }
+			, {
+	            title: 'Properties',
+	            url: 'Templates/Connectors.html',
+				visible:true
+	        }];
+
+	$scope.currentDetailsTab = $scope.detailsTabs[0];
+
+	$scope.onClickTabDetails = function (tab) {
+        $scope.currentDetailsTab = tab;
+    }
+
+    $scope.isActiveTabDetails = function(tabUrl) {
+        return tabUrl == $scope.currentDetailsTab.url;
+	}
 	
 	$scope.selectedCls = function(column) {
 	        return column == $scope.sort.column && 'sort-' + $scope.sort.descending;
@@ -70,6 +106,7 @@ app.controller('ConnectionsCtrl', ['$scope', '$http', 'amqInfoFactory',
 	$scope.showDetails = function(ent)
 	{
 		$scope.currentConnection=ent;
+		$scope.currentDetailsTab = $scope.detailsTabs[0];
 		$scope.amqInfo.computeConnectionDetails(ent);
 		
 	}

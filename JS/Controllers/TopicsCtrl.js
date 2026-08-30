@@ -4,7 +4,7 @@ app.controller('TopicsCtrl', ['$rootScope','$scope','$timeout', '$confirm', 'amq
 	$scope.head = {
 	        Name: "Name",
 	        ConsumerCount: "Consumers",
-	        BlockedSends: "Blocked",
+	        BlockedSends: "Unrouted",
 	        EnqueueCount: "Enqueue",
 	        DequeueCount: "Dequeue",
 	        DispatchCount: "Dispatch",
@@ -62,7 +62,6 @@ app.controller('TopicsCtrl', ['$rootScope','$scope','$timeout', '$confirm', 'amq
 	$scope.resetStatsTopic=function()
 	{
 		$scope.amqInfo.resetStatsTopic($scope.amqInfo.currentTopic.Name);
-		$scope.amqInfo.refreshAll();
 	}
 	
 	$scope.showDetails = function(ent)

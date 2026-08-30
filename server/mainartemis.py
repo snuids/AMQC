@@ -233,19 +233,32 @@ async def req1(request: Request):
 
 def _connections_value(sess, connection_view_type: str):
     result = broker_list(sess, "listConnections")
+
+    # listConnections() doesn't include per-connection producers/consumers,
+    # so fetch them separately and group by remoteAddress (the only field
+    # that reliably correlates a consumer/producer back to its connection).
+    consumers_by_addr = {}
+    for c in broker_list(sess, "listConsumers").get("data", []):
+        consumers_by_addr.setdefault(c.get("remoteAddress", ""), []).append(c)
+    producers_by_addr = {}
+    for p in broker_list(sess, "listProducers").get("data", []):
+        producers_by_addr.setdefault(p.get("remoteAddress", ""), []).append(p)
+
     value = {}
     for c in result.get("data", []):
-        client_id = c.get("clientID") or c.get("connectionID", "")
+        # Non-JMS connections (STOMP, ...) have no clientID; fall back to the
+        # remoteAddress so it lines up with the same fallback used for their
+        # consumers in req4() - see showConnection() in QueuesCtrl.js.
+        client_id = c.get("clientID") or c.get("remoteAddress") or c.get("connectionID", "")
         connector_name = c.get("protocol", "unknown")
+        remote_address = c.get("remoteAddress", "")
         key = classic_connector_key(connection_view_type, connector_name, client_id.replace(":", "_") if client_id else c.get("connectionID", ""))
         value[key] = {
             "ClientId": client_id,
-            "RemoteAddress": c.get("remoteAddress", ""),
+            "RemoteAddress": remote_address,
             "ConnectorName": connector_name,
-            # Artemis' listConnections() doesn't expose per-connection producer/
-            # consumer arrays or slow/blocked flags - left empty as a known gap.
-            "Producers": [],
-            "Consumers": [],
+            "Producers": producers_by_addr.get(remote_address, []),
+            "Consumers": consumers_by_addr.get(remote_address, []),
             "DispatchQueueSize": 0,
             "Slow": False,
             "Blocked": False,
@@ -290,6 +303,24 @@ async def req4(request: Request):
     for q in result.get("data", []):
         name = q.get("name", "")
         key = classic_destination_key("Queue", name)
+
+        subscriptions = []
+        if int(q.get("consumerCount", 0) or 0) > 0:
+            try:
+                consumers = broker_list(sess, "listConsumers", {"field": "queue", "operation": "EQUALS", "value": name})
+                for c in consumers.get("data", []):
+                    # STOMP (and other non-JMS) consumers have no clientID;
+                    # fall back to the remote address so the row isn't blank.
+                    # Sanitized the same way as showConnection() expects
+                    # (colons -> underscores) so clicking through matches
+                    # the connection built in _connections_value().
+                    client_id = c.get("clientID") or c.get("remoteAddress", "")
+                    subscriptions.append({
+                        "objectName": classic_consumer_key("Queue", name, client_id.replace(":", "_"), str(c.get("id", ""))),
+                    })
+            except Exception:
+                pass
+
         value[key] = {
             **q,
             "Name": name,
@@ -297,6 +328,18 @@ async def req4(request: Request):
             "ConsumerCount": q.get("consumerCount", 0),
             "EnqueueCount": q.get("messagesAdded", 0),
             "DequeueCount": q.get("messagesAcked", 0),
+            "ExpiredCount": q.get("messagesExpired", 0),
+            # Artemis has no separate "dispatched but not yet acked" counter
+            # like Classic's DispatchCount, so the frontend's Dispatched
+            # column shows the acked count instead of staying empty.
+            "DispatchCount": q.get("messagesAcked", 0),
+            # Artemis has no "blocked send" flag like Classic; messagesKilled
+            # (poison/undelivered messages) is the closest available signal.
+            "BlockedSends": q.get("messagesKilled", 0),
+            # Classic's Queue mbean exposes Subscriptions (active consumers);
+            # the frontend's Subscribers tab crashes without it - see
+            # QueuesCtrl.onClickTabDetails().
+            "Subscriptions": subscriptions,
         }
     return {"value": value, "status": 200}
 
@@ -332,15 +375,47 @@ async def req5(request: Request):
         subscriptions = []
         for qinfo in multicast_queues:
             queue_name = qinfo.get("name", "")
-            # Best-effort split of the Artemis subscription queue name into a
-            # (clientId, subscriptionName) pair - see module docstring.
-            client_id, _, sub_name = queue_name.partition(".")
-            if not sub_name:
-                client_id, sub_name = "", queue_name
-            consumer_id = f"Durable({sub_name})" if qinfo.get("durable") else sub_name
-            subscriptions.append({
-                "objectName": classic_consumer_key("Topic", topic_name, client_id, consumer_id),
-            })
+            # Artemis serializes queue booleans as the strings "true"/"false",
+            # so a plain `if qinfo.get("durable")` is always truthy - compare
+            # against the string explicitly.
+            is_durable = str(qinfo.get("durable", "")).lower() == "true"
+
+            consumers = []
+            if int(qinfo.get("consumerCount", 0) or 0) > 0:
+                try:
+                    consumers = broker_list(sess, "listConsumers", {"field": "queue", "operation": "EQUALS", "value": queue_name}).get("data", [])
+                except Exception:
+                    consumers = []
+
+            if consumers:
+                # Live consumer(s): get the real clientId/consumer id from
+                # listConsumers, same as req4() does for Queues, instead of
+                # guessing from the queue name (which is often just a random
+                # UUID with no clientId encoded in it at all for non-durable
+                # subscriptions).
+                for c in consumers:
+                    client_id = c.get("clientID") or c.get("remoteAddress", "")
+                    consumer_id = f"Durable({c.get('id', '')})" if is_durable else str(c.get("id", ""))
+                    subscriptions.append({
+                        "objectName": classic_consumer_key("Topic", topic_name, client_id.replace(":", "_"), consumer_id),
+                    })
+            else:
+                # No live consumer (e.g. an offline durable subscription) -
+                # best-effort split of the queue name into a
+                # (clientId, subscriptionName) pair - see module docstring.
+                # rpartition (not partition) on the LAST dot: remoteAddress-based
+                # client IDs (e.g. "127.0.0.1:57000") contain dots themselves, so
+                # splitting on the first dot would cut the client ID apart.
+                client_id, sep, sub_name = queue_name.rpartition(".")
+                if not sep:
+                    client_id, sub_name = "", queue_name
+                consumer_id = f"Durable({sub_name})" if is_durable else sub_name
+                subscriptions.append({
+                    # clientId must be sanitized (colons -> underscores) like req4()
+                    # does, so showConnection() in TopicsCtrl.js can match it back
+                    # to the connection's ClientId.
+                    "objectName": classic_consumer_key("Topic", topic_name, client_id.replace(":", "_"), consumer_id),
+                })
 
         key = classic_destination_key("Topic", topic_name)
         value[key] = {
@@ -349,7 +424,11 @@ async def req5(request: Request):
             "QueueSize": 0,
             "ConsumerCount": a.get("queueCount", 0),
             "EnqueueCount": 0,
-            "DequeueCount": 0,
+            "DequeueCount": a.get("routedMessageCount", 0),
+            # Artemis has no "blocked send" flag like Classic; unroutedMessageCount
+            # (messages that had no matching queue to route to) is the closest signal.
+            "BlockedSends": a.get("unroutedMessageCount", 0),
+            "messagesExpired": sum(int(q.get("messagesExpired", 0) or 0) for q in multicast_queues),
             "Subscriptions": subscriptions,
         }
     return {"value": value, "status": 200}
@@ -390,24 +469,34 @@ async def jolpost(request: Request):
             client_id = props.get("clientId", "").replace("_", ":")
             result = broker_list(sess, "listConsumers", {"field": "clientID", "operation": "EQUALS", "value": client_id})
             consumers = result.get("data", [])
+            if not consumers:
+                # Non-JMS consumers (STOMP, ...) have no clientID; req4()/
+                # _connections_value() fall back to remoteAddress for those,
+                # so look consumers up the same way here.
+                result = broker_list(sess, "listConsumers", {"field": "remoteAddress", "operation": "EQUALS", "value": client_id})
+                consumers = result.get("data", [])
             destination_name = props.get("destinationName")
             if destination_name and destination_name != "*":
-                consumers = [c for c in consumers if c.get("queueName") == destination_name or c.get("address") == destination_name]
+                consumers = [c for c in consumers if c.get("queue") == destination_name or c.get("address") == destination_name]
 
             value = {}
             for c in consumers:
                 key = classic_consumer_key(
-                    props.get("destinationType", "*"), c.get("address", ""), client_id, str(c.get("consumerID", "")),
+                    props.get("destinationType", "*"), c.get("address", ""), client_id.replace(":", "_"), str(c.get("id", "")),
                 )
                 value[key] = {
-                    "DestinationName": c.get("queueName", c.get("address", "")),
+                    # For a topic (multicast) consumer, "queue" is the internal
+                    # per-subscription queue (a UUID), not the topic name - the
+                    # real destination name is always in "address" (for a plain
+                    # queue/anycast consumer, "address" equals the queue name).
+                    "DestinationName": c.get("address", ""),
                     "Selector": c.get("filter", ""),
                     "EnqueueCounter": c.get("messagesDelivered", 0),
                     "DequeueCounter": c.get("messagesAcknowledged", 0),
                     "DispatchedCounter": c.get("messagesDelivered", 0),
                     "DiscardedCount": 0,
                     "Durable": not c.get("browseOnly", True),
-                    "DestinationQueue": c.get("queueType", "") != "MULTICAST",
+                    "DestinationQueue": c.get("queueType", "").upper() != "MULTICAST",
                     "SlowConsumer": False,
                 }
             return {"value": value, "status": 200}
@@ -477,6 +566,42 @@ async def jolpost(request: Request):
                 internal_id = _resolve_internal_message_id(sess, mbean_q, arguments[0])
                 result = artemis_exec(sess, mbean_q, "removeMessage(long)", [internal_id])
                 return {"value": result, "status": 200}
+
+            if operation == "purge":
+                # Classic's DestinationViewMBean.purge(); Artemis' QueueControl
+                # equivalent is removeAllMessages() (only ever called for Queues).
+                destination_name = props.get("destinationName")
+                destination_type = props.get("destinationType", "Queue")
+                mbean_q = queue_mbean(destination_name, destination_name, routing_type_for(destination_type).lower())
+                artemis_exec(sess, mbean_q, "removeAllMessages()")
+                return {"value": True, "status": 200}
+
+            if operation == "resetStatistics":
+                # Classic's DestinationViewMBean.resetStatistics() resets all
+                # counters in one call; Artemis' QueueControl has one reset op
+                # per counter instead, and only at the queue level - so for a
+                # Topic (address), reset every queue bound to that address.
+                destination_name = props.get("destinationName")
+                destination_type = props.get("destinationType", "Queue")
+                routing_type = routing_type_for(destination_type).lower()
+
+                if destination_type.lower() == "topic":
+                    try:
+                        bound_queues = broker_list(sess, "listQueues", {"field": "address", "operation": "EQUALS", "value": destination_name})
+                        targets = [q.get("name", "") for q in bound_queues.get("data", [])]
+                    except Exception:
+                        targets = []
+                else:
+                    targets = [destination_name]
+
+                for queue_name in targets:
+                    mbean_q = queue_mbean(destination_name, queue_name, routing_type)
+                    for reset_op in ("resetMessagesAdded()", "resetMessagesAcknowledged()", "resetMessagesExpired()", "resetMessagesKilled()"):
+                        try:
+                            artemis_exec(sess, mbean_q, reset_op)
+                        except Exception:
+                            pass
+                return {"value": True, "status": 200}
 
         return JSONResponse(status_code=501, content={"error": f"Unsupported jolokia request for Artemis: {body}"})
     except Exception as exc:

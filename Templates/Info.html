@@ -1,7 +1,7 @@
 <div class="panel panel-default">
 	<div class="panel-body">
-		<h4 class="nomargin">Version: <span class='label label-primary'>{{amqInfo.info['BrokerVersion']}}</span> Memory: <span class='label label-primary'>{{amqInfo.info['MemoryPercentUsage']/100 | percentage}}</span>
- Store: <span class='label label-primary'>{{amqInfo.info['StorePercentUsage']/100 | percentage}}</span> Temp: <span class='label label-primary'>{{amqInfo.info['TempPercentUsage']/100 | percentage}}</span></span> Up Time: <span class='label label-primary'>{{amqInfo.info['Uptime']}}</span>
+		<h4 class="nomargin">Version: <span class='label label-primary'>{{amqInfo.info['BrokerVersion']}}</span> <span ng-if="amqInfo.info['MemoryPercentUsage']!==undefined">Memory: <span class='label label-primary'>{{amqInfo.info['MemoryPercentUsage']/100 | percentage}}</span></span>
+ Store: <span class='label label-primary'>{{(amqInfo.info['StorePercentUsage']!==undefined ? amqInfo.info['StorePercentUsage']/100 : amqInfo.info['DiskStoreUsage']) | percentage}}</span> <span ng-if="amqInfo.info['TempPercentUsage']!==undefined">Temp: <span class='label label-primary'>{{amqInfo.info['TempPercentUsage']/100 | percentage}}</span></span> Up Time: <span class='label label-primary'>{{amqInfo.info['Uptime']}}</span>
 		</h4>
 	</div>
 </div>
@@ -62,7 +62,12 @@
 			<th>Property</th>
 		</tr>
 		<tr ng-repeat="ent in amqInfo.filteredInfo | filter:$parent.filterField[$parent.currentTab.id]">
-		    <td>{{ent.key}}</td><td>{{ent.value}}</td>
+		    <td>{{ent.key}}</td>
+		    <td>
+		    	<span ng-if="ent.value===true || ent.value==='true'" class="glyphicon glyphicon-ok text-success"></span>
+		    	<span ng-if="ent.value===false || ent.value==='false'" class="glyphicon glyphicon-remove text-danger"></span>
+		    	<span ng-if="ent.value!==true && ent.value!==false && ent.value!=='true' && ent.value!=='false'">{{ent.value}}</span>
+		    </td>
 		</tr>
 		</table>
 	</div>

@@ -299,15 +299,43 @@ textarea{
     border: 1px solid black;
 	clear:both;
 	padding: 0 1em;
-	overflow:auto;
-	width:800px;	
+	width:800px;
+	height:430px;
 	background-color:White;	
+	overflow:hidden;
 }
 
 .connection_details_table
 {
 	overflow:auto;
 	max-height:300px;
+}
+
+.connection_details_tabs_header
+{
+	position:absolute;
+	top:10px;
+	left:3px;
+}
+
+.connection_details_tabs
+{
+	padding-top:3px !important;
+	position:absolute;
+	top:48px;
+	left:0px;
+    border: 0px solid black;
+	clear:both;
+	bottom:40px;
+	overflow:auto;
+	right:0px;
+}
+
+.connection_details_tabs_footer
+{
+	position:absolute;
+	bottom:10px;
+	left:3px;
 }
 
 
