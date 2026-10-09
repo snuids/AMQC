@@ -4,6 +4,7 @@
 	</h4>
 	
 	<div class='nomargin topics_buttons'><h4><button class="btn btn-primary btn-sm" ng-click="showTopicStats()">Topic Stats <span class="glyphicon glyphicon-signal" aria-hidden="true"></button>
+	<button type="button" class="btn btn-danger btn-sm" ng-disabled="deletingUnusedTopics" ng-click="deleteUnusedTopics()">{{deletingUnusedTopics ? 'Checking / deleting topics...' : 'Delete topics without consumers'}} <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
 	</h4></div>
 		
 	<div class='queues_stats' ng-show="topicStatsVisible">

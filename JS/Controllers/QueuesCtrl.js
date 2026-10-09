@@ -1,8 +1,9 @@
-app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '$confirm', 'amqInfoFactory', 'toasty', 'preferencesFact',
-	function ($rootScope, $scope, $interval, $timeout, $confirm, amqInfoFactory, toasty, preferencesFact) 
+app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '$confirm', 'amqInfoFactory', 'toasty', 'preferencesFact', '$q',
+	function ($rootScope, $scope, $interval, $timeout, $confirm, amqInfoFactory, toasty, preferencesFact, $q)
 {
 	$scope.prefs = preferencesFact;
 	$scope.queueStatsVisible=false;		
+	$scope.deletingUnusedQueues=false;
 	
 	$scope.head = {
 			Name: "Name",
@@ -208,12 +209,68 @@ app.controller('QueuesCtrl', ['$rootScope', '$scope', '$interval', '$timeout', '
 		$confirm({text: 'Are you sure you want to delete the queue '+ $scope.amqInfo.currentQueue.Name +' ?'})
 		        .then(function() 
 		{
-			$scope.amqInfo.deleteQueue($scope.amqInfo.currentQueue.Name);
-			$scope.showQueueDetails(null);
+			return $scope.amqInfo.deleteQueue($scope.amqInfo.currentQueue.Name).then(function() {
+				$scope.showQueueDetails(null);
+			}, function() {
+				// The factory reports the deletion error.
+			});
 		});
 
 	}
 	
+	$scope.deleteUnusedQueues=function()
+	{
+		if($scope.deletingUnusedQueues)
+			return;
+		$scope.deletingUnusedQueues=true;
+		return $scope.amqInfo.getUnusedQueues().then(function(queues) {
+			if(queues.length===0)
+			{
+				toasty.info({msg:'No empty queues without consumers are eligible for deletion.'});
+				return;
+			}
+			var names=queues.map(function(queue) { return queue.Name; });
+			return $confirm({text:'Delete '+names.length+' empty queues without consumers? This includes queues outside the current table filter: '+names.join(', ')})
+				.then(function() {
+					var deleted=0;
+					var skipped=0;
+					var failed=0;
+					var chain=$q.when();
+					names.forEach(function(name) {
+						chain=chain.then(function() {
+							return $scope.amqInfo.getUnusedQueues().then(function(currentQueues) {
+								if(!currentQueues.some(function(queue) { return queue.Name===name; }))
+								{
+									skipped++;
+									return;
+								}
+								return $scope.amqInfo.deleteQueue(name, null, true).then(function() {
+									deleted++;
+									if($scope.amqInfo.currentQueue && $scope.amqInfo.currentQueue.Name===name)
+										$scope.showQueueDetails(null);
+								}, function() { failed++; });
+							});
+						});
+					});
+					return chain.finally(function() {
+						$scope.amqInfo.refreshAll();
+					}).then(function() {
+						var result={msg:'Queues deleted: '+deleted+'. Skipped: '+skipped+'. Failed: '+failed+'.'};
+						if(failed)
+							toasty.error(result);
+						else
+							toasty.success(result);
+					});
+				}, function() {
+					// Cancelling confirmation performs no deletion.
+				});
+		}).catch(function() {
+			toasty.error({msg:'Bulk queue deletion stopped. Check the reported API error; some queues may already have been deleted.'});
+		}).finally(function() {
+			$scope.deletingUnusedQueues=false;
+		});
+	}
+
 	$scope.createNewQueue=function()
 	{
 		$scope.amqInfo.createNewQueue($scope.newQueueName);

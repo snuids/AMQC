@@ -2,6 +2,7 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
     var factory = {}; 
 
 	factory.port=61614;
+	factory.prefix="";
 	factory.topics="foo,bar";
 	factory.queues="queue1";
 	factory.login="";
@@ -33,6 +34,13 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 		&&(localStorage.getItem("amqc.password") !== null))		
 		factory.password = localStorage.getItem("amqc.password") ;
 
+	if (amqInfoFactory.getUrlParameter("login") !== null)
+		factory.login = amqInfoFactory.login;
+
+	if (amqInfoFactory.getUrlParameter("password") !== null ||
+		amqInfoFactory.getUrlParameter("encryptedpassword") !== null)
+		factory.password = amqInfoFactory.password;
+
 	if ((localStorage.getItem("amqc.useSsl") !== undefined)
 		&&(localStorage.getItem("amqc.useSsl") !== null))		
 		factory.useSsl = localStorage.getItem("amqc.useSsl")=="true" ;
@@ -41,7 +49,12 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 		&&(localStorage.getItem("amqc.stompport") !== null))		
 		factory.port = parseInt(localStorage.getItem("amqc.stompport")) ;
 
+	if (localStorage.getItem("amqc.stompprefix") !== null)
+		factory.prefix = localStorage.getItem("amqc.stompprefix");
 
+	var stompPrefix = new URLSearchParams(window.location.search).get("stompprefix");
+	if (stompPrefix !== null)
+		factory.prefix = stompPrefix;
 
 	factory.subscribe= function(scope, callback) {
         var handler = $rootScope.$on('notifying-service-event', callback);
@@ -121,12 +134,17 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 		factory.notifyConnectionEvents('Connection Ok');
 	  }
 
+	factory.getWebSocketUrl=function()
+	{
+		var prefix=(factory.prefix || "").trim();
+		var path=prefix ? "/"+prefix.replace(/^\/+/, "") : "";
+		return (factory.useSsl ? "wss://" : "ws://")+amqInfoFactory.brokerip+":"+factory.port+path;
+	}
+
 	factory.connect=function()
 	{
 		console.log("CONNECT CLIENT");
-		var url="ws://"+amqInfoFactory.brokerip+":"+factory.port;		
-		if (this.useSsl)
-			url="wss://"+amqInfoFactory.brokerip+":"+factory.port;
+		var url=factory.getWebSocketUrl();
 
 		this.client = Stomp.client(url,['stomp']);
 		this.messages=[];
@@ -143,6 +161,7 @@ app.factory('amqClientFactory', function($rootScope,amqInfoFactory){
 		localStorage.setItem('amqc.password', factory.password);
 		localStorage.setItem('amqc.useSsl', factory.useSsl);
 		localStorage.setItem('amqc.stompport', factory.port);
+		localStorage.setItem('amqc.stompprefix', factory.prefix);
 		
 	
 	}
