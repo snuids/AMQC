@@ -2,6 +2,7 @@
 
 	<h4 class='nomargin'>Create a new Queue: <input type="text" ng-model="newQueueName" >&nbsp;	<button class="btn btn-primary btn-sm" ng-disabled="newQueueName.length==0" ng-click="createNewQueue()">Create <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></button></h4>
 	<div class='nomargin queues_buttons'><h4><button class="btn btn-primary btn-sm" ng-click="showQueueStats()">Queue Stats  <span class="glyphicon glyphicon-signal" aria-hidden="true"></button>
+	<button type="button" class="btn btn-danger btn-sm" ng-disabled="deletingUnusedQueues" ng-click="deleteUnusedQueues()">{{deletingUnusedQueues ? 'Checking / deleting queues...' : 'Delete empty queues without consumers'}} <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
 	</h4></div>
 
 
@@ -15,7 +16,8 @@
 			</tr>
 			<tr ng-repeat="ent in amqInfo.filteredQueues | filter:filterField[currentTab.id] | orderBy:sort.column:sort.descending">
 				<td  ng-repeat="(key, value) in head" class="{{key!='Name'?'text-center':'text-left'}}">
-					{{ent[key]}}
+					<strong ng-if="key=='Name'">{{ent[key]}}</strong>
+					<span ng-if="key!='Name'">{{ent[key]}}</span>
 				</td>
 				<td>
 					<div class="text-center">
@@ -83,7 +85,12 @@
 						<th>Key</th><th>Value</th>
 					</tr>
 					<tr ng-repeat="(key, value) in amqInfo.currentQueue">			
-						<td>{{key}}</td><td>{{amqInfo.currentQueue[key]}}</td>
+						<td>{{key}}</td>
+						<td>
+							<span ng-if="value===true || value==='true'" class="glyphicon glyphicon-ok text-success"></span>
+							<span ng-if="value===false || value==='false'" class="glyphicon glyphicon-remove text-danger"></span>
+							<span ng-if="value!==true && value!==false && value!=='true' && value!=='false'">{{value}}</span>
+						</td>
 					</tr>
 				</table>					
 			</div>		

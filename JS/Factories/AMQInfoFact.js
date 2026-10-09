@@ -310,7 +310,8 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			factory.loginok=true;
 
 			for ( var property in factory.info ) {
-				if((!(factory.info[property] instanceof Array))
+				if((property!='AcceptorsAsJSON')
+				&&(!(factory.info[property] instanceof Array))
 				&&(!(factory.info[property] instanceof Object)))
 				{
 					var nobj={key:property,value:factory.info[property]};
@@ -702,7 +703,26 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 		
 	}
 
-	factory.deleteQueue = function(queueName,queueAction) {
+	factory.getUnusedQueues=function()
+	{
+		return $http({method:'GET', url:factory.queuesUrl, timeout:5000})
+			.then(function(response) {
+				if(response.data.status!==200 || !response.data.value ||
+					typeof response.data.value!=='object')
+					return $q.reject({status:500, data:'Unable to verify queue consumers and size.'});
+				return Object.keys(response.data.value).map(function(key) {
+					return response.data.value[key];
+				}).filter(function(queue) {
+					return queue && typeof queue.Name==='string' &&
+						queue.ConsumerCount===0 && queue.QueueSize===0;
+				});
+			}).catch(function(response) {
+				factory.handleApiError(response, 'Checking empty queues without consumers');
+				return $q.reject(response);
+			});
+	}
+
+	factory.deleteQueue = function(queueName,queueAction,skipRefresh) {
 		var postUrl=factory.getPostUrl();
 						
 		var data={
@@ -714,14 +734,21 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 		
 		console.log(data);
 		
-		$http.post(postUrl, data, {})
+		return $http.post(postUrl, data, {})
 		.then(function successCallback(response) {
-			toasty.success({msg:'Queue ' + queueName+' deleted'});
+			if(response.data.status!==200)
+				return $q.reject({status:500, data:'Broker refused to delete queue '+queueName});
+			if(!skipRefresh)
+			{
+				toasty.success({msg:'Queue ' + queueName+' deleted'});
+				factory.refreshAll();
+			}
 			console.log(response);
-			factory.refreshAll();
-			}, function errorCallback(response) {
+			return response;
+			}).catch(function errorCallback(response) {
 			factory.handleApiError(response, 'Deleting queue ' + queueName);
 			console.log(response);
+			return $q.reject(response);
 		  });
 	}
 	
@@ -752,7 +779,44 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 		});		
 	}	
 	
-	factory.deleteTopic=function(topicName,queueAction)
+	factory.getUnusedTopics=function()
+	{
+		return $q.all([
+			$http({method:'GET', url:factory.topicsUrl, timeout:5000}),
+			$http({method:'GET', url:factory.infoUrl, timeout:5000})
+		]).then(function(responses) {
+			var topics=responses[0].data.value;
+			var info=responses[1].data.value;
+			if(responses[0].data.status!==200 || responses[1].data.status!==200 ||
+				!topics || !info || !Array.isArray(info.DurableTopicSubscribers) ||
+				!Array.isArray(info.InactiveDurableTopicSubscribers))
+				return $q.reject({status:500, data:'Unable to verify topics and durable subscriptions.'});
+
+			var protectedTopics=[];
+			var subscribers=info.DurableTopicSubscribers.concat(info.InactiveDurableTopicSubscribers);
+			for(var i=0;i<subscribers.length;i++)
+			{
+				var objectName=subscribers[i].objectName;
+				if(typeof objectName!=='string' || !/(^|,)destinationName=[^",\\]+(,|$)/.test(objectName))
+					return $q.reject({status:500, data:'Unable to identify a durable subscription destination.'});
+				var name=factory.extractProperty('destinationName',objectName);
+				protectedTopics.push(name);
+			}
+
+			return Object.keys(topics).map(function(key) { return topics[key]; })
+				.filter(function(topic) {
+					return typeof topic.Name==='string' && topic.ConsumerCount===0 &&
+						topic.Name.indexOf('ActiveMQ.Advisory.')!==0 &&
+						Array.isArray(topic.Subscriptions) && topic.Subscriptions.length===0 &&
+						protectedTopics.indexOf(topic.Name)===-1;
+				});
+		}).catch(function(response) {
+			factory.handleApiError(response, 'Checking topics without consumers');
+			return $q.reject(response);
+		});
+	}
+
+	factory.deleteTopic=function(topicName,queueAction,skipRefresh)
 	{
 		var postUrl=factory.getPostUrl();
 						
@@ -765,14 +829,18 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 		
 		console.log(data);
 		
-		$http.post(postUrl, data, {})
+		return $http.post(postUrl, data, {})
 		.then(function successCallback(response) {
+			if(response.data.status!==200)
+				return $q.reject({status:500, data:'Broker refused to delete topic '+topicName});
 			console.log(response);
-			factory.refreshAll();
-
-		  }, function errorCallback(response) {
+			if(!skipRefresh)
+				factory.refreshAll();
+			return response;
+		  }).catch(function errorCallback(response) {
 		    factory.handleApiError(response, 'Deleting topic ' + topicName);
 			console.log(response);
+			return $q.reject(response);
 		  });
 		
 //		this.execQueue(queueName,'purge','Queue');
@@ -823,16 +891,16 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 	
 	factory.execQueue=function(queueName,queueAction,queueType)
 	{
-		var reseturl=factory.execUrl;
-		reseturl=reseturl.replace('QUEUENAME',queueName);
-		reseturl=reseturl.replace('QUEUEACTION',queueAction);
-		reseturl=reseturl.replace('QUEUETYPE',queueType);
+		var postUrl=factory.getPostUrl();
 
-		$http({
-		  method: 'GET',
-		  url: reseturl
-		  
-		}).then(function successCallback(response) {
+		var data={
+		    "type":"exec",
+		    "mbean":"org.apache.activemq:type=Broker,brokerName="+factory.brokername+",destinationType="+queueType+",destinationName="+queueName,
+			"operation":queueAction
+		};
+
+		$http.post(postUrl, data, {})
+		.then(function successCallback(response) {
 			console.log(response);
 			factory.refreshAll();
 		  }, function errorCallback(response) {
@@ -868,6 +936,8 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 			{
 				if(response.data.value[i].Text==undefined)
 					response.data.value[i].Text=factory.bin2String(response.data.value[i].BodyPreview);
+				if(response.data.value[i].JMSTimestamp==undefined)
+					response.data.value[i].JMSTimestamp=response.data.value[i].timestamp;
 				factory.queueMessages.push(response.data.value[i]);
 			}
 
@@ -958,8 +1028,7 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 		factory.apiUrl='http://REPLACEIP:REPLACEPORT/'+urlprefix+'api/';		
 		
 		var protocolrep="http://";
-		//alert(location.href.indexOf("http://"))
-		if(location.href.indexOf("https://")==0)
+		if(location.href.indexOf("https://")==0 || Number(factory.brokerport)===443)
 			protocolrep="https://"
 
 		

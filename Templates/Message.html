@@ -1,6 +1,6 @@
-<div drag-me class="message_details" ng-show="currentMessage">
+<div drag-me class="message_details" ng-controller="MessageCtrl" ng-show="currentMessage">
 	<H3 class='nomargin'>Destination {{currentMessage.destination}}</H3>
-	<div class="nodrag text_with_crlf message_text">{{currentMessage.message}}</div>
+	<div class="nodrag text_with_crlf message_text">{{messageBody}}</div>
 	<div class="nodrag message_headers">
 		<table class="table table-striped table-bordered table-hover table-condensed small">
 		<tr>
@@ -16,6 +16,7 @@
 	<div class="message_footer">
 		<button type="button" ng-click="closeDetails()" class="btn btn-primary btn-sm btn-xs">Close</button>
 		<button type="button" ng-click="copyMessage()" class="btn btn-info btn-sm btn-xs">Copy</button>
+		<button type="button" ng-click="formatBodyAsJson()" class="btn btn-info btn-sm btn-xs">Format as JSON</button>
 		<button type="button" ng-click="deleteMessage()" class="btn btn-danger btn-sm btn-xs">Delete</button>
 	<div>
 </div>

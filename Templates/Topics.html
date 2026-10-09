@@ -4,6 +4,7 @@
 	</h4>
 	
 	<div class='nomargin topics_buttons'><h4><button class="btn btn-primary btn-sm" ng-click="showTopicStats()">Topic Stats <span class="glyphicon glyphicon-signal" aria-hidden="true"></button>
+	<button type="button" class="btn btn-danger btn-sm" ng-disabled="deletingUnusedTopics" ng-click="deleteUnusedTopics()">{{deletingUnusedTopics ? 'Checking / deleting topics...' : 'Delete topics without consumers'}} <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
 	</h4></div>
 		
 	<div class='queues_stats' ng-show="topicStatsVisible">
@@ -13,18 +14,18 @@
 	<div class='topics_table'>
 		<table class="table table-striped table-bordered table-hover table-condensed small">
 			<tr>
-				<th class="{{$index&gt;1?'text-center':'text-left'}}" ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">
+				<th class="{{$index&gt;=1?'text-center':'text-left'}}" ng-repeat="(i,th) in head" ng-class="selectedCls(i)" ng-click="changeSorting(i)">
 					{{th}}<span table-header></span>
 				</th>
 			</tr>
 			<tr ng-repeat="ent in amqInfo.filteredTopics | filter:filterField[currentTab.id] | orderBy:sort.column:sort.descending | filter: filterFunction">
 				<td>
-					{{ent.Name}}
+					<strong>{{ent.Name}}</strong>
 				</td>
 				<td class="text-center">
 					{{ent.ConsumerCount}}
 				</td>
-				<td class="text-center">
+				<td class="text-center" ng-class="{'text-danger': ent.BlockedSends > 0}">
 					{{ent.BlockedSends}}
 				</td>
 				<td class="text-center">
@@ -37,7 +38,7 @@
 					{{ent.DispatchCount}}
 				</td>
 				<td class="text-center">
-					{{ent.ExpiredCount}}
+					{{ent.ExpiredCount !== undefined ? ent.ExpiredCount : ent.messagesExpired}}
 				</td>
 				<td class="text-center">
 					<button type="button" ng-click="showDetails(ent)" class="btn btn-primary btn-sm btn-xs">Details</button>

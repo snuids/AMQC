@@ -40,6 +40,7 @@
         <script src="JS/Controllers/ClientCtrl.js"></script>
         <script src="JS/Controllers/LoginCtrl.js"></script>
         <script src="JS/Controllers/SendCtrl.js"></script>
+        <script src="JS/Controllers/MessageCtrl.js"></script>
 
         <script src="JS/Directives/Resizer.js"></script>
 
@@ -89,7 +90,7 @@
 	                </div>
 	            </div>
             	<div id="version">
-				v1.13 May 2026 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]
+				v1.15 Oct 2026 ({{amqInfo.brokerip}}) [{{amqInfo.updates}}]
 					<div ng-show="amqInfo.connecting" class="connection_square connection_square_{{refresh}}" ng-repeat="refresh in amqInfo.currentlyRefreshing track by $index"></div>					
 					<img ng-show="amqInfo.connecting" src="./Images/ajax-loader.gif" ></div>				
           	</div>
