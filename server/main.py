@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 import requests
 import json
 import os
+import time
 
 PREFIX = os.getenv("AMQC_PREFIX", "")
 
@@ -47,6 +48,63 @@ def get_session(req:Request):
     return session
 
 
+# Reading all attributes of a connection MBean calls getWireFormatInfo(), which
+# throws a NullPointerException for transports without WireFormatInfo (STOMP,
+# WS, ...). Read the safe attributes explicitly instead.
+CONNECTION_ATTRIBUTES = [
+    "Slow", "Blocked", "Connected", "Active", "RemoteAddress", "ClientId",
+    "ConnectionId", "DispatchQueueSize", "UserName", "Consumers", "Producers",
+    "ActiveTransactionCount", "OldestActiveTransactionDuration",
+    "FaultTolerantConnection", "Manageable", "NetworkConnection",
+    "ConnectedTimestamp",
+]
+
+
+def read_connection_view(req:Request, view_type):
+    """Read a connection view, working around the ActiveMQ wildcard NPE."""
+    s = get_session(req)
+    mbean = (
+        "org.apache.activemq:type=Broker,brokerName=localhost,"
+        "connector=clientConnectors,connectorName=*,"
+        f"connectionViewType={view_type},connectionName=*"
+    )
+    response = s.get(f"http://localhost:8161/api/jolokia/read/{mbean}")
+    result = parse_response(response)
+
+    if not isinstance(result, JSONResponse) and result.get("status", 200) < 400:
+        return result
+
+    error_type = result.get("error_type", "") if isinstance(result, dict) else ""
+    if error_type not in (
+        "java.lang.NullPointerException",
+        "javax.management.InstanceNotFoundException",
+    ):
+        return result
+
+    # Find the individual connection MBeans, then read each one with the
+    # attribute list that excludes the broken WireFormatInfo getter.
+    search_response = s.get(f"http://localhost:8161/api/jolokia/search/{mbean}")
+    search_result = parse_response(search_response)
+    names = search_result.get("value", []) if isinstance(search_result, dict) else []
+
+    connections = {}
+    for name in names:
+        response = s.post(
+            "http://localhost:8161/api/jolokia",
+            json={"type": "read", "mbean": name, "attribute": CONNECTION_ATTRIBUTES},
+        )
+        connection = parse_response(response)
+        if isinstance(connection, dict) and connection.get("status") == 200:
+            connections[name] = connection.get("value", {})
+
+    return {
+        "request": {"mbean": mbean, "type": "read"},
+        "value": connections,
+        "status": 200,
+        "timestamp": int(time.time()),
+    }
+
+
 @app.get(f"{PREFIX}/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost")
 async def req1(request:Request ):
     print(">>>> 1")
@@ -64,16 +122,11 @@ async def req1(request:Request ):
 
 @app.get(f"{PREFIX}/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,connector=clientConnectors,connectorName=*,connectionViewType=clientId,connectionName=*")
 async def req2(request:Request ):
-    response = get_session(request).get("http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,connector=clientConnectors,connectorName=*,connectionViewType=clientId,connectionName=*")
-    return parse_response(response)
+    return read_connection_view(request, "clientId")
 
 @app.get(f"{PREFIX}/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,connectionViewType=remoteAddress,connector=clientConnectors,connectorName=*,connectionName=*")
 async def req3(request:Request ):
-    response = get_session(request).get("http://localhost:8161/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,connectionViewType=remoteAddress,connector=clientConnectors,connectorName=*,connectionName=*")
-    
-    result = parse_response(response)
-    
-    return result
+    return read_connection_view(request, "remoteAddress")
 
 @app.get(f"{PREFIX}/api/jolokia/read/org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=*")
 async def req4(request:Request ):
@@ -97,7 +150,22 @@ async def jolpost(request:Request ):
     auth = request.headers.get("authorization")
     headers = {"authorization": auth, "referer": "http://localhost"}
     response = get_session(request).post("http://localhost:8161/api/jolokia", headers=headers, data=json.dumps(body))
-    return parse_response(response)
+    result = parse_response(response)
+
+    # A connection with no consumers has no consumer MBeans. Treat that as an
+    # empty destination list instead of surfacing a 404 in the details pane.
+    if (isinstance(result, dict)
+            and body.get("type") == "read"
+            and "endpoint=Consumer" in body.get("mbean", "")
+            and result.get("error_type") == "javax.management.InstanceNotFoundException"):
+        return {
+            "request": result.get("request", body),
+            "value": {},
+            "status": 200,
+            "timestamp": int(time.time()),
+        }
+
+    return result
 
 @app.post(f"{PREFIX}/api/message/{{target}}")
 async def jolmessage(request:Request, target, type, Origin, ID ):

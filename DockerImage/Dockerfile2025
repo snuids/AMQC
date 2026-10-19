@@ -5,9 +5,9 @@ RUN sed -i '2s/^# *//' /etc/apk/repositories && \
 apk update && \
 apk add openjdk17
 
-ENV ACTIVEMQ_VERSION 6.1.8
-ENV ACTIVEMQ apache-activemq-$ACTIVEMQ_VERSION
-ENV ACTIVEMQ_HOME /opt/activemq
+ENV ACTIVEMQ_VERSION=6.3.2
+ENV ACTIVEMQ=apache-activemq-$ACTIVEMQ_VERSION
+ENV ACTIVEMQ_HOME=/opt/activemq
 
 RUN apk add --update curl && \ 
 rm -rf /var/cache/apk/* && \ 
@@ -22,16 +22,26 @@ adduser -S -H -G activemq -h $ACTIVEMQ_HOME activemq && \
 chown -R activemq:activemq $ACTIVEMQ_HOME && \
 chown -h activemq:activemq $ACTIVEMQ_HOME
 
-RUN cat /opt/activemq/conf/jetty.xml | sed -E 's/(.*)(\"127\.0\.0\.1\")(.*)/\1"0.0.0.0"\3/g;t' > /opt/activemq/conf/jetty2.xml && \
-chown activemq /opt/activemq/conf/jetty2.xml && \
-chgrp activemq /opt/activemq/conf/jetty2.xml && \
-cp /opt/activemq/conf/jetty2.xml /opt/activemq/conf/jetty.xml 
+# ActiveMQ 6.3 ships the console config in conf/jetty/. Bind the web console
+# to all interfaces and allow non-loopback clients (authentication stays on).
+RUN sed -i '/^jetty.http.port=8161$/a jetty.http.host=0.0.0.0' /opt/activemq/conf/jetty-spring.properties && \
+    sed -i 's#<Item>::1</Item>#<Item>::1</Item>\n              <Item>0.0.0.0/0</Item>\n              <Item>::/0</Item>#' /opt/activemq/conf/jetty/jetty-security.xml && \
+    grep -q '^jetty.http.host=0.0.0.0$' /opt/activemq/conf/jetty-spring.properties && \
+    grep -q '<Item>0.0.0.0/0</Item>' /opt/activemq/conf/jetty/jetty-security.xml
 
-RUN cat /opt/activemq/conf/activemq.xml | sed -E 's#(5672\?maximumConnections=1000&amp;wireFormat\.maxFrameSize=104857600)#\1\&amp;transport.transformer=jms#g' \
-    > /opt/activemq/conf/activemq.xml.tmp;\
-    cp /opt/activemq/conf/activemq.xml.tmp /opt/activemq/conf/activemq.xml;
+# ActiveMQ 6.3 only permits POST on the Jolokia endpoint by default. AMQC reads
+# broker data with GET, so allow it in addition to POST.
+RUN sed -i 's#<method>post</method>#<method>post</method>\n    <method>get</method>#' /opt/activemq/conf/jolokia-access.xml && \
+    grep -q '<method>get</method>' /opt/activemq/conf/jolokia-access.xml
 
-RUN echo 'TEST'
+# ActiveMQ 6.3 disables the extra transports by default. Re-enable the ones
+# exposed by this image and keep the JMS transformer for AMQP.
+RUN sed -E 's#^([[:space:]]*)<!-- (<transportConnector name="(amqp|stomp|mqtt|ws)".*/>) -->#\1\2#' \
+        /opt/activemq/conf/activemq.xml | \
+    sed -E 's#(<transportConnector name="amqp" uri="amqp://[^"]*)#\1\&amp;transport.transformer=jms#' \
+        > /opt/activemq/conf/activemq.xml.tmp && \
+    mv /opt/activemq/conf/activemq.xml.tmp /opt/activemq/conf/activemq.xml && \
+    grep -q 'transport.transformer=jms' /opt/activemq/conf/activemq.xml
 
 RUN curl -LOk --header "Cache-Control: no-cache, no-store, must-revalidate" \
     --header "Pragma: no-cache" \
@@ -42,13 +52,18 @@ RUN curl -LOk --header "Cache-Control: no-cache, no-store, must-revalidate" \
     mv ./AMQC-master/ /opt/static && \
     mv /opt/static/server/ /opt/
 
+# Use the server code from this checkout so local fixes are included.
+COPY server/main.py server/requirements.txt /opt/server/
+
 RUN pip3 install -r /opt/server/requirements.txt
 
 WORKDIR /opt/server
 
-CMD cat /opt/activemq/conf/log4j2.properties | sed -E 's/(.*)(#log4j2.logger.activemq.level=DEBUG)(.*)/\1log4j2\.qlogger\.activemq\.level='$ACTIVEMQ_LOG_LEVEL'\3/g' | sed -E 's/(.*)(#log4j2.logger.activemq.name=org.apache.activemq)(.*)/\1log4j2.logger.activemq.name=org.apache.activemq\3/g' |   sed -E  's/rootLogger\.level=INFO/rootLogger.level='$ACTIVEMQ_LOG_LEVEL'/g' > /opt/activemq/conf/log4j2.properties.tmp;\
-cp /opt/activemq/conf/log4j2.properties.tmp /opt/activemq/conf/log4j2.properties;\
-echo "$ACTIVEMQ_ADMIN_LOGIN:$ACTIVEMQ_ADMIN_PASSWORD" > /opt/activemq/conf/users.properties;/opt/activemq/bin/activemq start;uvicorn main:app --host 0.0.0.0 --port 8180
+CMD sed -i "s/^rootLogger.level=.*/rootLogger.level=${ACTIVEMQ_LOG_LEVEL:-INFO}/" /opt/activemq/conf/log4j2.properties; \
+echo "${ACTIVEMQ_ADMIN_LOGIN}:${ACTIVEMQ_ADMIN_PASSWORD}" > /opt/activemq/conf/users.properties; \
+echo "admins=${ACTIVEMQ_ADMIN_LOGIN}" > /opt/activemq/conf/groups.properties; \
+/opt/activemq/bin/activemq start; \
+uvicorn main:app --host 0.0.0.0 --port 8180
 
 
 
