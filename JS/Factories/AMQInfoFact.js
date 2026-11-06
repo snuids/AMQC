@@ -881,7 +881,9 @@ app.factory('amqInfoFactory', ['$timeout','$http', '$location', '$interval', '$q
 
 	factory.purgeQueue=function(queueName,queueAction)
 	{
-		this.execQueue(queueName,'purge','Queue');
+		// Explicit no-arg signature: ActiveMQ 6.3+ also exposes purge(long),
+		// so Jolokia rejects the bare overloaded "purge" operation name.
+		this.execQueue(queueName,'purge()','Queue');
 	}		
 	
 	factory.resetStatsQueue=function(queueName)

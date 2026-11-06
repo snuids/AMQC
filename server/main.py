@@ -147,6 +147,13 @@ async def req5(request:Request ):
 @app.post(f"{PREFIX}/api/jolokia")
 async def jolpost(request:Request ):
     body = await request.json()
+
+    # ActiveMQ 6.3+ exposes both purge() and purge(long) on destination MBeans.
+    # Jolokia rejects the bare "purge" the frontend historically sent because
+    # the operation is overloaded, so use the explicit no-argument signature.
+    if body.get("type") == "exec" and body.get("operation") == "purge":
+        body["operation"] = "purge()"
+
     auth = request.headers.get("authorization")
     headers = {"authorization": auth, "referer": "http://localhost"}
     response = get_session(request).post("http://localhost:8161/api/jolokia", headers=headers, data=json.dumps(body))

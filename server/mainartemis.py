@@ -567,7 +567,7 @@ async def jolpost(request: Request):
                 result = artemis_exec(sess, mbean_q, "removeMessage(long)", [internal_id])
                 return {"value": result, "status": 200}
 
-            if operation == "purge":
+            if operation in ("purge", "purge()"):
                 # Classic's DestinationViewMBean.purge(); Artemis' QueueControl
                 # equivalent is removeAllMessages() (only ever called for Queues).
                 destination_name = props.get("destinationName")
