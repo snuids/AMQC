@@ -42,7 +42,14 @@ def get_session(req:Request):
     # Always update auth headers from the current request
     auth = req.headers.get("authorization")
     if auth:
-        session.headers.update({"authorization": auth, "referer": "http://localhost"})
+        # ActiveMQ 6.3.3 enforces strict Jolokia CORS: the request must carry
+        # an Origin/Referer listed in conf/jolokia-access.xml. The stock list
+        # includes http://localhost:8161 (the broker's own console address).
+        session.headers.update({
+            "authorization": auth,
+            "referer": "http://localhost:8161",
+            "origin": "http://localhost:8161",
+        })
     print(auth)
     print(session.headers)
     return session
@@ -155,7 +162,11 @@ async def jolpost(request:Request ):
         body["operation"] = "purge()"
 
     auth = request.headers.get("authorization")
-    headers = {"authorization": auth, "referer": "http://localhost"}
+    headers = {
+        "authorization": auth,
+        "referer": "http://localhost:8161",
+        "origin": "http://localhost:8161",
+    }
     response = get_session(request).post("http://localhost:8161/api/jolokia", headers=headers, data=json.dumps(body))
     result = parse_response(response)
 
@@ -179,7 +190,11 @@ async def jolmessage(request:Request, target, type, Origin, ID ):
     body = await request.body()
     url = f"http://localhost:8161/api/message/{target}?type={type}&Origin={Origin}&ID={ID}"
     auth = request.headers.get("authorization")
-    headers = {"authorization": auth, "referer": "http://localhost"}
-    response = session.post(url, headers=headers, data=body.decode("utf-8"))
+    headers = {
+        "authorization": auth,
+        "referer": "http://localhost:8161",
+        "origin": "http://localhost:8161",
+    }
+    response = get_session(request).post(url, headers=headers, data=body.decode("utf-8"))
     print(response.text)
     return {"result": response.text}

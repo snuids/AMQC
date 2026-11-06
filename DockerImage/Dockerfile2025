@@ -5,7 +5,7 @@ RUN sed -i '2s/^# *//' /etc/apk/repositories && \
 apk update && \
 apk add openjdk17
 
-ENV ACTIVEMQ_VERSION=6.3.2
+ENV ACTIVEMQ_VERSION=6.3.3
 ENV ACTIVEMQ=apache-activemq-$ACTIVEMQ_VERSION
 ENV ACTIVEMQ_HOME=/opt/activemq
 
@@ -29,10 +29,20 @@ RUN sed -i '/^jetty.http.port=8161$/a jetty.http.host=0.0.0.0' /opt/activemq/con
     grep -q '^jetty.http.host=0.0.0.0$' /opt/activemq/conf/jetty-spring.properties && \
     grep -q '<Item>0.0.0.0/0</Item>' /opt/activemq/conf/jetty/jetty-security.xml
 
-# ActiveMQ 6.3 only permits POST on the Jolokia endpoint by default. AMQC reads
-# broker data with GET, so allow it in addition to POST.
-RUN sed -i 's#<method>post</method>#<method>post</method>\n    <method>get</method>#' /opt/activemq/conf/jolokia-access.xml && \
+# ActiveMQ 6.3.3 ships a deny-by-default Jolokia policy: only POST is allowed,
+# exec operations are not permitted and CORS is strict. Apply the AMQC-specific
+# policy (GET + the exec operations the UI uses) while keeping the stock deny
+# list intact.
+COPY DockerImage/patch-jolokia-access.py /tmp/patch-jolokia-access.py
+RUN python3 /tmp/patch-jolokia-access.py /opt/activemq/conf/jolokia-access.xml && \
     grep -q '<method>get</method>' /opt/activemq/conf/jolokia-access.xml
+
+# ActiveMQ 6.3.3 comments out the deprecated REST MessageServlet. AMQC's Send
+# tab needs POST /api/message/{destination}, so restore it (the web console
+# authentication still protects it).
+COPY DockerImage/enable-rest-message-servlet.py /tmp/enable-rest-message-servlet.py
+RUN python3 /tmp/enable-rest-message-servlet.py /opt/activemq/webapps/api/WEB-INF/web.xml && \
+    grep -q '<servlet-name>MessageServlet</servlet-name>' /opt/activemq/webapps/api/WEB-INF/web.xml
 
 # ActiveMQ 6.3 disables the extra transports by default. Re-enable the ones
 # exposed by this image and keep the JMS transformer for AMQP.
